@@ -1,0 +1,506 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<!-- 2026-08-17 Mon 20:35 -->
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Device Tree (DTS) &amp; Bindings</title>
+<meta name="author" content="Arun Jyothish K" />
+<meta name="generator" content="Org Mode" />
+<style type="text/css">
+  #content { max-width: 60em; margin: auto; }
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #e6e6e6;
+    border-radius: 3px;
+    background-color: #f2f2f2;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: auto;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    top: -8px;
+    right: 12px;
+    padding: 3px;
+    color: #555;
+    background-color: #f2f2f299;
+  }
+  pre.src:hover:before { display: inline; margin-top: 14px;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-authinfo::before { content: 'Authinfo'; }
+  pre.src-c:before { content: 'C'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'JavaScript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .equation-container {
+    display: table;
+    text-align: center;
+    width: 100%;
+  }
+  .equation {
+    vertical-align: middle;
+  }
+  .equation-label {
+    display: table-cell;
+    text-align: right;
+    vertical-align: middle;
+  }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { }
+</style>
+<link rel="stylesheet" type="text/css" href="/home/jeis/.apps/emacs-styles/light_green.css" />
+</head>
+<body>
+<div id="content" class="content">
+<h1 class="title">Device Tree (DTS) &amp; Bindings</h1>
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#org9f822fc">1. DTS Structure</a></li>
+<li><a href="#org701fdc0">2. Common Properties</a></li>
+<li><a href="#org98b79ba">3. Device Tree Bindings Documentation</a></li>
+<li><a href="#org4d20427">4. Driver Integration: Platform Device</a></li>
+<li><a href="#orgf27ef38">5. DTS Properties in Code</a></li>
+<li><a href="#org0121826">6. DTS Compilation</a></li>
+<li><a href="#org3b3df64">7. Probe Flow</a></li>
+<li><a href="#org32ebfb8">8. Device Tree Matching Flow</a></li>
+<li><a href="#org3acc2a9">9. See Also</a></li>
+</ul>
+</div>
+</div>
+<p>
+<b>Device tree source (DTS) format, bindings documentation, and integration with driver probe.</b>
+</p>
+<div id="outline-container-org9f822fc" class="outline-2">
+<h2 id="org9f822fc"><span class="section-number-2">1.</span> DTS Structure</h2>
+<div class="outline-text-2" id="text-1">
+<p>
+Device tree describes hardware in declarative form. Bootloader passes compiled .dtb (device tree blob) to kernel.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-dts"><code>// arch/arm/boot/dts/my-soc.dts
+/dts-v1/;
+
+/ {
+  compatible = "vendor,soc-name";
+
+  // Board/SOC-level node
+  soc {
+    compatible = "simple-bus";
+
+    // Peripheral node
+    gpio@1000 {
+      compatible = "vendor,gpio-controller";
+      reg = &lt;0x1000 0x100&gt;;        // base address, size
+      #gpio-cells = &lt;2&gt;;           // gpio phandle format
+      interrupt-controller;
+      #interrupt-cells = &lt;2&gt;;
+      interrupts = &lt;42 0&gt;;         // IRQ number, flags
+    };
+
+    // Platform device with phandle reference
+    led-controller@2000 {
+      compatible = "vendor,led-controller";
+      reg = &lt;0x2000 0x50&gt;;
+      gpios = &lt;&amp;gpio 10 0&gt;,        // phandle reference
+              &lt;&amp;gpio 11 0&gt;;
+    };
+  };
+
+  // Top-level chosen/cpus nodes omitted for brevity
+};
+</code></pre>
+</div>
+</div>
+</div>
+<div id="outline-container-org701fdc0" class="outline-2">
+<h2 id="org701fdc0"><span class="section-number-2">2.</span> Common Properties</h2>
+<div class="outline-text-2" id="text-2">
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">Property</th>
+<th scope="col" class="org-left">Type</th>
+<th scope="col" class="org-left">Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left"><code>compatible</code></td>
+<td class="org-left">string-list</td>
+<td class="org-left">Driver matching; first value must match driver's compatible string</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>reg</code></td>
+<td class="org-left">address/size cells</td>
+<td class="org-left">Memory-mapped registers</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>interrupts</code></td>
+<td class="org-left">interrupt specifier</td>
+<td class="org-left">IRQ assignment</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>gpios</code></td>
+<td class="org-left">phandle + specifier</td>
+<td class="org-left">GPIO references</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>status</code></td>
+<td class="org-left">string</td>
+<td class="org-left">"okay" (enabled), "disabled", "reserved"</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>label</code></td>
+<td class="org-left">string</td>
+<td class="org-left">Human-readable identifier</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div id="outline-container-org98b79ba" class="outline-2">
+<h2 id="org98b79ba"><span class="section-number-2">3.</span> Device Tree Bindings Documentation</h2>
+<div class="outline-text-2" id="text-3">
+<p>
+Bindings define the contract between device tree and driver. Bindings live in kernel source:
+</p>
+<ul class="org-ul">
+<li>`Documentation/devicetree/bindings/` — per-subsystem binding specs</li>
+<li>Specifies: compatible strings, required/optional properties, interrupts, clocks, regulators, etc.</li>
+</ul>
+
+<p>
+Example binding: `Documentation/devicetree/bindings/gpio/vendor,gpio-controller.txt`
+</p>
+
+<div class="org-src-container">
+<pre class="src src-nil"><code>GPIO Controller Binding
+
+Required properties:
+- compatible: "vendor,gpio-controller"
+- reg: base address and size
+- #gpio-cells: must be 2
+- interrupt-controller: present if supports interrupts
+- #interrupt-cells: 2 (gpio index, flags)
+
+Optional properties:
+- gpio-controller: presence marks as GPIO provider
+- label: human name
+
+Example:
+  gpio@1000 {
+    compatible = "vendor,gpio-controller";
+    reg = &lt;0x1000 0x100&gt;;
+    #gpio-cells = &lt;2&gt;;
+    interrupt-controller;
+    #interrupt-cells = &lt;2&gt;;
+  };
+</code></pre>
+</div>
+</div>
+</div>
+<div id="outline-container-org4d20427" class="outline-2">
+<h2 id="org4d20427"><span class="section-number-2">4.</span> Driver Integration: Platform Device</h2>
+<div class="outline-text-2" id="text-4">
+<p>
+Platform drivers probe via device tree match:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-c"><code><span style="color: #FF1493;">static</span> <span style="color: #FF1493;">const</span> <span style="color: #FF1493;">struct</span> <span style="color: #5FD7FF;">of_device_id</span> <span style="color: #FF8C00;">my_gpio_dt_match</span><span style="color: #AF87FF;">[]</span> = <span style="color: #AF87FF;">{</span>
+    <span style="color: #5FD7FF;">{</span> .compatible = <span style="color: #CDC673;">"vendor,gpio-controller"</span>, .data = <span style="color: #87D700;">(</span><span style="color: #5FD7FF;">void</span> *<span style="color: #87D700;">)</span><span style="color: #AF87FF;">1</span> <span style="color: #5FD7FF;">}</span>,
+    <span style="color: #5FD7FF;">{</span> <span style="color: #8B8878;">/* </span><span style="color: #8B8878;">terminator</span><span style="color: #8B8878;"> */</span> <span style="color: #5FD7FF;">}</span>,
+<span style="color: #AF87FF;">}</span>;
+<span style="color: #87D700;">MODULE_DEVICE_TABLE</span><span style="color: #AF87FF;">(</span>of, my_gpio_dt_match<span style="color: #AF87FF;">)</span>;
+
+<span style="color: #FF1493;">static</span> <span style="color: #FF1493;">struct</span> <span style="color: #5FD7FF;">platform_driver</span> <span style="color: #FF8C00;">my_gpio_driver</span> = <span style="color: #AF87FF;">{</span>
+    .driver = <span style="color: #5FD7FF;">{</span>
+        .name = <span style="color: #CDC673;">"vendor-gpio"</span>,
+        .of_match_table = my_gpio_dt_match,
+    <span style="color: #5FD7FF;">}</span>,
+    .probe = my_gpio_probe,
+    .remove = my_gpio_remove,
+<span style="color: #AF87FF;">}</span>;
+
+<span style="color: #FF1493;">static</span> <span style="color: #5FD7FF;">int</span> <span style="color: #87D700;">my_gpio_probe</span><span style="color: #AF87FF;">(</span><span style="color: #FF1493;">struct</span> <span style="color: #5FD7FF;">platform_device</span> *<span style="color: #FF8C00;">pdev</span><span style="color: #AF87FF;">)</span>
+<span style="color: #AF87FF;">{</span>
+    <span style="color: #FF1493;">struct</span> <span style="color: #5FD7FF;">device_node</span> *<span style="color: #FF8C00;">np</span> = pdev-&gt;dev.of_node;
+    <span style="color: #FF1493;">struct</span> <span style="color: #5FD7FF;">resource</span> *<span style="color: #FF8C00;">res</span>;
+
+    <span style="color: #8B8878;">// </span><span style="color: #8B8878;">Extract reg property
+</span>    res = platform_get_resource<span style="color: #5FD7FF;">(</span>pdev, IORESOURCE_MEM, <span style="color: #AF87FF;">0</span><span style="color: #5FD7FF;">)</span>;
+    <span style="color: #5FD7FF;">void</span> <span style="color: #FF8C00;">__iomem</span> *base = devm_ioremap_resource<span style="color: #5FD7FF;">(</span>&amp;pdev-&gt;dev, res<span style="color: #5FD7FF;">)</span>;
+
+    <span style="color: #8B8878;">// </span><span style="color: #8B8878;">Extract GPIO properties
+</span>    <span style="color: #5FD7FF;">int</span> <span style="color: #FF8C00;">ngpios</span> = of_gpio_count<span style="color: #5FD7FF;">(</span>np<span style="color: #5FD7FF;">)</span>;
+
+    <span style="color: #8B8878;">// </span><span style="color: #8B8878;">Extract interrupts
+</span>    <span style="color: #5FD7FF;">int</span> <span style="color: #FF8C00;">irq</span> = platform_get_irq<span style="color: #5FD7FF;">(</span>pdev, <span style="color: #AF87FF;">0</span><span style="color: #5FD7FF;">)</span>;
+
+    <span style="color: #8B8878;">// </span><span style="color: #8B8878;">Rest of probe logic...
+</span>    <span style="color: #FF1493;">return</span> <span style="color: #AF87FF;">0</span>;
+<span style="color: #AF87FF;">}</span>
+
+<span style="color: #87D700;">module_platform_driver</span><span style="color: #AF87FF;">(</span>my_gpio_driver<span style="color: #AF87FF;">)</span>;
+</code></pre>
+</div>
+</div>
+</div>
+<div id="outline-container-orgf27ef38" class="outline-2">
+<h2 id="orgf27ef38"><span class="section-number-2">5.</span> DTS Properties in Code</h2>
+<div class="outline-text-2" id="text-5">
+<p>
+Common <code>of_*</code> functions to read DTS properties:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-c"><code><span style="color: #8B8878;">// </span><span style="color: #8B8878;">Read string
+</span><span style="color: #FF1493;">const</span> <span style="color: #5FD7FF;">char</span> *<span style="color: #FF8C00;">name</span>;
+<span style="color: #87D700;">of_property_read_string</span><span style="color: #AF87FF;">(</span>np, <span style="color: #CDC673;">"label"</span>, &amp;name<span style="color: #AF87FF;">)</span>;
+
+<span style="color: #8B8878;">// </span><span style="color: #8B8878;">Read u32 integer
+</span><span style="color: #5FD7FF;">u32</span> <span style="color: #FF8C00;">val</span>;
+<span style="color: #87D700;">of_property_read_u32</span><span style="color: #AF87FF;">(</span>np, <span style="color: #CDC673;">"reg"</span>, &amp;val<span style="color: #AF87FF;">)</span>;
+
+<span style="color: #8B8878;">// </span><span style="color: #8B8878;">Count cells
+</span><span style="color: #5FD7FF;">int</span> <span style="color: #FF8C00;">count</span> = of_gpio_count<span style="color: #AF87FF;">(</span>np<span style="color: #AF87FF;">)</span>;
+
+<span style="color: #8B8878;">// </span><span style="color: #8B8878;">Get phandle reference
+</span><span style="color: #FF1493;">struct</span> <span style="color: #5FD7FF;">device_node</span> *<span style="color: #FF8C00;">ref</span> = of_parse_phandle<span style="color: #AF87FF;">(</span>np, <span style="color: #CDC673;">"gpios"</span>, <span style="color: #AF87FF;">0</span><span style="color: #AF87FF;">)</span>;
+
+<span style="color: #8B8878;">// </span><span style="color: #8B8878;">Check property presence
+</span><span style="color: #5FD7FF;">bool</span> <span style="color: #FF8C00;">has_interrupts</span> = of_find_property<span style="color: #AF87FF;">(</span>np, <span style="color: #CDC673;">"interrupt-controller"</span>, <span style="color: #AF87FF;">NULL</span><span style="color: #AF87FF;">)</span>;
+
+<span style="color: #8B8878;">// </span><span style="color: #8B8878;">Iterate children
+</span><span style="color: #FF1493;">struct</span> <span style="color: #5FD7FF;">device_node</span> *<span style="color: #FF8C00;">child</span>;
+<span style="color: #87D700;">for_each_child_of_node</span><span style="color: #AF87FF;">(</span>np, child<span style="color: #AF87FF;">)</span> <span style="color: #AF87FF;">{</span>
+    <span style="color: #8B8878;">// </span><span style="color: #8B8878;">process child nodes
+</span><span style="color: #AF87FF;">}</span>
+</code></pre>
+</div>
+</div>
+</div>
+<div id="outline-container-org0121826" class="outline-2">
+<h2 id="org0121826"><span class="section-number-2">6.</span> DTS Compilation</h2>
+<div class="outline-text-2" id="text-6">
+<p>
+Bootloader/build system compiles .dts → .dtb:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-bash"><code><span style="color: #8B8878;"># </span><span style="color: #8B8878;">Compile device tree
+</span>dtc -O dtb -o arch/arm/boot/dts/my-soc.dtb arch/arm/boot/dts/my-soc.dts
+
+<span style="color: #8B8878;"># </span><span style="color: #8B8878;">Decompile for inspection
+</span>dtc -O dts -o my-soc-out.dts arch/arm/boot/dts/my-soc.dtb
+</code></pre>
+</div>
+</div>
+</div>
+<div id="outline-container-org3b3df64" class="outline-2">
+<h2 id="org3b3df64"><span class="section-number-2">7.</span> Probe Flow</h2>
+<div class="outline-text-2" id="text-7">
+<ol class="org-ol">
+<li>Bootloader loads .dtb, passes to kernel</li>
+<li>Device tree parser creates device nodes</li>
+<li>Kernel matches device nodes against registered drivers (via <code>compatible</code> string)</li>
+<li>Driver's <code>probe()</code> called for each matching device</li>
+<li>Driver reads DTS properties, initializes hardware, creates sysfs/device files</li>
+</ol>
+</div>
+</div>
+<div id="outline-container-org32ebfb8" class="outline-2">
+<h2 id="org32ebfb8"><span class="section-number-2">8.</span> Device Tree Matching Flow</h2>
+<div class="outline-text-2" id="text-8">
+
+<div id="org9c79490" class="figure">
+<p><img src="res/02-dts-matching-flow.svg" alt="02-dts-matching-flow.svg" class="org-svg" />
+</p>
+</div>
+
+
+<div id="org3f4f018" class="figure">
+<p><img src="res/02-dts-matching-flow.svg" alt="02-dts-matching-flow.svg" class="org-svg" />
+</p>
+</div>
+</div>
+</div>
+<div id="outline-container-org3acc2a9" class="outline-2">
+<h2 id="org3acc2a9"><span class="section-number-2">9.</span> See Also</h2>
+<div class="outline-text-2" id="text-9">
+<ul class="org-ul">
+<li><a href="01-kernel-module-fundamentals.html#ID-f1a2b3c4-d5e6-47f8-99a1-b2c3d4e5f6a7">Kernel Module Fundamentals</a></li>
+<li><a href="07-platform-drivers.html#ID-g1h2i3j4-k5l6-4789-99a1-b2c3d4e5f6a7">Platform Drivers</a> — full platform driver example</li>
+</ul>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p class="author">Author: Arun Jyothish K</p>
+<p class="date">Created: 2026-08-17 Mon 20:35</p>
+</div>
+</body>
+</html>

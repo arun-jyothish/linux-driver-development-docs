@@ -1,0 +1,87 @@
+@startuml interrupt_context
+!theme plain
+title Interrupt Context: IRQ → Tasklet → Workqueue
+
+participant Hardware
+participant IRQ as "IRQ Handler\n(hardirq context)"
+participant Tasklet as "Tasklet\n(soft-irq context)"
+participant Workqueue as "Workqueue\n(kthread context)"
+participant Driver as "Driver Code"
+
+== Hardware Interrupt ==
+Hardware -> IRQ: Interrupt signal
+activate IRQ
+note right of IRQ
+  Cannot sleep
+  Cannot use mutex
+  No memory alloc (GFP_KERNEL)
+  Minimize latency
+end note
+
+IRQ -> IRQ: Read status register
+IRQ -> IRQ: ACK interrupt
+IRQ -> Driver: Check if handled
+
+alt Not handled
+  IRQ --> Hardware: IRQ_NONE
+  deactivate IRQ
+else Handled
+
+  == Schedule Deferred Work ==
+  alt Fast processing possible
+    IRQ -> IRQ: Do work now
+    IRQ --> Hardware: IRQ_HANDLED
+  else Slow work needed
+    IRQ -> Tasklet: tasklet_schedule()
+    IRQ --> Hardware: IRQ_HANDLED
+  end
+
+  deactivate IRQ
+end
+
+== Tasklet (soft-irq) ==
+activate Tasklet
+note right of Tasklet
+  Runs soon after IRQ returns
+  Lower priority than hardirq
+  Cannot sleep (traditional)
+  Can use spinlocks
+  Can work with atomic allocations
+end note
+
+Tasklet -> Driver: Process deferred work
+Tasklet -> Driver: For longer operations,\nqueue_work()
+
+alt Work complete
+  Tasklet --> Hardware: Done
+  deactivate Tasklet
+else Need to sleep
+  Tasklet -> Workqueue: queue_work()
+  Tasklet --> Hardware: Done
+  deactivate Tasklet
+end
+
+== Workqueue (kthread) ==
+activate Workqueue
+note right of Workqueue
+  Runs in kernel thread context
+  Can sleep (wait for locks)
+  Can use mutex
+  Can allocate with GFP_KERNEL
+  Slower but more flexible
+end note
+
+Workqueue -> Driver: Do slow work
+Driver -> Driver: File I/O
+Driver -> Driver: Wait for devices
+Workqueue --> Hardware: Work complete
+deactivate Workqueue
+
+note right of Hardware
+  Interrupt latency breakdown:
+  - Hardirq: 1-10 µs (minimal)
+  - Tasklet: 10-100 µs (process packets)
+  - Workqueue: 100+ µs (flexible)
+end note
+
+@enduml

@@ -1,0 +1,67 @@
+@startuml block_io_stack
+!theme plain
+title Block Device I/O Stack
+
+box "User Space" #LightBlue
+  participant Userspace as "Application\n(dd, mount, etc)"
+end box
+
+box "VFS & Page Cache" #LightGreen
+  participant VFS
+  participant PageCache as "Page Cache"
+end box
+
+box "Block Layer" #LightYellow
+  participant BIO as "bio layer"
+  participant Scheduler as "I/O Scheduler"
+  participant Queue as "Request\nQueue"
+end box
+
+box "Block Driver" #LightCoral
+  participant Driver as "Driver\nmake_request()\nor request_fn()"
+  participant Hardware as "Hardware\nController"
+end box
+
+== Write Flow ==
+Userspace -> VFS: write()/writepage()
+VFS -> PageCache: Cache page
+PageCache -> BIO: Submit bio (write)
+BIO -> Scheduler: bio -> request
+Scheduler -> Queue: Enqueue request
+Queue -> Driver: Invoke request handler
+
+Driver -> Driver: Map request to sectors
+Driver -> Hardware: Start DMA/I/O
+Hardware --> Driver: Interrupt (completion)
+Driver -> Queue: Signal completion
+
+Queue --> Scheduler: ack
+Scheduler --> BIO: complete bio
+BIO --> PageCache: page written
+PageCache --> VFS: ack
+VFS --> Userspace: return bytes_written
+
+== Read Flow ==
+Userspace -> VFS: read()/readpage()
+VFS -> PageCache: Check cache
+alt Cache miss
+  PageCache -> BIO: Submit bio (read)
+  BIO -> Scheduler: bio -> request
+  Scheduler -> Queue: Enqueue
+  Queue -> Driver: Invoke request handler
+  Driver -> Hardware: Start DMA read
+  Hardware --> Driver: Interrupt (data ready)
+  Driver -> Queue: Signal completion
+  Queue --> Driver: Fill bio buffer
+end
+PageCache -> Userspace: Return page
+
+note right of Driver
+  Converts bio/requests to
+  hardware-specific operations:
+  - Map LBA sectors
+  - DMA transfers
+  - Interrupt handling
+end note
+
+@enduml

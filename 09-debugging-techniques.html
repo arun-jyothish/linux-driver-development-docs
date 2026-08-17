@@ -1,0 +1,548 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<!-- 2026-08-17 Mon 20:36 -->
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Debugging Techniques</title>
+<meta name="author" content="Arun Jyothish K" />
+<meta name="generator" content="Org Mode" />
+<style type="text/css">
+  #content { max-width: 60em; margin: auto; }
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #e6e6e6;
+    border-radius: 3px;
+    background-color: #f2f2f2;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: auto;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    top: -8px;
+    right: 12px;
+    padding: 3px;
+    color: #555;
+    background-color: #f2f2f299;
+  }
+  pre.src:hover:before { display: inline; margin-top: 14px;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-authinfo::before { content: 'Authinfo'; }
+  pre.src-c:before { content: 'C'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'JavaScript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .equation-container {
+    display: table;
+    text-align: center;
+    width: 100%;
+  }
+  .equation {
+    vertical-align: middle;
+  }
+  .equation-label {
+    display: table-cell;
+    text-align: right;
+    vertical-align: middle;
+  }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { }
+</style>
+<link rel="stylesheet" type="text/css" href="/home/jeis/.apps/emacs-styles/light_green.css" />
+</head>
+<body>
+<div id="content" class="content">
+<h1 class="title">Debugging Techniques</h1>
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#orgdeed90d">1. printk: Kernel Logging</a></li>
+<li><a href="#org76364a7">2. Dynamic Debug</a></li>
+<li><a href="#org630bfcd">3. Trace Events (kernel tracing)</a></li>
+<li><a href="#orgdfc6e0d">4. Kernel Debugger (kgdb)</a></li>
+<li><a href="#org916b5f3">5. pr_devel and Compile-Time Debug</a></li>
+<li><a href="#org20104cf">6. Module Parameter Debugging</a></li>
+<li><a href="#org89d26d5">7. Hardware Inspection</a></li>
+<li><a href="#orga00d6ed">8. Crash Dump Analysis</a></li>
+<li><a href="#orgf3e879c">9. Common Debugging Workflow</a></li>
+<li><a href="#org82c6da6">10. Example: Debug-enabled driver</a></li>
+<li><a href="#orga577f51">11. Debugging Workflow Diagram</a></li>
+<li><a href="#orge0e8047">12. See Also</a></li>
+</ul>
+</div>
+</div>
+<p>
+<b>Kernel debugging: printk, dynamic debug, trace events, kgdb, crash analysis.</b>
+</p>
+<div id="outline-container-orgdeed90d" class="outline-2">
+<h2 id="orgdeed90d"><span class="section-number-2">1.</span> printk: Kernel Logging</h2>
+<div class="outline-text-2" id="text-1">
+<p>
+Basic logging with log levels:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-c"><code><span style="color: #FF1493;">#include</span> <span style="color: #AF87FF;">&lt;</span><span style="color: #CDC673;">linux/kernel.h</span><span style="color: #AF87FF;">&gt;</span>
+
+<span style="color: #8B8878;">// </span><span style="color: #8B8878;">Log levels (KERN_EMERG, KERN_ALERT, ..., KERN_DEBUG)
+</span>pr_err<span style="color: #AF87FF;">(</span><span style="color: #CDC673;">"Error: %d\n"</span>, errno<span style="color: #AF87FF;">)</span>;
+pr_warn<span style="color: #AF87FF;">(</span><span style="color: #CDC673;">"Warning: out of memory\n"</span><span style="color: #AF87FF;">)</span>;
+pr_info<span style="color: #AF87FF;">(</span><span style="color: #CDC673;">"Device registered at 0x%lx\n"</span>, addr<span style="color: #AF87FF;">)</span>;
+pr_debug<span style="color: #AF87FF;">(</span><span style="color: #CDC673;">"Entering function\n"</span><span style="color: #AF87FF;">)</span>;
+
+<span style="color: #8B8878;">// </span><span style="color: #8B8878;">Device-specific logging (includes device name)
+</span>dev_err<span style="color: #AF87FF;">(</span>&amp;pdev-&gt;dev, <span style="color: #CDC673;">"probe failed: %d\n"</span>, ret<span style="color: #AF87FF;">)</span>;
+dev_info<span style="color: #AF87FF;">(</span>&amp;pdev-&gt;dev, <span style="color: #CDC673;">"device initialized\n"</span><span style="color: #AF87FF;">)</span>;
+
+<span style="color: #8B8878;">// </span><span style="color: #8B8878;">Read kernel log
+</span>dmesg
+dmesg | tail
+tail -f /var/log/kern.log
+</code></pre>
+</div>
+</div>
+</div>
+<div id="outline-container-org76364a7" class="outline-2">
+<h2 id="org76364a7"><span class="section-number-2">2.</span> Dynamic Debug</h2>
+<div class="outline-text-2" id="text-2">
+<p>
+Enable per-module debugging at runtime (compile-time overhead minimal):
+</p>
+
+<div class="org-src-container">
+<pre class="src src-bash"><code><span style="color: #8B8878;"># </span><span style="color: #8B8878;">Enable all debug messages in a module
+</span><span style="color: #FF1493;">echo</span> <span style="color: #CDC673;">"module my_driver +p"</span> &gt; /proc/dynamic_debug/control
+
+<span style="color: #8B8878;"># </span><span style="color: #8B8878;">Enable by function
+</span><span style="color: #FF1493;">echo</span> <span style="color: #CDC673;">"func my_probe +p"</span> &gt; /proc/dynamic_debug/control
+
+<span style="color: #8B8878;"># </span><span style="color: #8B8878;">Enable by file
+</span><span style="color: #FF1493;">echo</span> <span style="color: #CDC673;">"file drivers/my_driver.c +p"</span> &gt; /proc/dynamic_debug/control
+
+<span style="color: #8B8878;"># </span><span style="color: #8B8878;">List current settings
+</span>cat /proc/dynamic_debug/control | grep my_driver
+</code></pre>
+</div>
+
+<p>
+Code usage:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-c"><code><span style="color: #FF1493;">#define</span> <span style="color: #87D700;">pr_fmt</span><span style="color: #AF87FF;">(</span><span style="color: #FF8C00;">fmt</span><span style="color: #AF87FF;">)</span> <span style="color: #CDC673;">"%s: "</span> fmt, __func__
+
+pr_debug<span style="color: #AF87FF;">(</span><span style="color: #CDC673;">"value: %d\n"</span>, val<span style="color: #AF87FF;">)</span>;  <span style="color: #8B8878;">// </span><span style="color: #8B8878;">enabled via dynamic_debug control</span>
+</code></pre>
+</div>
+</div>
+</div>
+<div id="outline-container-org630bfcd" class="outline-2">
+<h2 id="org630bfcd"><span class="section-number-2">3.</span> Trace Events (kernel tracing)</h2>
+<div class="outline-text-2" id="text-3">
+<p>
+Higher-level tracing via ftrace/trace-cmd:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-c"><code><span style="color: #FF1493;">#include</span> <span style="color: #AF87FF;">&lt;</span><span style="color: #CDC673;">trace/events/custom.h</span><span style="color: #AF87FF;">&gt;</span>
+
+<span style="color: #8B8878;">// </span><span style="color: #8B8878;">Define custom trace event (in header file)
+</span><span style="color: #8B8878;">// </span><span style="color: #8B8878;">Then use:
+</span><span style="color: #87D700;">trace_custom_event</span><span style="color: #AF87FF;">(</span>value, status<span style="color: #AF87FF;">)</span>;
+#+end_str&gt;
+
+Usage:
+
+#+begin_src bash
+<span style="color: #FF1493;"># Enable</span> tracing
+echo <span style="color: #AF87FF;">1</span> &gt; /sys/kernel/debug/tracing/tracing_on
+
+<span style="color: #FF1493;"># Trace</span> specific events
+echo <span style="color: #CDC673;">"my_driver:*"</span> &gt; /sys/kernel/debug/tracing/set_event
+
+<span style="color: #FF1493;"># Check</span> trace output
+cat /sys/kernel/debug/tracing/trace
+
+<span style="color: #FF1493;"># Real</span>-time view
+tail -f /sys/kernel/debug/tracing/trace_pipe
+
+<span style="color: #FF1493;"># Disable</span> tracing
+echo <span style="color: #AF87FF;">0</span> &gt; /sys/kernel/debug/tracing/tracing_on
+
+<span style="color: #FF1493;"># Use</span> trace-cmd tool
+trace-cmd record -e my_driver:*
+trace-cmd report
+</code></pre>
+</div>
+</div>
+</div>
+<div id="outline-container-orgdfc6e0d" class="outline-2">
+<h2 id="orgdfc6e0d"><span class="section-number-2">4.</span> Kernel Debugger (kgdb)</h2>
+<div class="outline-text-2" id="text-4">
+<p>
+Remote debugging via serial/network:
+</p>
+
+<p>
+Configuration (requires specific kernel config):
+</p>
+<ul class="org-ul">
+<li><code>CONFIG_KGDB=y</code></li>
+<li><code>CONFIG_KGDB_SERIAL_CONSOLE=y</code> (serial)</li>
+<li>Serial console configured</li>
+</ul>
+
+<p>
+Start debugging:
+</p>
+
+<p>
+#+begin_src bash
+</p>
+
+<p>
+gdb vmlinux
+(gdb) set arch &lt;target-arch&gt;
+(gdb) target remote /dev/ttyUSB0  # or network port
+</p>
+
+<p>
+(gdb) break my_probe
+(gdb) continue
+(gdb) bt         # backtrace
+(gdb) list       # source code
+(gdb) step/next  # step/next line
+(gdb) print var  # print variable
+#+end_str&gt;
+</p>
+</div>
+</div>
+<div id="outline-container-org916b5f3" class="outline-2">
+<h2 id="org916b5f3"><span class="section-number-2">5.</span> pr_devel and Compile-Time Debug</h2>
+<div class="outline-text-2" id="text-5">
+<p>
+Conditional compilation:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-c"><code><span style="color: #FF1493;">#ifdef</span> DEBUG
+<span style="color: #FF1493;">#define</span> <span style="color: #87D700;">pr_debug_devel</span><span style="color: #AF87FF;">(</span><span style="color: #FF8C00;">fmt</span>, ...<span style="color: #AF87FF;">)</span> pr_info<span style="color: #AF87FF;">(</span>fmt, ##__VA_ARGS__<span style="color: #AF87FF;">)</span>
+<span style="color: #FF1493;">#else</span>
+<span style="color: #FF1493;">#define</span> <span style="color: #87D700;">pr_debug_devel</span><span style="color: #AF87FF;">(</span><span style="color: #FF8C00;">fmt</span>, ...<span style="color: #AF87FF;">)</span> <span style="color: #FF1493;">do</span> <span style="color: #AF87FF;">{</span> <span style="color: #AF87FF;">}</span> <span style="color: #FF1493;">while</span> <span style="color: #AF87FF;">(</span><span style="color: #AF87FF;">0</span><span style="color: #AF87FF;">)</span>
+<span style="color: #FF1493;">#endif</span>
+
+pr_debug_devel<span style="color: #AF87FF;">(</span><span style="color: #CDC673;">"detailed info only in debug builds\n"</span><span style="color: #AF87FF;">)</span>;
+
+<span style="color: #8B8878;">// </span><span style="color: #8B8878;">Compile with: make CONFIG_DEBUG=1</span>
+</code></pre>
+</div>
+</div>
+</div>
+<div id="outline-container-org20104cf" class="outline-2">
+<h2 id="org20104cf"><span class="section-number-2">6.</span> Module Parameter Debugging</h2>
+<div class="outline-text-2" id="text-6">
+<p>
+Allow runtime parameter changes:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-c"><code><span style="color: #FF1493;">static</span> <span style="color: #5FD7FF;">int</span> <span style="color: #FF8C00;">debug_level</span> = <span style="color: #AF87FF;">0</span>;
+<span style="color: #87D700;">module_param</span><span style="color: #AF87FF;">(</span>debug_level, <span style="color: #5FD7FF;">int</span>, <span style="color: #AF87FF;">0644</span><span style="color: #AF87FF;">)</span>;
+<span style="color: #87D700;">MODULE_PARM_DESC</span><span style="color: #AF87FF;">(</span>debug_level, <span style="color: #CDC673;">"Debug verbosity level (0-3)"</span><span style="color: #AF87FF;">)</span>;
+
+<span style="color: #FF1493;">static</span> <span style="color: #5FD7FF;">void</span> <span style="color: #87D700;">log_debug</span><span style="color: #AF87FF;">(</span><span style="color: #5FD7FF;">int</span> <span style="color: #FF8C00;">level</span>, <span style="color: #FF1493;">const</span> <span style="color: #5FD7FF;">char</span> *<span style="color: #FF8C00;">fmt</span>, ...<span style="color: #AF87FF;">)</span>
+<span style="color: #AF87FF;">{</span>
+    <span style="color: #5FD7FF;">va_list</span> <span style="color: #FF8C00;">args</span>;
+    <span style="color: #FF1493;">if</span> <span style="color: #5FD7FF;">(</span>level &lt;= debug_level<span style="color: #5FD7FF;">)</span> <span style="color: #5FD7FF;">{</span>
+        va_start<span style="color: #87D700;">(</span>args, fmt<span style="color: #87D700;">)</span>;
+        vprintk<span style="color: #87D700;">(</span>fmt, args<span style="color: #87D700;">)</span>;
+        va_end<span style="color: #87D700;">(</span>args<span style="color: #87D700;">)</span>;
+    <span style="color: #5FD7FF;">}</span>
+<span style="color: #AF87FF;">}</span>
+
+<span style="color: #8B8878;">// </span><span style="color: #8B8878;">Usage: insmod my_driver.ko debug_level=2</span>
+</code></pre>
+</div>
+</div>
+</div>
+<div id="outline-container-org89d26d5" class="outline-2">
+<h2 id="org89d26d5"><span class="section-number-2">7.</span> Hardware Inspection</h2>
+<div class="outline-text-2" id="text-7">
+<p>
+Read/write memory-mapped registers for debugging:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-bash"><code><span style="color: #8B8878;"># </span><span style="color: #8B8878;">Display memory content as hex dump
+</span>hexdump /dev/mem -s <span style="color: #AF87FF;">0x1000</span> -n <span style="color: #AF87FF;">256</span>
+
+<span style="color: #8B8878;"># </span><span style="color: #8B8878;">Using devmem tool
+</span>devmem <span style="color: #AF87FF;">0x1000</span> <span style="color: #AF87FF;">32</span>          <span style="color: #8B8878;"># </span><span style="color: #8B8878;">read 32-bit value at 0x1000
+</span>devmem <span style="color: #AF87FF;">0x1000</span> <span style="color: #AF87FF;">32</span> <span style="color: #AF87FF;">0xff</span>    <span style="color: #8B8878;"># </span><span style="color: #8B8878;">write 0xff to 0x1000
+</span>
+<span style="color: #8B8878;"># </span><span style="color: #8B8878;">Using /proc/iomem
+</span>cat /proc/iomem | grep my_device
+
+<span style="color: #8B8878;"># </span><span style="color: #8B8878;">Module info
+</span>cat /proc/modules        <span style="color: #8B8878;"># </span><span style="color: #8B8878;">loaded modules
+</span>cat /sys/module/my_driver/  <span style="color: #8B8878;"># </span><span style="color: #8B8878;">module sysfs interface</span>
+</code></pre>
+</div>
+</div>
+</div>
+<div id="outline-container-orga00d6ed" class="outline-2">
+<h2 id="orga00d6ed"><span class="section-number-2">8.</span> Crash Dump Analysis</h2>
+<div class="outline-text-2" id="text-8">
+<p>
+When kernel crashes, capture dmesg and use crash utility:
+</p>
+
+<p>
+#+begin_src bash
+</p>
+
+<p>
+echo c &gt; /proc/sysrq-trigger
+</p>
+
+<p>
+crash vmlinux /var/crash/vmcore
+(crash) bt                  # backtrace
+(crash) dis -l &lt;function&gt;   # disassemble with source
+(crash) mod -v              # module details
+#+end_str&gt;
+</p>
+</div>
+</div>
+<div id="outline-container-orgf3e879c" class="outline-2">
+<h2 id="orgf3e879c"><span class="section-number-2">9.</span> Common Debugging Workflow</h2>
+<div class="outline-text-2" id="text-9">
+<ol class="org-ol">
+<li><b><b>Probe issues</b></b>: Add <code>pr_info()</code> at key points in probe/remove</li>
+<li><b><b>IRQ issues</b></b>: Check <code>grep my_driver /proc/interrupts</code>, verify <code>devm_request_irq()</code> call</li>
+<li><b><b>Memory leaks</b></b>: Use <code>kmemleak</code>: <code>echo scan &gt; /sys/kernel/debug/kmemleak</code></li>
+<li><b><b>Lock issues</b></b>: Enable <code>CONFIG_DEBUG_SPINLOCK</code>, check for deadlocks via <code>dmesg</code></li>
+<li><b><b>Power/suspend</b></b>: Check device tree binding for <code>pm-runtime</code> properties</li>
+<li><b><b>Performance</b></b>: Use ftrace or perf to profile hot paths</li>
+</ol>
+</div>
+</div>
+<div id="outline-container-org82c6da6" class="outline-2">
+<h2 id="org82c6da6"><span class="section-number-2">10.</span> Example: Debug-enabled driver</h2>
+<div class="outline-text-2" id="text-10">
+<div class="org-src-container">
+<pre class="src src-c"><code><span style="color: #FF1493;">#define</span> <span style="color: #87D700;">pr_fmt</span><span style="color: #AF87FF;">(</span><span style="color: #FF8C00;">fmt</span><span style="color: #AF87FF;">)</span> KBUILD_MODNAME <span style="color: #CDC673;">": "</span> fmt
+
+<span style="color: #FF1493;">#ifdef</span> DEBUG
+<span style="color: #FF1493;">#define</span> <span style="color: #87D700;">DBG</span><span style="color: #AF87FF;">(</span><span style="color: #FF8C00;">fmt</span>, ...<span style="color: #AF87FF;">)</span> pr_debug<span style="color: #AF87FF;">(</span>fmt, ##__VA_ARGS__<span style="color: #AF87FF;">)</span>
+<span style="color: #FF1493;">#else</span>
+<span style="color: #FF1493;">#define</span> <span style="color: #87D700;">DBG</span><span style="color: #AF87FF;">(</span><span style="color: #FF8C00;">fmt</span>, ...<span style="color: #AF87FF;">)</span> no_printk<span style="color: #AF87FF;">(</span>fmt, ##__VA_ARGS__<span style="color: #AF87FF;">)</span>
+<span style="color: #FF1493;">#endif</span>
+
+<span style="color: #FF1493;">static</span> <span style="color: #5FD7FF;">int</span> <span style="color: #87D700;">my_probe</span><span style="color: #AF87FF;">(</span><span style="color: #FF1493;">struct</span> <span style="color: #5FD7FF;">platform_device</span> *<span style="color: #FF8C00;">pdev</span><span style="color: #AF87FF;">)</span>
+<span style="color: #AF87FF;">{</span>
+    <span style="color: #FF1493;">struct</span> <span style="color: #5FD7FF;">device</span> *<span style="color: #FF8C00;">dev</span> = &amp;pdev-&gt;dev;
+    <span style="color: #FF1493;">struct</span> <span style="color: #5FD7FF;">my_dev</span> *<span style="color: #FF8C00;">mydev</span>;
+
+    DBG<span style="color: #5FD7FF;">(</span><span style="color: #CDC673;">"probe called\n"</span><span style="color: #5FD7FF;">)</span>;
+
+    mydev = devm_kzalloc<span style="color: #5FD7FF;">(</span>dev, <span style="color: #FF1493;">sizeof</span><span style="color: #87D700;">(</span>*mydev<span style="color: #87D700;">)</span>, GFP_KERNEL<span style="color: #5FD7FF;">)</span>;
+    <span style="color: #FF1493;">if</span> <span style="color: #5FD7FF;">(</span><span style="color: #CDC673; font-weight: bold;">!</span>mydev<span style="color: #5FD7FF;">)</span> <span style="color: #5FD7FF;">{</span>
+        dev_err<span style="color: #87D700;">(</span>dev, <span style="color: #CDC673;">"allocation failed\n"</span><span style="color: #87D700;">)</span>;
+        <span style="color: #FF1493;">return</span> -ENOMEM;
+    <span style="color: #5FD7FF;">}</span>
+
+    DBG<span style="color: #5FD7FF;">(</span><span style="color: #CDC673;">"memory allocated at %p\n"</span>, mydev<span style="color: #5FD7FF;">)</span>;
+
+    <span style="color: #8B8878;">// </span><span style="color: #8B8878;">... rest of probe
+</span>
+    dev_info<span style="color: #5FD7FF;">(</span>dev, <span style="color: #CDC673;">"device registered\n"</span><span style="color: #5FD7FF;">)</span>;
+    <span style="color: #FF1493;">return</span> <span style="color: #AF87FF;">0</span>;
+<span style="color: #AF87FF;">}</span>
+
+<span style="color: #8B8878;">// </span><span style="color: #8B8878;">Compile debug version: make DEBUG=1
+</span><span style="color: #8B8878;">// </span><span style="color: #8B8878;">Load with: insmod my_driver.ko (debug messages suppressed by default)
+</span><span style="color: #8B8878;">// </span><span style="color: #8B8878;">Enable: echo "module my_driver +p" &gt; /proc/dynamic_debug/control</span>
+</code></pre>
+</div>
+</div>
+</div>
+<div id="outline-container-orga577f51" class="outline-2">
+<h2 id="orga577f51"><span class="section-number-2">11.</span> Debugging Workflow Diagram</h2>
+<div class="outline-text-2" id="text-11">
+
+<div id="org9f6ff30" class="figure">
+<p><img src="res/10-debugging-workflow.svg" alt="10-debugging-workflow.svg" class="org-svg" />
+</p>
+</div>
+
+
+<div id="orga33ae54" class="figure">
+<p><img src="res/10-debugging-workflow.svg" alt="10-debugging-workflow.svg" class="org-svg" />
+</p>
+</div>
+</div>
+</div>
+<div id="outline-container-orge0e8047" class="outline-2">
+<h2 id="orge0e8047"><span class="section-number-2">12.</span> See Also</h2>
+<div class="outline-text-2" id="text-12">
+<ul class="org-ul">
+<li><a href="10-performance.html#ID-j1k2l3m4-n5o6-4789-99a1-b2c3d4e5f6a7">Performance Considerations</a></li>
+<li><a href="01-kernel-module-fundamentals.html#ID-f1a2b3c4-d5e6-47f8-99a1-b2c3d4e5f6a7">Kernel Module Fundamentals</a></li>
+</ul>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p class="author">Author: Arun Jyothish K</p>
+<p class="date">Created: 2026-08-17 Mon 20:36</p>
+</div>
+</body>
+</html>

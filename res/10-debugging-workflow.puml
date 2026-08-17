@@ -1,0 +1,81 @@
+@startuml debugging_workflow
+!theme plain
+title Kernel Driver Debugging Workflow
+
+participant Developer
+participant Kernel as "Running Kernel"
+participant Log as "dmesg/syslog"
+participant Tracer as "ftrace/trace-cmd"
+participant Debugger as "kgdb"
+
+== Issue Detection ==
+Developer -> Kernel: insmod my_driver.ko
+Kernel -> Log: print probe messages
+Developer -> Log: dmesg | tail
+alt Error seen
+  Developer -> Developer: Issue confirmed
+else No error
+  Developer -> Kernel: Trigger workload
+  Kernel -> Log: may log on error
+end
+
+== Strategy: Add printk ==
+Developer -> Developer: Add pr_info/pr_debug
+Developer -> Kernel: Rebuild & reload
+Kernel -> Log: Log output
+
+Developer -> Developer: Check dmesg output
+alt Issue located
+  Developer -> Developer: Fix code
+else Still confused
+  Developer -> Tracer: Use dynamic debug
+end
+
+== Strategy: Dynamic Debug ==
+Developer -> Tracer: Enable module debug
+Tracer -> Kernel: echo "module my_driver +p"\n> /proc/dynamic_debug/control
+Kernel -> Log: Verbose output
+Developer -> Log: Check trace_pipe
+
+Developer -> Developer: Issue clearer now?
+alt Yes, fix code
+else Need more detail
+  Developer -> Tracer: Use ftrace
+end
+
+== Strategy: Function Trace ==
+Developer -> Tracer: ftrace or trace-cmd
+Developer -> Tracer: echo "my_probe" >\nset_ftrace_filter
+Tracer -> Kernel: Monitor function calls
+Tracer -> Tracer: Record call timings
+Developer -> Tracer: trace-cmd report
+Developer -> Developer: Analyze call graph
+
+Developer -> Developer: Issue found?
+alt Yes, fix code
+else Timing issue
+  Developer -> Debugger: Use kgdb
+end
+
+== Strategy: Remote Debugging ==
+Developer -> Debugger: gdb vmlinux
+Debugger -> Kernel: break my_probe
+Kernel -> Debugger: Breakpoint hit
+Debugger -> Developer: Single step code
+Developer -> Debugger: Inspect variables
+Developer -> Developer: Issue identified
+
+== Verify Fix ==
+Developer -> Kernel: Rebuild driver
+Developer -> Kernel: Test fix
+Kernel -> Log: No errors
+Developer -> Developer: Issue resolved!
+
+note right of Log
+  dmesg - kernel message buffer
+  /var/log/kern.log - syslog
+  /proc/dynamic_debug/control
+  /sys/kernel/debug/tracing/
+end note
+
+@enduml

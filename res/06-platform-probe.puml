@@ -1,0 +1,65 @@
+@startuml platform_probe
+!theme plain
+title Platform Driver Probe Flow
+
+participant DTParser as "Device Tree\nParser"
+participant PlatformBus as "Platform\nBus Core"
+participant DriverCore as "Driver\nManager"
+participant Driver
+participant Hardware
+
+== Device Discovery ==
+DTParser -> PlatformBus: Register platform_device\n(from DTS node)
+note right of DTParser
+  Creates platform_device for each
+  compatible DTS node
+  Sets pdev->dev.of_node
+end note
+
+== Driver Matching ==
+PlatformBus -> DriverCore: New device registered
+DriverCore -> DriverCore: Iterate registered drivers
+DriverCore -> Driver: Check of_device_id match\n(compatible string)
+
+alt No match found
+  DriverCore -> PlatformBus: Device unbound
+  note right of DriverCore
+    Device waits for matching driver
+    (can load later via modprobe)
+  end note
+else Match found
+  DriverCore -> Driver: Call probe()
+end
+
+== Probe Execution ==
+activate Driver
+Driver -> Driver: struct my_dev *dev =\ndevm_kzalloc()
+
+Driver -> Driver: Get memory resource\n(platform_get_resource)
+Driver -> Driver: ioremap_resource()
+Driver -> Driver: Read DTS properties\n(of_property_read_*)
+
+Driver -> Driver: Request IRQ\n(devm_request_irq)
+
+Driver -> Driver: Initialize hardware\nWrite control registers
+
+Driver -> Driver: Register subsystem\n(gpiochip_add, etc)
+Driver -> Driver: Create sysfs files
+
+Driver -> Hardware: Hardware ready
+Driver --> DriverCore: return 0 (success)
+deactivate Driver
+
+DriverCore -> PlatformBus: Probe complete
+
+note right of Driver
+  devm_* functions auto-cleanup
+  on probe failure or device removal
+
+  If probe fails:
+  - Return -errno
+  - Kernel frees all devm resources
+  - Device remains unbound
+end note
+
+@enduml

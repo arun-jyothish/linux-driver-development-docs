@@ -1,0 +1,42 @@
+@startuml module_lifecycle
+!theme plain
+title Module Lifecycle (Loadable Module)
+
+state "Unloaded" as unloaded
+state "Loading" as loading
+state "Loaded" as loaded
+state "Running" as running
+state "Unloading" as unloading
+
+unloaded --> loading: insmod/modprobe
+
+loading --> running: module_init() called\n__init function executes
+loading --> unloaded: probe fails\nreturn error
+
+running --> unloading: rmmod\nmodprobe -r
+
+unloading --> unloaded: module_exit() called\n__exit function executes
+
+note right of loading
+  __init section (GFP_KERNEL allowed)
+  Registers with subsystems (GPIO, I2C, etc)
+  Allocates resources
+  Creates device files
+end note
+
+note right of running
+  Module in kernel memory
+  __init section freed
+  Ready for requests
+  Interrupt handlers active
+end note
+
+note right of unloading
+  __exit section executes
+  Unregisters from subsystems
+  Frees resources
+  Removes device files
+  __exit section freed
+end note
+
+@enduml

@@ -1,0 +1,296 @@
+
+/* =========================
+   COLOR SYSTEM
+   ========================= */
+:root {
+    --blue: #30Afa0;
+    --blue-soft: #eaf2fb;
+    --grey-soft: #e4ebf7;
+
+    --orange: #f63e72;
+    --orange-soft: #fff3e8;
+
+    --green: #2e8b57;
+    --green-soft: #eaf7f0;
+
+    --text-main: #222222;
+    --text-muted: #555555;
+
+    --border-light: #e5e5e5;
+    --border-mid: #d6d6d6;
+
+    --bg-main: #ffffff;
+    --bg-subtle: #fafafa;
+}
+
+/* =========================
+   BODY
+   ========================= */
+
+body {
+    /*    font-family: "Source Code Pro;", sans-serif; */
+    font-family: "Noto Sans Mono;", sans-serif;
+    font-size: 12px;
+    font-weight: 500;
+    line-height: 1.5;
+    color: var(--text-main);
+    background-color: var(--bg-main);
+    max-width: 900px;
+    margin: auto;
+    padding: 2em;
+}
+
+/* =========================
+   HEADINGS (BLUE DOMINANT)
+   ========================= */
+h1, h2, h3, h4, h5, h6 {
+    font-family: "Consolas", "Calibri", sans-serif;
+    font-weight: 700;
+    color: var(--blue);
+    margin-top: 1.5em;
+    margin-bottom: 0.5em;
+}
+
+h1 {
+    font-size: 1.8em;
+    border-bottom: 2px solid var(--blue-soft);
+    padding-bottom: 0.3em;
+}
+
+h2 {
+    font-size: 1.5em;
+    border-bottom: 1px solid var(--border-light);
+}
+
+h3 { font-size: 1.25em; }
+h4 { font-size: 1.1em; }
+
+/* =========================
+   TEXT
+   ========================= */
+p {
+    margin: 0.6em 0;
+}
+
+strong {
+    color: var(--orange); /* emphasis via orange */
+    font-weight: 600;
+}
+
+em {
+    color: var(--text-muted);
+}
+
+/* =========================
+   LINKS (BLUE + ORANGE HOVER)
+   ========================= */
+a {
+    color: var(--blue);
+    text-decoration: none;
+}
+
+a:hover {
+    color: var(--orange);
+    text-decoration: underline;
+}
+
+/* =========================
+   ORG SRC BLOCK (CODE)
+   ========================= */
+pre.src {
+    background-color: var(--grey-soft);            /* very light bluish white */
+    border: 1px solid #e2e8f0;
+    border-left: 4px solid #62fcd3;       /* blue (cyan light) accent */
+    color: #1e293b;
+
+    padding: 1em;
+    margin: 1.2em 0;
+    border-radius: 6px;
+
+    font-family: "Fira Code", "DejaVu Sans Mono", monospace;
+    line-height: 1.45;
+
+    overflow-x: auto;
+}
+
+/* language label (top-right) */
+pre.src::before {
+    position: absolute;
+    right: 10px;
+    top: 6px;
+
+    background-color: #eaf2fb;
+    color: #2f5fa7;
+
+    padding: 2px 8px;
+    border-radius: 4px;
+}
+
+/* ensure positioning works */
+pre.src {
+    position: relative;
+}
+pre, code {
+/*    font-family: "Source Code Pro", "Courier New", monospace; */
+    font-size: 0.85em;
+    font-weight: 600; /* semibold */
+}
+
+pre {
+    background-color: var(--grey-soft);
+    border-left: 4px solid var(--orange);
+    padding: 1em;
+    border-radius: 6px;
+    overflow-x: auto;
+}
+
+/* =========================
+   TABLES
+   ========================= */
+table,
+table.org-table {
+    border-collapse: collapse !important;
+    width: 100%;
+    margin: 1.2em 0;
+    font-size: 10px;
+    border: 1px solid var(--border-mid) !important;
+}
+
+/* headers → BLUE */
+table th,
+table.org-table th {
+    background-color: var(--blue-soft);
+    color: var(--blue);
+    font-weight: 600;
+    text-align: left;
+    padding: 0.5em 0.8em !important;
+    border: 1px solid var(--border-mid) !important;
+}
+
+/* cells */
+table td,
+table.org-table td {
+    background-color: #ffffff;
+    color: var(--text-main);
+    padding: 0.5em 0.8em !important;
+    border: 1px solid var(--border-light) !important;
+}
+
+/* zebra */
+table tr:nth-child(even) td {
+    background-color: var(--bg-subtle);
+}
+
+/* hover → ORANGE hint */
+table tr:hover td {
+    background-color: var(--orange-soft);
+}
+
+/* =========================
+   CAPTION
+   ========================= */
+caption {
+    caption-side: top;
+    text-align: left;
+    font-weight: 600;
+    font-size: 0.95em;
+    margin-bottom: 0.4em;
+    color: var(--text-muted);
+}
+
+/* =========================
+   LISTS
+   ========================= */
+ul, ol {
+    margin: 0.6em 0 0.6em 1.5em;
+}
+
+li {
+    margin: 0.3em 0;
+
+}
+
+.org-ol {
+    font-weight: 500;
+    color: #fc8f30;
+}
+
+.org-ol p {
+    font-weight: normal !important;
+    color: black !important;
+}
+
+/* =========================
+   BLOCKQUOTE (GREEN SIGNAL)
+   ========================= */
+blockquote {
+    border-left: 4px solid var(--green);
+    background-color: var(--green-soft);
+    padding: 0.8em 1em;
+    color: var(--text-main);
+    margin: 1em 0;
+}
+
+/* =========================
+   HR
+   ========================= */
+hr {
+    border: none;
+    border-top: 1px solid var(--border-light);
+    margin: 2em 0;
+}
+
+/* =========================
+   NOTE BLOCK (CYAN THEME)
+   ========================= */
+.note {
+    background-color: #f0fbff;          /* very light cyan */
+    border: 1px solid #cfeef7;
+    border-left: 4px solid #06b6d4;     /* cyan accent */
+
+    color: #0f172a;
+
+    padding: 0.8em 1em;
+    margin: 1em 0;
+    border-radius: 6px;
+
+    font-size: 0.95em;
+    line-height: 1.5;
+}
+
+.src {
+    /* =========================
+   JSON BLOCK (CYAN THEME)
+   ========================= */
+        background-color: #e0ebef;          /* very light cyan */
+}
+
+.org-svg {
+    /* org exported; plantuml c4 diagram svg; resize */
+    width: 120%;
+}
+
+img {
+    width: 100%;
+    height: auto;
+}
+
+.lv_img {
+    width: 100;
+    height: 100;
+}
+
+.small_img {
+    width: 50%;
+    height: 50%;
+}
+
+.medium_img {
+    width: 70%;
+    height: 70%;
+}
+
+.c4_img {
+    width: 80%;
+    height: 80%;
+}

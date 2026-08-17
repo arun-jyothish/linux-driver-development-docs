@@ -1,0 +1,66 @@
+@startuml network_rx_flow
+!theme plain
+title Network Driver RX Flow (NAPI)
+
+participant Hardware
+participant Driver as "Driver\n(IRQ context)"
+participant NAPI as "NAPI Poll\n(soft-irq)"
+participant NetStack as "Network\nStack"
+participant Userspace
+
+== Packet Arrival ==
+Hardware -> Driver: Interrupt (RX packet ready)
+activate Driver
+
+Driver -> Driver: Read status register
+Driver -> Driver: ACK interrupt
+
+alt NAPI disabled
+  Driver -> NAPI: napi_schedule()
+  Driver --> Hardware: Re-enable RX IRQ
+else NAPI already running
+  Driver --> Hardware: Skip (already polling)
+end
+
+deactivate Driver
+
+== NAPI Poll (soft-irq context) ==
+activate NAPI
+loop budget times (e.g., 64 packets)
+  NAPI -> Hardware: Read packet data
+  NAPI -> NAPI: Allocate skb
+  NAPI -> NAPI: Copy data to skb
+  NAPI -> NAPI: Decode protocol
+  NAPI -> NetStack: napi_gro_receive(skb)
+
+  alt budget exhausted
+    NAPI -> Hardware: Re-enable RX IRQ
+    NAPI -> NAPI: napi_complete()
+    break
+  end
+end
+deactivate NAPI
+
+== Network Stack Processing ==
+activate NetStack
+NetStack -> NetStack: Protocol layer (IP, TCP)
+NetStack -> NetStack: Route/socket lookup
+NetStack -> Userspace: Copy to user buffer
+deactivate NetStack
+
+Userspace -> Userspace: Application processes data
+
+note right of Driver
+  IRQ handler minimal work:
+  - ACK hardware interrupt
+  - Schedule NAPI
+  - Re-enable interrupts
+end note
+
+note right of NAPI
+  Poll multiple packets
+  per soft-irq invocation
+  Budget prevents starvation
+end note
+
+@enduml

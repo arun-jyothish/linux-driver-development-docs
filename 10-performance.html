@@ -1,0 +1,762 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<!-- 2026-08-17 Mon 20:37 -->
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Performance Considerations</title>
+<meta name="author" content="Arun Jyothish K" />
+<meta name="generator" content="Org Mode" />
+<style type="text/css">
+  #content { max-width: 60em; margin: auto; }
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #e6e6e6;
+    border-radius: 3px;
+    background-color: #f2f2f2;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: auto;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    top: -8px;
+    right: 12px;
+    padding: 3px;
+    color: #555;
+    background-color: #f2f2f299;
+  }
+  pre.src:hover:before { display: inline; margin-top: 14px;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-authinfo::before { content: 'Authinfo'; }
+  pre.src-c:before { content: 'C'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'JavaScript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .equation-container {
+    display: table;
+    text-align: center;
+    width: 100%;
+  }
+  .equation {
+    vertical-align: middle;
+  }
+  .equation-label {
+    display: table-cell;
+    text-align: right;
+    vertical-align: middle;
+  }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { }
+</style>
+<link rel="stylesheet" type="text/css" href="/home/jeis/.apps/emacs-styles/light_green.css" />
+<script>
+  window.MathJax = {
+    tex: {
+      ams: {
+        multlineWidth: '85%'
+      },
+      tags: 'ams',
+      tagSide: 'right',
+      tagIndent: '.8em'
+    },
+    chtml: {
+      scale: 1.0,
+      displayAlign: 'center',
+      displayIndent: '0em'
+    },
+    svg: {
+      scale: 1.0,
+      displayAlign: 'center',
+      displayIndent: '0em'
+    },
+    output: {
+      font: 'mathjax-modern',
+      displayOverflow: 'overflow'
+    }
+  };
+</script>
+
+<script
+  id="MathJax-script"
+  async
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+</script>
+</head>
+<body>
+<div id="content" class="content">
+<h1 class="title">Performance Considerations</h1>
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#orgfcb4fb7">1. Memory Efficiency</a></li>
+<li><a href="#org735dd80">2. Synchronization: Spinlocks</a></li>
+<li><a href="#org35867b5">3. Tasklets: Deferred Soft IRQ</a></li>
+<li><a href="#org36a1645">4. Workqueues: Delayed Kernel Threads</a></li>
+<li><a href="#org503a3a5">5. RCU (Read-Copy-Update)</a></li>
+<li><a href="#org03588f1">6. Lockless Patterns</a></li>
+<li><a href="#orgfecd646">7. Per-CPU Data</a></li>
+<li><a href="#org5002ae3">8. Memory Barriers</a></li>
+<li><a href="#orgc3ab67b">9. Example: Optimized device driver with deferred work</a></li>
+<li><a href="#org05f33e6">10. Interrupt Context Hierarchy Diagram</a></li>
+<li><a href="#org26923d4">11. See Also</a></li>
+</ul>
+</div>
+</div>
+<p>
+<b>Driver performance: memory layout, synchronization (spinlocks, tasklets, workqueues), RCU, lockless patterns.</b>
+</p>
+<div id="outline-container-orgfcb4fb7" class="outline-2">
+<h2 id="orgfcb4fb7"><span class="section-number-2">1.</span> Memory Efficiency</h2>
+<div class="outline-text-2" id="text-1">
+<p>
+<code>__init</code> and <code>__exit</code> sections are freed after use:
+</p>
+
+<p>
+#+begin_src c
+<i>/ Freed after init (for built-in) / module load
+static void __init setup_tables(void)
+{
+    /</i> one-time initialization
+}
+</p>
+
+<p>
+<i>/ Freed after module unload (only applicable to modules)
+static void __exit cleanup_tables(void)
+{
+    /</i> cleanup
+}
+</p>
+
+<p>
+// Check memory savings
+grep my_driver /proc/meminfo
+#+end_str&gt;
+</p>
+
+<p>
+<code>devm_</code> allocators auto-free on error or device removal:
+</p>
+
+<p>
+#+begin_src c
+// Preferred: automatic cleanup on probe failure
+void *buf = devm_kmalloc(&amp;pdev-&gt;dev, size, GFP_KERNEL);
+</p>
+
+<p>
+<i>/ Legacy: manual cleanup required
+void *buf = kmalloc(size, GFP_KERNEL);
+/</i> &hellip; must explicitly kfree(buf)
+#+end_str&gt;
+</p>
+</div>
+</div>
+<div id="outline-container-org735dd80" class="outline-2">
+<h2 id="org735dd80"><span class="section-number-2">2.</span> Synchronization: Spinlocks</h2>
+<div class="outline-text-2" id="text-2">
+<p>
+Critical section protection (disables preemption, not suitable for long operations):
+</p>
+
+<p>
+#+begin_src c
+struct my_dev {
+    spinlock_t lock;
+    u32 register_cache;
+};
+</p>
+
+<p>
+// Static initialization
+static DEFINE_SPINLOCK(global_lock);
+</p>
+
+<p>
+// Or in structures
+spin_lock_init(&amp;dev-&gt;lock);
+</p>
+
+<p>
+<i>/ Lock/unlock
+unsigned long flags;
+spin_lock_irqsave(&amp;dev-&gt;lock, flags);
+/</i> critical section — cannot sleep
+dev-&gt;register_cache = readl(dev-&gt;base + REG);
+spin_unlock_irqrestore(&amp;dev-&gt;lock, flags);
+</p>
+
+<p>
+<i>/ Read/write spinlocks (multiple readers, single writer)
+rwlock_t rw_lock;
+read_lock(&amp;rw_lock);
+/</i> &hellip; multiple readers allowed
+read_unlock(&amp;rw_lock);
+</p>
+
+<p>
+write_lock(&amp;rw_lock);
+// &hellip; exclusive access
+write_unlock(&amp;rw_lock);
+#+end_str&gt;
+</p>
+</div>
+</div>
+<div id="outline-container-org35867b5" class="outline-2">
+<h2 id="org35867b5"><span class="section-number-2">3.</span> Tasklets: Deferred Soft IRQ</h2>
+<div class="outline-text-2" id="text-3">
+<p>
+Schedule work at soft-IRQ priority (runs after hardirq handlers):
+</p>
+
+<p>
+#+begin_src c
+struct my_dev {
+    struct tasklet_struct tasklet;
+};
+</p>
+
+<p>
+static void my_tasklet_handler(unsigned long arg)
+{
+    struct my_dev *dev = (struct my_dev *)arg;
+</p>
+
+<p>
+    <i>/ Process deferred work (from interrupt handler)
+    /</i> CAN sleep in newer kernels with tasklet_setup(), but traditionally cannot
+}
+</p>
+
+<p>
+<i>/ Initialize
+tasklet_init(&amp;dev-&gt;tasklet, my_tasklet_handler, (unsigned long)dev);
+/</i> or newer:
+tasklet_setup(&amp;dev-&gt;tasklet, my_tasklet_handler);
+</p>
+
+<p>
+// Schedule from IRQ handler
+static irqreturn_t my_isr(int irq, void *dev_id)
+{
+    struct my_dev *dev = dev_id;
+</p>
+
+<p>
+<i>/ Handle immediate hardware interrupt
+u32 status = readl(dev-&gt;base + IRQ_STATUS);
+writel(status, dev-&gt;base + IRQ_STATUS);  /</i> ack
+</p>
+
+<p>
+// Schedule deferred work
+tasklet_schedule(&amp;dev-&gt;tasklet);
+</p>
+
+<p>
+    return IRQ_HANDLED;
+}
+</p>
+
+<p>
+<i>/ Disable/enable at runtime
+tasklet_disable(&amp;dev-&gt;tasklet);
+/</i> &hellip; driver shutdown
+tasklet_enable(&amp;dev-&gt;tasklet);
+</p>
+
+<p>
+// Cleanup
+tasklet_kill(&amp;dev-&gt;tasklet);
+#+end_str&gt;
+</p>
+</div>
+</div>
+<div id="outline-container-org36a1645" class="outline-2">
+<h2 id="org36a1645"><span class="section-number-2">4.</span> Workqueues: Delayed Kernel Threads</h2>
+<div class="outline-text-2" id="text-4">
+<p>
+For longer deferred work (can sleep, block):
+</p>
+
+<p>
+#+begin_src c
+struct my_dev {
+    struct work_struct work;
+    struct workqueue_struct *wq;
+};
+</p>
+
+<p>
+static void my_work_handler(struct work_struct *work)
+{
+    struct my_dev *dev = container_of(work, struct my_dev, work);
+</p>
+
+<p>
+// Can sleep, wait for locks, etc.
+msleep(100);
+</p>
+
+<p>
+    // Access hardware
+    writel(1, dev-&gt;base + COMMAND);
+}
+</p>
+
+<p>
+<i>/ Initialize
+INIT_WORK(&amp;dev-&gt;work, my_work_handler);
+/</i> or custom workqueue:
+dev-&gt;wq = create_singlethread_workqueue("my_driver");
+INIT_WORK(&amp;dev-&gt;work, my_work_handler);
+</p>
+
+<p>
+// Schedule from IRQ
+static irqreturn_t my_isr(int irq, void *dev_id)
+{
+    struct my_dev *dev = dev_id;
+    queue_work(dev-&gt;wq, &amp;dev-&gt;work);
+    return IRQ_HANDLED;
+}
+</p>
+
+<p>
+// Delayed work
+static void schedule_delayed_work(struct my_dev *dev)
+{
+    INIT_DELAYED_WORK(&amp;dev-&gt;dwork, my_work_handler);
+    queue_delayed_work(dev-&gt;wq, &amp;dev-&gt;dwork, msecs_to_jiffies(100));
+}
+</p>
+
+<p>
+// Cleanup
+cancel_work_sync(&amp;dev-&gt;work);
+destroy_workqueue(dev-&gt;wq);
+#+end_str&gt;
+</p>
+</div>
+</div>
+<div id="outline-container-org503a3a5" class="outline-2">
+<h2 id="org503a3a5"><span class="section-number-2">5.</span> RCU (Read-Copy-Update)</h2>
+<div class="outline-text-2" id="text-5">
+<p>
+Ultra-low-overhead read locks for read-heavy data:
+</p>
+
+<p>
+#+begin_src c
+struct my_data {
+    struct rcu_head rcu;
+    int value;
+};
+</p>
+
+<p>
+static struct my_data *global_data;
+</p>
+
+<p>
+// Read-side (very fast, no locks)
+rcu_read_lock();
+struct my_data *data = rcu_dereference(global_data);
+int val = data-&gt;value;
+rcu_read_unlock();
+</p>
+
+<p>
+// Write-side (publish new version)
+struct my_data *new_data = kmalloc(sizeof(*new_data), GFP_KERNEL);
+new_data-&gt;value = 42;
+rcu_assign_pointer(global_data, new_data);
+</p>
+
+<p>
+// Wait for all RCU readers to exit
+synchronize_rcu();
+</p>
+
+<p>
+<i>/ Free old version
+kfree_rcu(old_data, rcu);  /</i> auto-frees after RCU grace period
+#+end_str&gt;
+</p>
+
+<p>
+<b><b>RCU is ideal for</b></b> config updates, routing tables, where reads vastly outnumber writes.
+</p>
+</div>
+</div>
+<div id="outline-container-org03588f1" class="outline-2">
+<h2 id="org03588f1"><span class="section-number-2">6.</span> Lockless Patterns</h2>
+<div class="outline-text-2" id="text-6">
+<p>
+Atomic operations (no locks, hardware-supported):
+</p>
+
+<p>
+#+begin_src c
+atomic_t counter = ATOMIC_INIT(0);
+</p>
+
+<p>
+atomic_inc(&amp;counter);
+atomic_dec(&amp;counter);
+int val = atomic_read(&amp;counter);
+atomic_set(&amp;counter, 10);
+</p>
+
+<p>
+// Atomic bitops
+set_bit(0, &amp;flags);
+clear_bit(0, &amp;flags);
+test_bit(0, &amp;flags);
+</p>
+
+<p>
+// CAS (compare-and-swap)
+atomic_cmpxchg(&amp;val, old, new);
+#+end_str&gt;
+</p>
+</div>
+</div>
+<div id="outline-container-orgfecd646" class="outline-2">
+<h2 id="orgfecd646"><span class="section-number-2">7.</span> Per-CPU Data</h2>
+<div class="outline-text-2" id="text-7">
+<p>
+Each CPU gets its own copy (no synchronization overhead):
+</p>
+
+<p>
+#+begin_src c
+static DEFINE_PER_CPU(struct stats, cpu_stats);
+</p>
+
+<p>
+// On IRQ handler
+this_cpu_inc(cpu_stats.packets);
+this_cpu_add(cpu_stats.bytes, len);
+</p>
+
+<p>
+// Read all CPUs
+for_each_possible_cpu(cpu) {
+    struct stats *s = per_cpu_ptr(&amp;cpu_stats, cpu);
+    total_packets += s-&gt;packets;
+}
+#+end_str&gt;
+</p>
+</div>
+</div>
+<div id="outline-container-org5002ae3" class="outline-2">
+<h2 id="org5002ae3"><span class="section-number-2">8.</span> Memory Barriers</h2>
+<div class="outline-text-2" id="text-8">
+<p>
+Ensure proper ordering of memory accesses:
+</p>
+
+<p>
+#+begin_src c
+// Write barrier (all previous writes complete before next write)
+wmb();
+</p>
+
+<p>
+// Read barrier
+rmb();
+</p>
+
+<p>
+// Full barrier (both read and write)
+mb();
+</p>
+
+<p>
+<i>/ Acquire/release semantics (preferred modern approach)
+smp_store_release(&amp;ptr, value);  /</i> write with release semantics
+value = smp_load_acquire(&amp;ptr);  // read with acquire semantics
+#+end_str&gt;
+</p>
+</div>
+</div>
+<div id="outline-container-orgc3ab67b" class="outline-2">
+<h2 id="orgc3ab67b"><span class="section-number-2">9.</span> Example: Optimized device driver with deferred work</h2>
+<div class="outline-text-2" id="text-9">
+<p>
+#+begin_src c
+struct optimized_dev {
+    struct device *dev;
+    void __iomem *base;
+    spinlock_t reg_lock;
+    struct tasklet_struct rx_tasklet;
+    struct workqueue_struct *work_queue;
+    struct work_struct delayed_work;
+    atomic_t packet_count;
+};
+</p>
+
+<p>
+// ISR: minimal work, schedule tasklet
+static irqreturn_t my_isr(int irq, void *dev_id)
+{
+    struct optimized_dev *dev = dev_id;
+    u32 status = readl(dev-&gt;base + STATUS);
+</p>
+
+<p>
+if (status &amp; RX_READY) {
+    writel(RX_ACK, dev-&gt;base + STATUS);
+    tasklet_schedule(&amp;dev-&gt;rx_tasklet);  // defer to soft-irq
+}
+</p>
+
+<p>
+    return IRQ_HANDLED;
+}
+</p>
+
+<p>
+// Tasklet: process packets (soft-irq context)
+static void rx_tasklet(unsigned long arg)
+{
+    struct optimized_dev *dev = (struct optimized_dev *)arg;
+</p>
+
+<p>
+    while (readl(dev-&gt;base + RX_COUNT)) {
+        // Fast packet processing
+        u32 pkt = readl(dev-&gt;base + RX_DATA);
+        atomic_inc(&amp;dev-&gt;packet_count);
+    }
+}
+</p>
+
+<p>
+// Workqueue: slow operations (can sleep)
+static void delayed_handler(struct work_struct *work)
+{
+    struct optimized_dev *dev = container_of(work, struct optimized_dev, delayed_work);
+</p>
+
+<p>
+    // Slow operations (e.g., file I/O, allocations)
+    msleep(10);
+    dev_info(dev-&gt;dev, "processed %d packets\n", atomic_read(&amp;dev-&gt;packet_count));
+}
+#+end_str&gt;
+</p>
+
+<p>
+## Performance Profiling
+</p>
+
+<p>
+#+begin_src bash
+</p>
+
+<p>
+cat /proc/interrupts | grep my_driver
+</p>
+
+<p>
+grep spinlock_contention /proc/lock_stat
+</p>
+
+<p>
+echo "my_function" &gt; /sys/kernel/debug/tracing/set_ftrace_filter
+echo 1 &gt; /sys/kernel/debug/tracing/tracing_on
+</p>
+
+<p>
+cat /sys/kernel/debug/tracing/trace
+</p>
+
+<p>
+perf record -F 99 -g &ndash; my_workload
+perf report
+#+end_str&gt;
+</p>
+</div>
+</div>
+<div id="outline-container-org05f33e6" class="outline-2">
+<h2 id="org05f33e6"><span class="section-number-2">10.</span> Interrupt Context Hierarchy Diagram</h2>
+<div class="outline-text-2" id="text-10">
+
+<div id="orga0a5a39" class="figure">
+<p><img src="res/08-interrupt-context.svg" alt="08-interrupt-context.svg" class="org-svg" />
+</p>
+</div>
+
+
+<div id="orgd287216" class="figure">
+<p><img src="res/08-interrupt-context.svg" alt="08-interrupt-context.svg" class="org-svg" />
+</p>
+</div>
+</div>
+</div>
+<div id="outline-container-org26923d4" class="outline-2">
+<h2 id="org26923d4"><span class="section-number-2">11.</span> See Also</h2>
+<div class="outline-text-2" id="text-11">
+<ul class="org-ul">
+<li><a href="09-debugging-techniques.html#ID-i1j2k3l4-m5n6-4789-99a1-b2c3d4e5f6a7">Debugging Techniques</a></li>
+<li><a href="01-kernel-module-fundamentals.html#ID-f1a2b3c4-d5e6-47f8-99a1-b2c3d4e5f6a7">Kernel Module Fundamentals</a></li>
+</ul>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p class="author">Author: Arun Jyothish K</p>
+<p class="date">Created: 2026-08-17 Mon 20:37</p>
+</div>
+</body>
+</html>

@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Comprehensive Linux Kernel Driver Development Documentation - Senior-level reference with practical examples">
+    <meta name="author" content="Arun Jyothish K">
+    <title>Linux Driver Development Documentation</title>
+    <link rel="stylesheet" href="res/light_green.css">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>Linux Kernel Driver Development</h1>
+            <p>Senior-level reference guide for kernel drivers, device tree bindings, and practical examples</p>
+        </div>
+    </header>
+
+    <div class="container">
+        <nav>
+            <ul>
+                <li><a href="#fundamentals">Fundamentals</a></li>
+                <li><a href="#drivers">Driver Types</a></li>
+                <li><a href="#practical">Practical & Debug</a></li>
+                <li><a href="#resources">Resources</a></li>
+            </ul>
+        </nav>
+
+        <main>
+            <div class="metadata">
+                <div class="metadata-item">
+                    <span class="metadata-label">Author:</span>
+                    <span>Arun Jyothish K</span>
+                </div>
+                <div class="metadata-item">
+                    <span class="metadata-label">Documentation:</span>
+                    <span>3,679 lines of technical reference</span>
+                </div>
+                <div class="metadata-item">
+                    <span class="metadata-label">Diagrams:</span>
+                    <span>11 PlantUML flow/state/architecture diagrams</span>
+                </div>
+                <div class="metadata-item">
+                    <span class="metadata-label">Level:</span>
+                    <span>Senior Engineer - Quick Recall Format</span>
+                </div>
+            </div>
+
+            <div class="toc">
+                <div class="toc-title">📚 Documentation Structure</div>
+                <ul>
+                    <li><a href="#fundamentals">Core Concepts</a> - Module lifecycle, device tree, build system</li>
+                    <li><a href="#drivers">Driver Types</a> - Character, block, network, platform, USB</li>
+                    <li><a href="#practical">Practical & Debug</a> - Debugging techniques, performance optimization</li>
+                </ul>
+            </div>
+
+            <section id="fundamentals">
+                <h2>Core Concepts</h2>
+                <p>Essential foundations for kernel driver development.</p>
+
+                <h3>📖 Documentation Files</h3>
+                <ul>
+                    <li><strong><a href="01-kernel-module-fundamentals.html">Kernel Module Fundamentals</a></strong>
+                        <br/><span style="color: #7f8c8d;">__init/__exit, module_init(), lifecycle, built-in vs loadable</span></li>
+
+                    <li><strong><a href="02-device-tree.html">Device Tree (DTS) & Bindings</a></strong>
+                        <br/><span style="color: #7f8c8d;">DTS format, binding documentation, property access, driver integration</span></li>
+
+                    <li><strong><a href="03-kbuild.html">Kernel Build System (Kbuild)</a></strong>
+                        <br/><span style="color: #7f8c8d;">Makefile patterns, obj-m, KERNEL_SRC, out-of-tree compilation</span></li>
+
+                    <li><strong><a href="11-linux-boot-sequence.html">Linux Boot Sequence</a></strong>
+                        <br/><span style="color: #7f8c8d;">Bootloader → kernel → init → userspace, all stages with diagrams</span></li>
+                </ul>
+            </section>
+
+            <section id="drivers">
+                <h2>Driver Types & Examples</h2>
+                <p>Complete implementations for all major driver classes with practical runnable code.</p>
+
+                <h3>📖 Documentation Files</h3>
+                <ul>
+                    <li><strong><a href="04-character-drivers.html">Character Drivers</a></strong>
+                        <br/><span style="color: #7f8c8d;">Device file I/O, ioctl, mmap • Example: LED controller</span></li>
+
+                    <li><strong><a href="05-block-drivers.html">Block Drivers</a></strong>
+                        <br/><span style="color: #7f8c8d;">Request queue, I/O scheduling, bio layer • Example: Ramdisk</span></li>
+
+                    <li><strong><a href="06-network-drivers.html">Network Drivers</a></strong>
+                        <br/><span style="color: #7f8c8d;">netdev_ops, NAPI polling, skbuff • Example: Virtual ethernet</span></li>
+
+                    <li><strong><a href="07-platform-drivers.html">Platform Drivers</a></strong>
+                        <br/><span style="color: #7f8c8d;">Device discovery, probe/remove, DTS integration • Example: GPIO controller</span></li>
+
+                    <li><strong><a href="08-usb-drivers.html">USB Drivers</a></strong>
+                        <br/><span style="color: #7f8c8d;">URB, endpoints, async transfers • Example: USB device</span></li>
+                </ul>
+            </section>
+
+            <section id="practical">
+                <h2>Practical & Debugging</h2>
+                <p>Techniques for debugging, optimization, and performance tuning.</p>
+
+                <h3>📖 Documentation Files</h3>
+                <ul>
+                    <li><strong><a href="09-debugging-techniques.html">Debugging Techniques</a></strong>
+                        <br/><span style="color: #7f8c8d;">printk, dynamic debug, trace events, kgdb, crash analysis</span></li>
+
+                    <li><strong><a href="10-performance.html">Performance Considerations</a></strong>
+                        <br/><span style="color: #7f8c8d;">Spinlocks, tasklets, workqueues, RCU, per-CPU data, memory barriers</span></li>
+                </ul>
+            </section>
+
+            <section id="resources">
+                <h2>Resources</h2>
+
+                <h3>📊 Included Diagrams</h3>
+                <p>10 comprehensive flow, state, and architecture diagrams in <code>res/</code>:</p>
+                <ul>
+                    <li>Module lifecycle state machine</li>
+                    <li>Device tree parsing & driver probe flow</li>
+                    <li>Character device I/O paths</li>
+                    <li>Block I/O stack architecture</li>
+                    <li>Network packet RX (NAPI) flow</li>
+                    <li>Platform driver probe sequence</li>
+                    <li>USB enumeration flow</li>
+                    <li>Interrupt context hierarchy (hardirq → tasklet → workqueue)</li>
+                    <li>Kbuild compilation pipeline</li>
+                    <li>Debugging workflow decision tree</li>
+                </ul>
+
+                <h3>📁 Directory Structure</h3>
+                <pre><code>linux-driver-development-notes/
+├── index.html                          (this file)
+├── res/
+│   ├── style.css                       (styling)
+│   ├── *.puml                          (PlantUML diagrams)
+│   └── *.svg                           (compiled diagrams)
+├── 01-kernel-module-fundamentals.org
+├── 02-device-tree.org
+├── 03-kbuild.org
+├── 04-character-drivers.org
+├── 05-block-drivers.org
+├── 06-network-drivers.org
+├── 07-platform-drivers.org
+├── 08-usb-drivers.org
+├── 09-debugging-techniques.org
+├── 10-performance.org
+└── linux_driver_development_notes.org</code></pre>
+
+                <h3>🚀 Viewing the Documentation</h3>
+                <div class="success">
+                    <strong>In Emacs + org-roam:</strong>
+                    <ul>
+                        <li>Open <code>linux_driver_development_notes.org</code></li>
+                        <li>Use <code>org-roam-graph</code> to visualize the knowledge network</li>
+                        <li>Navigate via org-roam backlinks and forward references</li>
+                        <li>Export to HTML with <code>org-html-export-to-html</code></li>
+                    </ul>
+                </div>
+
+                <h3>💡 Quick Reference</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Topic</th>
+                            <th>Quick Link</th>
+                            <th>Key Concepts</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Module Basics</td>
+                            <td><a href="01-kernel-module-fundamentals.html">→</a></td>
+                            <td>__init, __exit, module_init()</td>
+                        </tr>
+                        <tr>
+                            <td>Device Tree</td>
+                            <td><a href="02-device-tree.html">→</a></td>
+                            <td>DTS, bindings, OF properties</td>
+                        </tr>
+                        <tr>
+                            <td>Build System</td>
+                            <td><a href="03-kbuild.html">→</a></td>
+                            <td>Makefile, obj-m, KERNEL_SRC</td>
+                        </tr>
+                        <tr>
+                            <td>Boot Sequence</td>
+                            <td><a href="11-linux-boot-sequence.html">→</a></td>
+                            <td>Bootloader, kernel init, device probe, userspace</td>
+                        </tr>
+                        <tr>
+                            <td>Char Drivers</td>
+                            <td><a href="04-character-drivers.html">→</a></td>
+                            <td>file_operations, ioctl, cdev</td>
+                        </tr>
+                        <tr>
+                            <td>Block Drivers</td>
+                            <td><a href="05-block-drivers.html">→</a></td>
+                            <td>bio, request queue, I/O scheduler</td>
+                        </tr>
+                        <tr>
+                            <td>Network Drivers</td>
+                            <td><a href="06-network-drivers.html">→</a></td>
+                            <td>NAPI, skbuff, netdev_ops</td>
+                        </tr>
+                        <tr>
+                            <td>Platform Drivers</td>
+                            <td><a href="07-platform-drivers.html">→</a></td>
+                            <td>probe/remove, DTS integration</td>
+                        </tr>
+                        <tr>
+                            <td>USB Drivers</td>
+                            <td><a href="08-usb-drivers.html">→</a></td>
+                            <td>URB, endpoints, enumeration</td>
+                        </tr>
+                        <tr>
+                            <td>Debugging</td>
+                            <td><a href="09-debugging-techniques.html">→</a></td>
+                            <td>printk, ftrace, kgdb</td>
+                        </tr>
+                        <tr>
+                            <td>Performance</td>
+                            <td><a href="10-performance.html">→</a></td>
+                            <td>spinlocks, RCU, tasklets</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3>📝 Notes</h3>
+                <ul>
+                    <li>All documentation is self-contained within this directory</li>
+                    <li>No external dependencies or CDN resources required</li>
+                    <li>Ready for static hosting or local viewing</li>
+                    <li>Comprehensive code examples for all driver types</li>
+                    <li>Cross-linked via org-roam for easy navigation</li>
+                </ul>
+            </section>
+        </main>
+
+        <footer>
+            <p><strong>Linux Kernel Driver Development Documentation</strong></p>
+            <p>Author: Arun Jyothish K</p>
+            <p>Senior-level reference for driver development, device tree bindings, and kernel subsystems</p>
+            <p style="font-size: 0.9rem; margin-top: 1rem;">Self-contained documentation • No external dependencies • Ready for hosting</p>
+        </footer>
+    </div>
+</body>
+</html>

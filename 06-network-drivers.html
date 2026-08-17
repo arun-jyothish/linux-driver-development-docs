@@ -1,0 +1,683 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<!-- 2026-08-17 Mon 20:36 -->
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Network Drivers</title>
+<meta name="author" content="Arun Jyothish K" />
+<meta name="generator" content="Org Mode" />
+<style type="text/css">
+  #content { max-width: 60em; margin: auto; }
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #e6e6e6;
+    border-radius: 3px;
+    background-color: #f2f2f2;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: auto;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    top: -8px;
+    right: 12px;
+    padding: 3px;
+    color: #555;
+    background-color: #f2f2f299;
+  }
+  pre.src:hover:before { display: inline; margin-top: 14px;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-authinfo::before { content: 'Authinfo'; }
+  pre.src-c:before { content: 'C'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'JavaScript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .equation-container {
+    display: table;
+    text-align: center;
+    width: 100%;
+  }
+  .equation {
+    vertical-align: middle;
+  }
+  .equation-label {
+    display: table-cell;
+    text-align: right;
+    vertical-align: middle;
+  }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { }
+</style>
+<link rel="stylesheet" type="text/css" href="/home/jeis/.apps/emacs-styles/light_green.css" />
+</head>
+<body>
+<div id="content" class="content">
+<h1 class="title">Network Drivers</h1>
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#org1883c26">1. Network Device Fundamentals</a></li>
+<li><a href="#orgf28b5ad">2. Device Registration</a></li>
+<li><a href="#orgb9670fb">3. Open/Close</a></li>
+<li><a href="#orgceeaeb8">4. Transmit (TX)</a></li>
+<li><a href="#org3e64dd2">5. Receive (RX) - NAPI Poll</a></li>
+<li><a href="#org1e287e8">6. skbuff (Socket Buffer)</a></li>
+<li><a href="#org51a2c33">7. Example: Virtual Ethernet Driver</a></li>
+<li><a href="#org8a3ffe8">8. Network RX Flow Diagram</a></li>
+<li><a href="#orgae6b993">9. See Also</a></li>
+</ul>
+</div>
+</div>
+<p>
+<b>Network device drivers: netdev_ops, skbuff (sk_buff), packet handling. Includes virtual ethernet example.</b>
+</p>
+<div id="outline-container-org1883c26" class="outline-2">
+<h2 id="org1883c26"><span class="section-number-2">1.</span> Network Device Fundamentals</h2>
+<div class="outline-text-2" id="text-1">
+<p>
+Network drivers provide packet I/O. Kernel abstracts as <code>struct net_device</code>:
+</p>
+<ul class="org-ul">
+<li>RX: receive packets from hardware, allocate skbuff, pass to net stack</li>
+<li>TX: net stack provides skbuff, driver sends to hardware</li>
+</ul>
+</div>
+</div>
+<div id="outline-container-orgf28b5ad" class="outline-2">
+<h2 id="orgf28b5ad"><span class="section-number-2">2.</span> Device Registration</h2>
+<div class="outline-text-2" id="text-2">
+<div class="org-src-container">
+<pre class="src src-c"><code><span style="color: #FF1493;">#include</span> <span style="color: #AF87FF;">&lt;</span><span style="color: #CDC673;">linux/netdevice.h</span><span style="color: #AF87FF;">&gt;</span>
+<span style="color: #FF1493;">#include</span> <span style="color: #AF87FF;">&lt;</span><span style="color: #CDC673;">linux/etherdevice.h</span><span style="color: #AF87FF;">&gt;</span>
+
+<span style="color: #FF1493;">struct</span> <span style="color: #5FD7FF;">my_netdev</span> <span style="color: #AF87FF;">{</span>
+    <span style="color: #FF1493;">struct</span> <span style="color: #5FD7FF;">net_device</span> *<span style="color: #FF8C00;">netdev</span>;
+    <span style="color: #5FD7FF;">void</span> <span style="color: #FF8C00;">__iomem</span> *base;
+    <span style="color: #5FD7FF;">spinlock_t</span> <span style="color: #FF8C00;">lock</span>;
+    <span style="color: #FF1493;">struct</span> <span style="color: #5FD7FF;">napi_struct</span> <span style="color: #FF8C00;">napi</span>;
+    <span style="color: #FF1493;">struct</span> <span style="color: #5FD7FF;">sk_buff_head</span> <span style="color: #FF8C00;">rx_queue</span>;
+<span style="color: #AF87FF;">}</span>;
+
+<span style="color: #FF1493;">static</span> <span style="color: #FF1493;">const</span> <span style="color: #FF1493;">struct</span> <span style="color: #5FD7FF;">net_device_ops</span> <span style="color: #FF8C00;">my_netdev_ops</span> = <span style="color: #AF87FF;">{</span>
+    .ndo_open = my_open,
+    .ndo_stop = my_close,
+    .ndo_start_xmit = my_xmit,
+    .ndo_set_rx_mode = my_set_multicast_list,
+    .ndo_set_mac_address = eth_mac_addr,
+    .ndo_validate_addr = eth_validate_addr,
+<span style="color: #AF87FF;">}</span>;
+
+<span style="color: #FF1493;">static</span> <span style="color: #5FD7FF;">int</span> <span style="color: #87D700;">my_probe</span><span style="color: #AF87FF;">(</span><span style="color: #FF1493;">struct</span> <span style="color: #5FD7FF;">platform_device</span> *<span style="color: #FF8C00;">pdev</span><span style="color: #AF87FF;">)</span>
+<span style="color: #AF87FF;">{</span>
+    <span style="color: #FF1493;">struct</span> <span style="color: #5FD7FF;">my_netdev</span> *<span style="color: #FF8C00;">dev</span>;
+    <span style="color: #FF1493;">struct</span> <span style="color: #5FD7FF;">net_device</span> *<span style="color: #FF8C00;">netdev</span>;
+    <span style="color: #5FD7FF;">int</span> <span style="color: #FF8C00;">ret</span>;
+
+    <span style="color: #8B8878;">// </span><span style="color: #8B8878;">Allocate net_device with private data
+</span>    netdev = devm_alloc_etherdev<span style="color: #5FD7FF;">(</span>&amp;pdev-&gt;dev, <span style="color: #FF1493;">sizeof</span><span style="color: #87D700;">(</span>*dev<span style="color: #87D700;">)</span><span style="color: #5FD7FF;">)</span>;
+    <span style="color: #FF1493;">if</span> <span style="color: #5FD7FF;">(</span><span style="color: #CDC673; font-weight: bold;">!</span>netdev<span style="color: #5FD7FF;">)</span>
+        <span style="color: #FF1493;">return</span> -ENOMEM;
+
+    dev = netdev_priv<span style="color: #5FD7FF;">(</span>netdev<span style="color: #5FD7FF;">)</span>;
+    dev-&gt;netdev = netdev;
+
+    <span style="color: #8B8878;">// </span><span style="color: #8B8878;">Set MAC address (random or from DTS)
+</span>    eth_hw_addr_random<span style="color: #5FD7FF;">(</span>netdev<span style="color: #5FD7FF;">)</span>;
+
+    <span style="color: #8B8878;">// </span><span style="color: #8B8878;">Assign operations
+</span>    netdev-&gt;netdev_ops = &amp;my_netdev_ops;
+
+    <span style="color: #8B8878;">// </span><span style="color: #8B8878;">Get I/O memory
+</span>    <span style="color: #FF1493;">struct</span> <span style="color: #5FD7FF;">resource</span> *<span style="color: #FF8C00;">res</span> = platform_get_resource<span style="color: #5FD7FF;">(</span>pdev, IORESOURCE_MEM, <span style="color: #AF87FF;">0</span><span style="color: #5FD7FF;">)</span>;
+    dev-&gt;base = devm_ioremap_resource<span style="color: #5FD7FF;">(</span>&amp;pdev-&gt;dev, res<span style="color: #5FD7FF;">)</span>;
+    <span style="color: #FF1493;">if</span> <span style="color: #5FD7FF;">(</span>IS_ERR<span style="color: #87D700;">(</span>dev-&gt;base<span style="color: #87D700;">)</span><span style="color: #5FD7FF;">)</span>
+        <span style="color: #FF1493;">return</span> PTR_ERR<span style="color: #5FD7FF;">(</span>dev-&gt;base<span style="color: #5FD7FF;">)</span>;
+
+    <span style="color: #8B8878;">// </span><span style="color: #8B8878;">Initialize NAPI
+</span>    netif_napi_add<span style="color: #5FD7FF;">(</span>netdev, &amp;dev-&gt;napi, my_poll, <span style="color: #AF87FF;">64</span><span style="color: #5FD7FF;">)</span>;
+
+    spin_lock_init<span style="color: #5FD7FF;">(</span>&amp;dev-&gt;lock<span style="color: #5FD7FF;">)</span>;
+    skb_queue_head_init<span style="color: #5FD7FF;">(</span>&amp;dev-&gt;rx_queue<span style="color: #5FD7FF;">)</span>;
+
+    <span style="color: #8B8878;">// </span><span style="color: #8B8878;">Register device
+</span>    ret = register_netdev<span style="color: #5FD7FF;">(</span>netdev<span style="color: #5FD7FF;">)</span>;
+    <span style="color: #FF1493;">if</span> <span style="color: #5FD7FF;">(</span>ret<span style="color: #5FD7FF;">)</span> <span style="color: #5FD7FF;">{</span>
+        devm_free_netdev<span style="color: #87D700;">(</span>&amp;pdev-&gt;dev, netdev<span style="color: #87D700;">)</span>;
+        <span style="color: #FF1493;">return</span> ret;
+    <span style="color: #5FD7FF;">}</span>
+
+    platform_set_drvdata<span style="color: #5FD7FF;">(</span>pdev, dev<span style="color: #5FD7FF;">)</span>;
+    netdev_info<span style="color: #5FD7FF;">(</span>netdev, <span style="color: #CDC673;">"registered\n"</span><span style="color: #5FD7FF;">)</span>;
+
+    <span style="color: #FF1493;">return</span> <span style="color: #AF87FF;">0</span>;
+<span style="color: #AF87FF;">}</span>
+
+<span style="color: #FF1493;">static</span> <span style="color: #5FD7FF;">int</span> <span style="color: #87D700;">my_remove</span><span style="color: #AF87FF;">(</span><span style="color: #FF1493;">struct</span> <span style="color: #5FD7FF;">platform_device</span> *<span style="color: #FF8C00;">pdev</span><span style="color: #AF87FF;">)</span>
+<span style="color: #AF87FF;">{</span>
+    <span style="color: #FF1493;">struct</span> <span style="color: #5FD7FF;">my_netdev</span> *<span style="color: #FF8C00;">dev</span> = platform_get_drvdata<span style="color: #5FD7FF;">(</span>pdev<span style="color: #5FD7FF;">)</span>;
+
+    unregister_netdev<span style="color: #5FD7FF;">(</span>dev-&gt;netdev<span style="color: #5FD7FF;">)</span>;
+    devm_free_netdev<span style="color: #5FD7FF;">(</span>&amp;pdev-&gt;dev, dev-&gt;netdev<span style="color: #5FD7FF;">)</span>;
+
+    <span style="color: #FF1493;">return</span> <span style="color: #AF87FF;">0</span>;
+<span style="color: #AF87FF;">}</span>
+</code></pre>
+</div>
+</div>
+</div>
+<div id="outline-container-orgb9670fb" class="outline-2">
+<h2 id="orgb9670fb"><span class="section-number-2">3.</span> Open/Close</h2>
+<div class="outline-text-2" id="text-3">
+<div class="org-src-container">
+<pre class="src src-c"><code><span style="color: #FF1493;">static</span> <span style="color: #5FD7FF;">int</span> <span style="color: #87D700;">my_open</span><span style="color: #AF87FF;">(</span><span style="color: #FF1493;">struct</span> <span style="color: #5FD7FF;">net_device</span> *<span style="color: #FF8C00;">netdev</span><span style="color: #AF87FF;">)</span>
+<span style="color: #AF87FF;">{</span>
+    <span style="color: #FF1493;">struct</span> <span style="color: #5FD7FF;">my_netdev</span> *<span style="color: #FF8C00;">dev</span> = netdev_priv<span style="color: #5FD7FF;">(</span>netdev<span style="color: #5FD7FF;">)</span>;
+
+    <span style="color: #8B8878;">// </span><span style="color: #8B8878;">Enable interrupts, start hardware, allocate RX buffers
+</span>    netif_carrier_on<span style="color: #5FD7FF;">(</span>netdev<span style="color: #5FD7FF;">)</span>;
+    netif_start_queue<span style="color: #5FD7FF;">(</span>netdev<span style="color: #5FD7FF;">)</span>;
+    napi_enable<span style="color: #5FD7FF;">(</span>&amp;dev-&gt;napi<span style="color: #5FD7FF;">)</span>;
+
+    <span style="color: #FF1493;">return</span> <span style="color: #AF87FF;">0</span>;
+<span style="color: #AF87FF;">}</span>
+
+<span style="color: #FF1493;">static</span> <span style="color: #5FD7FF;">int</span> <span style="color: #87D700;">my_close</span><span style="color: #AF87FF;">(</span><span style="color: #FF1493;">struct</span> <span style="color: #5FD7FF;">net_device</span> *<span style="color: #FF8C00;">netdev</span><span style="color: #AF87FF;">)</span>
+<span style="color: #AF87FF;">{</span>
+    <span style="color: #FF1493;">struct</span> <span style="color: #5FD7FF;">my_netdev</span> *<span style="color: #FF8C00;">dev</span> = netdev_priv<span style="color: #5FD7FF;">(</span>netdev<span style="color: #5FD7FF;">)</span>;
+
+    napi_disable<span style="color: #5FD7FF;">(</span>&amp;dev-&gt;napi<span style="color: #5FD7FF;">)</span>;
+    netif_stop_queue<span style="color: #5FD7FF;">(</span>netdev<span style="color: #5FD7FF;">)</span>;
+    netif_carrier_off<span style="color: #5FD7FF;">(</span>netdev<span style="color: #5FD7FF;">)</span>;
+
+    <span style="color: #8B8878;">// </span><span style="color: #8B8878;">Disable interrupts, stop hardware
+</span>
+    <span style="color: #FF1493;">return</span> <span style="color: #AF87FF;">0</span>;
+<span style="color: #AF87FF;">}</span>
+</code></pre>
+</div>
+</div>
+</div>
+<div id="outline-container-orgceeaeb8" class="outline-2">
+<h2 id="orgceeaeb8"><span class="section-number-2">4.</span> Transmit (TX)</h2>
+<div class="outline-text-2" id="text-4">
+<p>
+Net stack calls <code>ndo_start_xmit()</code> with packet to send:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-c"><code><span style="color: #FF1493;">static</span> <span style="color: #5FD7FF;">netdev_tx_t</span> <span style="color: #87D700;">my_xmit</span><span style="color: #AF87FF;">(</span><span style="color: #FF1493;">struct</span> <span style="color: #5FD7FF;">sk_buff</span> *<span style="color: #FF8C00;">skb</span>, <span style="color: #FF1493;">struct</span> <span style="color: #5FD7FF;">net_device</span> *<span style="color: #FF8C00;">netdev</span><span style="color: #AF87FF;">)</span>
+<span style="color: #AF87FF;">{</span>
+    <span style="color: #FF1493;">struct</span> <span style="color: #5FD7FF;">my_netdev</span> *<span style="color: #FF8C00;">dev</span> = netdev_priv<span style="color: #5FD7FF;">(</span>netdev<span style="color: #5FD7FF;">)</span>;
+    <span style="color: #5FD7FF;">unsigned</span> <span style="color: #5FD7FF;">long</span> <span style="color: #FF8C00;">flags</span>;
+
+    spin_lock_irqsave<span style="color: #5FD7FF;">(</span>&amp;dev-&gt;lock, flags<span style="color: #5FD7FF;">)</span>;
+
+    <span style="color: #8B8878;">// </span><span style="color: #8B8878;">Check if TX queue is available
+</span>    <span style="color: #FF1493;">if</span> <span style="color: #5FD7FF;">(</span>netdev_xmit_stopped<span style="color: #87D700;">(</span>netdev<span style="color: #87D700;">)</span><span style="color: #5FD7FF;">)</span> <span style="color: #5FD7FF;">{</span>
+        spin_unlock_irqrestore<span style="color: #87D700;">(</span>&amp;dev-&gt;lock, flags<span style="color: #87D700;">)</span>;
+        <span style="color: #FF1493;">return</span> NETDEV_TX_BUSY;
+    <span style="color: #5FD7FF;">}</span>
+
+    <span style="color: #8B8878;">// </span><span style="color: #8B8878;">Write packet to hardware
+</span>    <span style="color: #8B8878;">// </span><span style="color: #8B8878;">- copy skb data to TX DMA buffer
+</span>    <span style="color: #5FD7FF;">dma_addr_t</span> <span style="color: #FF8C00;">dma_addr</span> = dma_map_single<span style="color: #5FD7FF;">(</span>&amp;dev-&gt;netdev-&gt;dev, skb-&gt;data,
+                                         skb-&gt;len, DMA_TO_DEVICE<span style="color: #5FD7FF;">)</span>;
+    <span style="color: #FF1493;">if</span> <span style="color: #5FD7FF;">(</span>dma_mapping_error<span style="color: #87D700;">(</span>&amp;dev-&gt;netdev-&gt;dev, dma_addr<span style="color: #87D700;">)</span><span style="color: #5FD7FF;">)</span> <span style="color: #5FD7FF;">{</span>
+        spin_unlock_irqrestore<span style="color: #87D700;">(</span>&amp;dev-&gt;lock, flags<span style="color: #87D700;">)</span>;
+        dev_kfree_skb_any<span style="color: #87D700;">(</span>skb<span style="color: #87D700;">)</span>;
+        <span style="color: #FF1493;">return</span> NETDEV_TX_OK;
+    <span style="color: #5FD7FF;">}</span>
+
+    <span style="color: #8B8878;">// </span><span style="color: #8B8878;">Start DMA transfer
+</span>    writel<span style="color: #5FD7FF;">(</span>dma_addr, dev-&gt;base + TX_ADDR_REG<span style="color: #5FD7FF;">)</span>;
+    writel<span style="color: #5FD7FF;">(</span>skb-&gt;len, dev-&gt;base + TX_LEN_REG<span style="color: #5FD7FF;">)</span>;
+    writel<span style="color: #5FD7FF;">(</span>TX_START, dev-&gt;base + TX_CTRL_REG<span style="color: #5FD7FF;">)</span>;
+
+    <span style="color: #8B8878;">// </span><span style="color: #8B8878;">Update stats
+</span>    netdev-&gt;stats.tx_packets++;
+    netdev-&gt;stats.tx_bytes += skb-&gt;len;
+
+    spin_unlock_irqrestore<span style="color: #5FD7FF;">(</span>&amp;dev-&gt;lock, flags<span style="color: #5FD7FF;">)</span>;
+
+    <span style="color: #8B8878;">// </span><span style="color: #8B8878;">Device owns the skb now (will free in TX completion IRQ)
+</span>    dev_kfree_skb<span style="color: #5FD7FF;">(</span>skb<span style="color: #5FD7FF;">)</span>;
+
+    <span style="color: #FF1493;">return</span> NETDEV_TX_OK;
+<span style="color: #AF87FF;">}</span>
+</code></pre>
+</div>
+</div>
+</div>
+<div id="outline-container-org3e64dd2" class="outline-2">
+<h2 id="org3e64dd2"><span class="section-number-2">5.</span> Receive (RX) - NAPI Poll</h2>
+<div class="outline-text-2" id="text-5">
+<p>
+Use NAPI (New API) for receive processing — more efficient than interrupt-per-packet:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-c"><code><span style="color: #FF1493;">static</span> <span style="color: #5FD7FF;">int</span> <span style="color: #87D700;">my_poll</span><span style="color: #AF87FF;">(</span><span style="color: #FF1493;">struct</span> <span style="color: #5FD7FF;">napi_struct</span> *<span style="color: #FF8C00;">napi</span>, <span style="color: #5FD7FF;">int</span> <span style="color: #FF8C00;">budget</span><span style="color: #AF87FF;">)</span>
+<span style="color: #AF87FF;">{</span>
+    <span style="color: #FF1493;">struct</span> <span style="color: #5FD7FF;">my_netdev</span> *<span style="color: #FF8C00;">dev</span> = container_of<span style="color: #5FD7FF;">(</span>napi, <span style="color: #FF1493;">struct</span> <span style="color: #5FD7FF;">my_netdev</span>, napi<span style="color: #5FD7FF;">)</span>;
+    <span style="color: #FF1493;">struct</span> <span style="color: #5FD7FF;">net_device</span> *<span style="color: #FF8C00;">netdev</span> = dev-&gt;netdev;
+    <span style="color: #5FD7FF;">int</span> <span style="color: #FF8C00;">npackets</span> = <span style="color: #AF87FF;">0</span>;
+
+    <span style="color: #FF1493;">while</span> <span style="color: #5FD7FF;">(</span>npackets &lt; budget<span style="color: #5FD7FF;">)</span> <span style="color: #5FD7FF;">{</span>
+        <span style="color: #FF1493;">struct</span> <span style="color: #5FD7FF;">sk_buff</span> *<span style="color: #FF8C00;">skb</span>;
+        <span style="color: #5FD7FF;">unsigned</span> <span style="color: #5FD7FF;">int</span> <span style="color: #FF8C00;">len</span>;
+        <span style="color: #5FD7FF;">dma_addr_t</span> <span style="color: #FF8C00;">dma_addr</span>;
+
+        <span style="color: #8B8878;">// </span><span style="color: #8B8878;">Check if packet available in hardware
+</span>        <span style="color: #FF1493;">if</span> <span style="color: #87D700;">(</span><span style="color: #CDC673; font-weight: bold;">!</span><span style="color: #FF8C00;">(</span>readl<span style="color: #FF1493;">(</span>dev-&gt;base + RX_STATUS_REG<span style="color: #FF1493;">)</span> &amp; RX_AVAIL<span style="color: #FF8C00;">)</span><span style="color: #87D700;">)</span>
+            <span style="color: #FF1493;">break</span>;
+
+        <span style="color: #8B8878;">// </span><span style="color: #8B8878;">Get packet length from hardware
+</span>        len = readl<span style="color: #87D700;">(</span>dev-&gt;base + RX_LEN_REG<span style="color: #87D700;">)</span>;
+        <span style="color: #FF1493;">if</span> <span style="color: #87D700;">(</span>len &lt; ETH_HLEN || len &gt; ETH_DATA_LEN<span style="color: #87D700;">)</span> <span style="color: #87D700;">{</span>
+            netdev-&gt;stats.rx_errors++;
+            <span style="color: #FF1493;">goto</span> <span style="color: #AF87FF;">next_packet</span>;
+        <span style="color: #87D700;">}</span>
+
+        <span style="color: #8B8878;">// </span><span style="color: #8B8878;">Allocate skbuff
+</span>        skb = napi_alloc_skb<span style="color: #87D700;">(</span>napi, len<span style="color: #87D700;">)</span>;
+        <span style="color: #FF1493;">if</span> <span style="color: #87D700;">(</span><span style="color: #CDC673; font-weight: bold;">!</span>skb<span style="color: #87D700;">)</span> <span style="color: #87D700;">{</span>
+            netdev-&gt;stats.rx_dropped++;
+            <span style="color: #FF1493;">goto</span> <span style="color: #AF87FF;">next_packet</span>;
+        <span style="color: #87D700;">}</span>
+
+        <span style="color: #8B8878;">// </span><span style="color: #8B8878;">Copy packet data
+</span>        dma_addr = dma_map_single<span style="color: #87D700;">(</span>&amp;netdev-&gt;dev, skb-&gt;data, len,
+                                  DMA_FROM_DEVICE<span style="color: #87D700;">)</span>;
+        <span style="color: #FF1493;">if</span> <span style="color: #87D700;">(</span>dma_mapping_error<span style="color: #FF8C00;">(</span>&amp;netdev-&gt;dev, dma_addr<span style="color: #FF8C00;">)</span><span style="color: #87D700;">)</span> <span style="color: #87D700;">{</span>
+            kfree_skb<span style="color: #FF8C00;">(</span>skb<span style="color: #FF8C00;">)</span>;
+            <span style="color: #FF1493;">goto</span> <span style="color: #AF87FF;">next_packet</span>;
+        <span style="color: #87D700;">}</span>
+
+        <span style="color: #8B8878;">// </span><span style="color: #8B8878;">Simulate DMA from hardware (in real driver, hardware fills buffer)
+</span>        <span style="color: #8B8878;">// </span><span style="color: #8B8878;">memcpy(skb-&gt;data, dev-&gt;base + RX_BUF, len);
+</span>
+        dma_unmap_single<span style="color: #87D700;">(</span>&amp;netdev-&gt;dev, dma_addr, len, DMA_FROM_DEVICE<span style="color: #87D700;">)</span>;
+        skb_put<span style="color: #87D700;">(</span>skb, len<span style="color: #87D700;">)</span>;
+
+        <span style="color: #8B8878;">// </span><span style="color: #8B8878;">Set protocol and pass to stack
+</span>        skb-&gt;protocol = eth_type_trans<span style="color: #87D700;">(</span>skb, netdev<span style="color: #87D700;">)</span>;
+        napi_gro_receive<span style="color: #87D700;">(</span>napi, skb<span style="color: #87D700;">)</span>;
+
+        netdev-&gt;stats.rx_packets++;
+        netdev-&gt;stats.rx_bytes += len;
+
+    <span style="color: #AF87FF;">next_packet</span>:
+        <span style="color: #8B8878;">// </span><span style="color: #8B8878;">Signal hardware: packet processed
+</span>        writel<span style="color: #87D700;">(</span><span style="color: #AF87FF;">1</span>, dev-&gt;base + RX_NEXT_REG<span style="color: #87D700;">)</span>;
+        npackets++;
+    <span style="color: #5FD7FF;">}</span>
+
+    <span style="color: #8B8878;">// </span><span style="color: #8B8878;">If we got fewer packets than budget, exit polling
+</span>    <span style="color: #FF1493;">if</span> <span style="color: #5FD7FF;">(</span>npackets &lt; budget<span style="color: #5FD7FF;">)</span> <span style="color: #5FD7FF;">{</span>
+        napi_complete_done<span style="color: #87D700;">(</span>napi, npackets<span style="color: #87D700;">)</span>;
+        <span style="color: #8B8878;">// </span><span style="color: #8B8878;">Re-enable RX interrupts
+</span>        writel<span style="color: #87D700;">(</span>readl<span style="color: #FF8C00;">(</span>dev-&gt;base + IRQ_EN_REG<span style="color: #FF8C00;">)</span> | RX_IRQ, dev-&gt;base + IRQ_EN_REG<span style="color: #87D700;">)</span>;
+    <span style="color: #5FD7FF;">}</span>
+
+    <span style="color: #FF1493;">return</span> npackets;
+<span style="color: #AF87FF;">}</span>
+
+<span style="color: #8B8878;">// </span><span style="color: #8B8878;">Interrupt handler
+</span><span style="color: #FF1493;">static</span> <span style="color: #5FD7FF;">irqreturn_t</span> <span style="color: #87D700;">my_isr</span><span style="color: #AF87FF;">(</span><span style="color: #5FD7FF;">int</span> <span style="color: #FF8C00;">irq</span>, <span style="color: #5FD7FF;">void</span> *<span style="color: #FF8C00;">dev_id</span><span style="color: #AF87FF;">)</span>
+<span style="color: #AF87FF;">{</span>
+    <span style="color: #FF1493;">struct</span> <span style="color: #5FD7FF;">my_netdev</span> *<span style="color: #FF8C00;">dev</span> = dev_id;
+    <span style="color: #5FD7FF;">u32</span> <span style="color: #FF8C00;">status</span> = readl<span style="color: #5FD7FF;">(</span>dev-&gt;base + IRQ_STATUS_REG<span style="color: #5FD7FF;">)</span>;
+
+    <span style="color: #FF1493;">if</span> <span style="color: #5FD7FF;">(</span><span style="color: #CDC673; font-weight: bold;">!</span><span style="color: #87D700;">(</span>status &amp; <span style="color: #FF8C00;">(</span>RX_IRQ | TX_IRQ<span style="color: #FF8C00;">)</span><span style="color: #87D700;">)</span><span style="color: #5FD7FF;">)</span>
+        <span style="color: #FF1493;">return</span> IRQ_NONE;
+
+    <span style="color: #8B8878;">// </span><span style="color: #8B8878;">Acknowledge interrupts
+</span>    writel<span style="color: #5FD7FF;">(</span>status, dev-&gt;base + IRQ_STATUS_REG<span style="color: #5FD7FF;">)</span>;
+
+    <span style="color: #FF1493;">if</span> <span style="color: #5FD7FF;">(</span>status &amp; RX_IRQ<span style="color: #5FD7FF;">)</span> <span style="color: #5FD7FF;">{</span>
+        <span style="color: #8B8878;">// </span><span style="color: #8B8878;">Disable RX interrupts, schedule NAPI poll
+</span>        writel<span style="color: #87D700;">(</span>readl<span style="color: #FF8C00;">(</span>dev-&gt;base + IRQ_EN_REG<span style="color: #FF8C00;">)</span> &amp; ~RX_IRQ, dev-&gt;base + IRQ_EN_REG<span style="color: #87D700;">)</span>;
+        napi_schedule<span style="color: #87D700;">(</span>&amp;dev-&gt;napi<span style="color: #87D700;">)</span>;
+    <span style="color: #5FD7FF;">}</span>
+
+    <span style="color: #FF1493;">if</span> <span style="color: #5FD7FF;">(</span>status &amp; TX_IRQ<span style="color: #5FD7FF;">)</span> <span style="color: #5FD7FF;">{</span>
+        <span style="color: #8B8878;">// </span><span style="color: #8B8878;">Handle TX completion
+</span>    <span style="color: #5FD7FF;">}</span>
+
+    <span style="color: #FF1493;">return</span> IRQ_HANDLED;
+<span style="color: #AF87FF;">}</span>
+</code></pre>
+</div>
+</div>
+</div>
+<div id="outline-container-org1e287e8" class="outline-2">
+<h2 id="org1e287e8"><span class="section-number-2">6.</span> skbuff (Socket Buffer)</h2>
+<div class="outline-text-2" id="text-6">
+<p>
+skbuff structure holds packet data and metadata:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-c"><code><span style="color: #FF1493;">struct</span> <span style="color: #5FD7FF;">sk_buff</span> <span style="color: #AF87FF;">{</span>
+    <span style="color: #5FD7FF;">unsigned</span> <span style="color: #5FD7FF;">char</span> *<span style="color: #FF8C00;">head</span>;     <span style="color: #8B8878;">// </span><span style="color: #8B8878;">allocated data pointer
+</span>    <span style="color: #5FD7FF;">unsigned</span> <span style="color: #5FD7FF;">char</span> *<span style="color: #FF8C00;">data</span>;     <span style="color: #8B8878;">// </span><span style="color: #8B8878;">current data start (MAC header)
+</span>    <span style="color: #5FD7FF;">unsigned</span> <span style="color: #5FD7FF;">char</span> *<span style="color: #FF8C00;">tail</span>;     <span style="color: #8B8878;">// </span><span style="color: #8B8878;">current data end
+</span>    <span style="color: #5FD7FF;">unsigned</span> <span style="color: #5FD7FF;">char</span> *<span style="color: #FF8C00;">end</span>;      <span style="color: #8B8878;">// </span><span style="color: #8B8878;">allocated end
+</span>
+    <span style="color: #5FD7FF;">unsigned</span> <span style="color: #5FD7FF;">int</span> <span style="color: #FF8C00;">len</span>;        <span style="color: #8B8878;">// </span><span style="color: #8B8878;">payload length
+</span>    <span style="color: #5FD7FF;">unsigned</span> <span style="color: #5FD7FF;">int</span> <span style="color: #FF8C00;">data_len</span>;   <span style="color: #8B8878;">// </span><span style="color: #8B8878;">frags + frag_list length
+</span>
+    <span style="color: #5FD7FF;">__u16</span> <span style="color: #FF8C00;">protocol</span>;          <span style="color: #8B8878;">// </span><span style="color: #8B8878;">Ethernet type
+</span>
+    <span style="color: #FF1493;">struct</span> <span style="color: #5FD7FF;">net_device</span> *<span style="color: #FF8C00;">dev</span>;  <span style="color: #8B8878;">// </span><span style="color: #8B8878;">input device
+</span>    <span style="color: #FF1493;">struct</span> <span style="color: #5FD7FF;">dst_entry</span> *<span style="color: #FF8C00;">dst</span>;   <span style="color: #8B8878;">// </span><span style="color: #8B8878;">routing
+</span>
+    <span style="color: #8B8878;">// </span><span style="color: #8B8878;">... many more fields
+</span><span style="color: #AF87FF;">}</span>;
+
+<span style="color: #8B8878;">// </span><span style="color: #8B8878;">Common operations
+</span><span style="color: #87D700;">skb_put</span><span style="color: #AF87FF;">(</span>skb, len<span style="color: #AF87FF;">)</span>;              <span style="color: #8B8878;">// </span><span style="color: #8B8878;">extend data end
+</span><span style="color: #87D700;">skb_push</span><span style="color: #AF87FF;">(</span>skb, len<span style="color: #AF87FF;">)</span>;             <span style="color: #8B8878;">// </span><span style="color: #8B8878;">prepend header space
+</span><span style="color: #87D700;">skb_pull</span><span style="color: #AF87FF;">(</span>skb, len<span style="color: #AF87FF;">)</span>;             <span style="color: #8B8878;">// </span><span style="color: #8B8878;">trim from head
+</span><span style="color: #87D700;">skb_reserve</span><span style="color: #AF87FF;">(</span>skb, len<span style="color: #AF87FF;">)</span>;          <span style="color: #8B8878;">// </span><span style="color: #8B8878;">skip at start
+</span><span style="color: #87D700;">skb_headroom</span><span style="color: #AF87FF;">(</span>skb<span style="color: #AF87FF;">)</span>;              <span style="color: #8B8878;">// </span><span style="color: #8B8878;">space before data
+</span><span style="color: #87D700;">skb_tailroom</span><span style="color: #AF87FF;">(</span>skb<span style="color: #AF87FF;">)</span>;              <span style="color: #8B8878;">// </span><span style="color: #8B8878;">space after data</span>
+</code></pre>
+</div>
+</div>
+</div>
+<div id="outline-container-org51a2c33" class="outline-2">
+<h2 id="org51a2c33"><span class="section-number-2">7.</span> Example: Virtual Ethernet Driver</h2>
+<div class="outline-text-2" id="text-7">
+<p>
+Simple virtual network device:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-c"><code><span style="color: #8B8878;">// </span><span style="color: #8B8878;">veth_driver.c
+</span><span style="color: #FF1493;">#include</span> <span style="color: #AF87FF;">&lt;</span><span style="color: #CDC673;">linux/module.h</span><span style="color: #AF87FF;">&gt;</span>
+<span style="color: #FF1493;">#include</span> <span style="color: #AF87FF;">&lt;</span><span style="color: #CDC673;">linux/netdevice.h</span><span style="color: #AF87FF;">&gt;</span>
+<span style="color: #FF1493;">#include</span> <span style="color: #AF87FF;">&lt;</span><span style="color: #CDC673;">linux/etherdevice.h</span><span style="color: #AF87FF;">&gt;</span>
+
+<span style="color: #FF1493;">struct</span> <span style="color: #5FD7FF;">veth_dev</span> <span style="color: #AF87FF;">{</span>
+    <span style="color: #FF1493;">struct</span> <span style="color: #5FD7FF;">net_device</span> *<span style="color: #FF8C00;">netdev</span>;
+    <span style="color: #FF1493;">struct</span> <span style="color: #5FD7FF;">napi_struct</span> <span style="color: #FF8C00;">napi</span>;
+    <span style="color: #FF1493;">struct</span> <span style="color: #5FD7FF;">sk_buff_head</span> <span style="color: #FF8C00;">rx_queue</span>;
+<span style="color: #AF87FF;">}</span>;
+
+<span style="color: #FF1493;">static</span> <span style="color: #5FD7FF;">netdev_tx_t</span> <span style="color: #87D700;">veth_xmit</span><span style="color: #AF87FF;">(</span><span style="color: #FF1493;">struct</span> <span style="color: #5FD7FF;">sk_buff</span> *<span style="color: #FF8C00;">skb</span>, <span style="color: #FF1493;">struct</span> <span style="color: #5FD7FF;">net_device</span> *<span style="color: #FF8C00;">netdev</span><span style="color: #AF87FF;">)</span>
+<span style="color: #AF87FF;">{</span>
+    <span style="color: #FF1493;">struct</span> <span style="color: #5FD7FF;">veth_dev</span> *<span style="color: #FF8C00;">dev</span> = netdev_priv<span style="color: #5FD7FF;">(</span>netdev<span style="color: #5FD7FF;">)</span>;
+
+    <span style="color: #8B8878;">// </span><span style="color: #8B8878;">Simulate loopback: queue packet for RX
+</span>    skb_queue_tail<span style="color: #5FD7FF;">(</span>&amp;dev-&gt;rx_queue, skb<span style="color: #5FD7FF;">)</span>;
+    napi_schedule<span style="color: #5FD7FF;">(</span>&amp;dev-&gt;napi<span style="color: #5FD7FF;">)</span>;
+
+    netdev-&gt;stats.tx_packets++;
+    netdev-&gt;stats.tx_bytes += skb-&gt;len;
+
+    <span style="color: #FF1493;">return</span> NETDEV_TX_OK;
+<span style="color: #AF87FF;">}</span>
+
+<span style="color: #FF1493;">static</span> <span style="color: #5FD7FF;">int</span> <span style="color: #87D700;">veth_poll</span><span style="color: #AF87FF;">(</span><span style="color: #FF1493;">struct</span> <span style="color: #5FD7FF;">napi_struct</span> *<span style="color: #FF8C00;">napi</span>, <span style="color: #5FD7FF;">int</span> <span style="color: #FF8C00;">budget</span><span style="color: #AF87FF;">)</span>
+<span style="color: #AF87FF;">{</span>
+    <span style="color: #FF1493;">struct</span> <span style="color: #5FD7FF;">veth_dev</span> *<span style="color: #FF8C00;">dev</span> = container_of<span style="color: #5FD7FF;">(</span>napi, <span style="color: #FF1493;">struct</span> <span style="color: #5FD7FF;">veth_dev</span>, napi<span style="color: #5FD7FF;">)</span>;
+    <span style="color: #FF1493;">struct</span> <span style="color: #5FD7FF;">net_device</span> *<span style="color: #FF8C00;">netdev</span> = dev-&gt;netdev;
+    <span style="color: #5FD7FF;">int</span> <span style="color: #FF8C00;">npackets</span> = <span style="color: #AF87FF;">0</span>;
+
+    <span style="color: #FF1493;">while</span> <span style="color: #5FD7FF;">(</span>npackets &lt; budget<span style="color: #5FD7FF;">)</span> <span style="color: #5FD7FF;">{</span>
+        <span style="color: #FF1493;">struct</span> <span style="color: #5FD7FF;">sk_buff</span> *<span style="color: #FF8C00;">skb</span> = skb_dequeue<span style="color: #87D700;">(</span>&amp;dev-&gt;rx_queue<span style="color: #87D700;">)</span>;
+
+        <span style="color: #FF1493;">if</span> <span style="color: #87D700;">(</span><span style="color: #CDC673; font-weight: bold;">!</span>skb<span style="color: #87D700;">)</span>
+            <span style="color: #FF1493;">break</span>;
+
+        skb-&gt;protocol = eth_type_trans<span style="color: #87D700;">(</span>skb, netdev<span style="color: #87D700;">)</span>;
+        napi_gro_receive<span style="color: #87D700;">(</span>napi, skb<span style="color: #87D700;">)</span>;
+
+        netdev-&gt;stats.rx_packets++;
+        netdev-&gt;stats.rx_bytes += skb-&gt;len;
+        npackets++;
+    <span style="color: #5FD7FF;">}</span>
+
+    <span style="color: #FF1493;">if</span> <span style="color: #5FD7FF;">(</span>npackets &lt; budget<span style="color: #5FD7FF;">)</span>
+        napi_complete_done<span style="color: #5FD7FF;">(</span>napi, npackets<span style="color: #5FD7FF;">)</span>;
+
+    <span style="color: #FF1493;">return</span> npackets;
+<span style="color: #AF87FF;">}</span>
+
+<span style="color: #FF1493;">static</span> <span style="color: #FF1493;">const</span> <span style="color: #FF1493;">struct</span> <span style="color: #5FD7FF;">net_device_ops</span> <span style="color: #FF8C00;">veth_ops</span> = <span style="color: #AF87FF;">{</span>
+    .ndo_start_xmit = veth_xmit,
+<span style="color: #AF87FF;">}</span>;
+
+<span style="color: #FF1493;">static</span> <span style="color: #5FD7FF;">int</span> <span style="color: #87D700;">veth_probe</span><span style="color: #AF87FF;">(</span><span style="color: #FF1493;">struct</span> <span style="color: #5FD7FF;">platform_device</span> *<span style="color: #FF8C00;">pdev</span><span style="color: #AF87FF;">)</span>
+<span style="color: #AF87FF;">{</span>
+    <span style="color: #FF1493;">struct</span> <span style="color: #5FD7FF;">net_device</span> *<span style="color: #FF8C00;">netdev</span>;
+    <span style="color: #FF1493;">struct</span> <span style="color: #5FD7FF;">veth_dev</span> *<span style="color: #FF8C00;">dev</span>;
+
+    netdev = alloc_etherdev<span style="color: #5FD7FF;">(</span><span style="color: #FF1493;">sizeof</span><span style="color: #87D700;">(</span>*dev<span style="color: #87D700;">)</span><span style="color: #5FD7FF;">)</span>;
+    <span style="color: #FF1493;">if</span> <span style="color: #5FD7FF;">(</span><span style="color: #CDC673; font-weight: bold;">!</span>netdev<span style="color: #5FD7FF;">)</span>
+        <span style="color: #FF1493;">return</span> -ENOMEM;
+
+    dev = netdev_priv<span style="color: #5FD7FF;">(</span>netdev<span style="color: #5FD7FF;">)</span>;
+    dev-&gt;netdev = netdev;
+
+    eth_hw_addr_random<span style="color: #5FD7FF;">(</span>netdev<span style="color: #5FD7FF;">)</span>;
+    netdev-&gt;netdev_ops = &amp;veth_ops;
+    skb_queue_head_init<span style="color: #5FD7FF;">(</span>&amp;dev-&gt;rx_queue<span style="color: #5FD7FF;">)</span>;
+    netif_napi_add<span style="color: #5FD7FF;">(</span>netdev, &amp;dev-&gt;napi, veth_poll, <span style="color: #AF87FF;">64</span><span style="color: #5FD7FF;">)</span>;
+
+    <span style="color: #FF1493;">if</span> <span style="color: #5FD7FF;">(</span>register_netdev<span style="color: #87D700;">(</span>netdev<span style="color: #87D700;">)</span> &lt; <span style="color: #AF87FF;">0</span><span style="color: #5FD7FF;">)</span> <span style="color: #5FD7FF;">{</span>
+        free_netdev<span style="color: #87D700;">(</span>netdev<span style="color: #87D700;">)</span>;
+        <span style="color: #FF1493;">return</span> -ENODEV;
+    <span style="color: #5FD7FF;">}</span>
+
+    platform_set_drvdata<span style="color: #5FD7FF;">(</span>pdev, dev<span style="color: #5FD7FF;">)</span>;
+    netdev_info<span style="color: #5FD7FF;">(</span>netdev, <span style="color: #CDC673;">"virtual ethernet registered\n"</span><span style="color: #5FD7FF;">)</span>;
+
+    <span style="color: #FF1493;">return</span> <span style="color: #AF87FF;">0</span>;
+<span style="color: #AF87FF;">}</span>
+
+<span style="color: #FF1493;">static</span> <span style="color: #5FD7FF;">int</span> <span style="color: #87D700;">veth_remove</span><span style="color: #AF87FF;">(</span><span style="color: #FF1493;">struct</span> <span style="color: #5FD7FF;">platform_device</span> *<span style="color: #FF8C00;">pdev</span><span style="color: #AF87FF;">)</span>
+<span style="color: #AF87FF;">{</span>
+    <span style="color: #FF1493;">struct</span> <span style="color: #5FD7FF;">veth_dev</span> *<span style="color: #FF8C00;">dev</span> = platform_get_drvdata<span style="color: #5FD7FF;">(</span>pdev<span style="color: #5FD7FF;">)</span>;
+
+    unregister_netdev<span style="color: #5FD7FF;">(</span>dev-&gt;netdev<span style="color: #5FD7FF;">)</span>;
+    free_netdev<span style="color: #5FD7FF;">(</span>dev-&gt;netdev<span style="color: #5FD7FF;">)</span>;
+
+    <span style="color: #FF1493;">return</span> <span style="color: #AF87FF;">0</span>;
+<span style="color: #AF87FF;">}</span>
+
+<span style="color: #FF1493;">static</span> <span style="color: #FF1493;">struct</span> <span style="color: #5FD7FF;">platform_driver</span> <span style="color: #FF8C00;">veth_driver</span> = <span style="color: #AF87FF;">{</span>
+    .driver = <span style="color: #5FD7FF;">{</span> .name = <span style="color: #CDC673;">"veth"</span> <span style="color: #5FD7FF;">}</span>,
+    .probe = veth_probe,
+    .remove = veth_remove,
+<span style="color: #AF87FF;">}</span>;
+
+<span style="color: #87D700;">module_platform_driver</span><span style="color: #AF87FF;">(</span>veth_driver<span style="color: #AF87FF;">)</span>;
+
+MODULE_LICENSE<span style="color: #AF87FF;">(</span><span style="color: #CDC673;">"GPL"</span><span style="color: #AF87FF;">)</span>;
+MODULE_AUTHOR<span style="color: #AF87FF;">(</span><span style="color: #CDC673;">"Your Name"</span><span style="color: #AF87FF;">)</span>;
+MODULE_DESCRIPTION<span style="color: #AF87FF;">(</span><span style="color: #CDC673;">"Virtual ethernet driver"</span><span style="color: #AF87FF;">)</span>;
+</code></pre>
+</div>
+</div>
+</div>
+<div id="outline-container-org8a3ffe8" class="outline-2">
+<h2 id="org8a3ffe8"><span class="section-number-2">8.</span> Network RX Flow Diagram</h2>
+<div class="outline-text-2" id="text-8">
+
+<div id="org27eab02" class="figure">
+<p><img src="res/05-network-rx-flow.svg" alt="05-network-rx-flow.svg" class="org-svg" />
+</p>
+</div>
+
+
+<div id="orgb2320bb" class="figure">
+<p><img src="res/05-network-rx-flow.svg" alt="05-network-rx-flow.svg" class="org-svg" />
+</p>
+</div>
+</div>
+</div>
+<div id="outline-container-orgae6b993" class="outline-2">
+<h2 id="orgae6b993"><span class="section-number-2">9.</span> See Also</h2>
+<div class="outline-text-2" id="text-9">
+<ul class="org-ul">
+<li><a href="01-kernel-module-fundamentals.html#ID-f1a2b3c4-d5e6-47f8-99a1-b2c3d4e5f6a7">Kernel Module Fundamentals</a></li>
+<li><a href="10-performance.html#ID-j1k2l3m4-n5o6-4789-99a1-b2c3d4e5f6a7">Performance Considerations</a> — NAPI, RCU, lockless queues</li>
+</ul>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p class="author">Author: Arun Jyothish K</p>
+<p class="date">Created: 2026-08-17 Mon 20:36</p>
+</div>
+</body>
+</html>

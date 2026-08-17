@@ -1,0 +1,44 @@
+@startuml dts_matching_flow
+!theme plain
+title Device Tree Matching & Driver Probe Flow
+
+participant Bootloader
+participant Kernel
+participant DTParser as "Device Tree\nParser"
+participant DriverCore as "Driver\nCore"
+participant Driver
+
+Bootloader -> Kernel: Pass .dtb blob
+Kernel -> DTParser: Parse device tree
+DTParser -> DTParser: Create device_node\nfor each DTS node
+DTParser -> DriverCore: Register devices\n(bus_add_device)
+
+loop For each device_node
+  DriverCore -> DriverCore: Search registered drivers\nfor compatible match
+
+  alt Driver found
+    DriverCore -> Driver: Call probe(device)
+    Driver -> Driver: Extract properties\n(reg, interrupts, gpios)
+    Driver -> Driver: Initialize hardware\nRequest IRQs
+    Driver -> Driver: Create sysfs/device files
+    Driver --> DriverCore: return 0 (success)
+    DriverCore -> Driver: probe complete
+  else No match
+    DriverCore -> DriverCore: Device remains unbound
+  end
+end
+
+note right of DTParser
+  Parses /proc/device-tree
+  Creates in-memory tree
+  Bindings validate properties
+end note
+
+note right of Driver
+  probe() has full access to:
+  - devm allocators
+  - platform resources
+  - DTS properties
+end note
+
+@enduml

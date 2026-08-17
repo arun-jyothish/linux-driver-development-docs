@@ -1,0 +1,74 @@
+@startuml kbuild_flow
+!theme plain
+title Kernel Build System (Kbuild) Flow
+
+participant User
+participant Make as "make M=$(PWD)"
+participant Kbuild as "Kernel Build\nSystem"
+participant Compiler as "gcc/clang"
+participant Linker as "Linker"
+participant Output as "Output\n(.ko/.o files)"
+
+== Build Invocation ==
+User -> Make: make (out-of-tree module)
+Make -> Kbuild: M=/path/to/module
+note right of Make
+  make -C /lib/modules/$(uname -r)/build
+  M=$(PWD) modules
+end note
+
+== Kbuild Processing ==
+activate Kbuild
+
+Kbuild -> Kbuild: Read kernel build\nconfiguration
+Kbuild -> Kbuild: Read driver Makefile
+note right of Kbuild
+  Parse obj-m, obj-y, etc
+  Resolve dependencies
+  Check kernel headers
+end note
+
+Kbuild -> Kbuild: Generate build rules
+Kbuild -> Kbuild: for each .c file:
+
+loop For each source file
+  Kbuild -> Compiler: Compile to .o
+  Compiler -> Compiler: Preprocess (.c)
+  Compiler -> Compiler: Compile to assembly
+  Compiler -> Compiler: Assemble to .o
+  Compiler --> Kbuild: return .o file
+end
+
+Kbuild -> Kbuild: Link object files
+Kbuild -> Linker: Link .o files → .ko
+Linker -> Linker: Symbol resolution
+Linker -> Linker: Generate module info
+Linker --> Output: my_driver.ko
+
+Kbuild -> Output: Store with version
+note right of Output
+  /lib/modules/$(uname -r)/kernel/
+  or current directory
+end note
+
+deactivate Kbuild
+
+== Verification ==
+User -> Output: Check .ko
+Output --> User: Module object ready for\ninsmod/modprobe
+
+note right of Kbuild
+  Key variables:
+  - obj-m = compile as module
+  - obj-y = compile into kernel
+  - ccflags-y = compiler flags
+  - M=$(PWD) = out-of-tree marker
+
+  Kernel build system handles:
+  - Include paths
+  - Compiler flags
+  - Symbol exports
+  - Version checking
+end note
+
+@enduml

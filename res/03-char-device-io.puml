@@ -1,0 +1,47 @@
+@startuml char_device_io
+!theme plain
+title Character Device I/O Flow
+
+participant Userspace
+participant VFS as "VFS Layer"
+participant CharDev as "cdev\n(file_operations)"
+participant Driver
+participant Hardware
+
+== Write Path ==
+Userspace -> VFS: write("/dev/mydev", buf, len)
+VFS -> CharDev: Call .write()
+CharDev -> Driver: my_write()
+Driver -> Driver: copy_from_user(buf)
+Driver -> Hardware: Write to memory-mapped\nregister or DMA buffer
+CharDev --> VFS: return bytes_written
+VFS --> Userspace: return bytes_written
+
+== Read Path ==
+Userspace -> VFS: read("/dev/mydev", buf, len)
+VFS -> CharDev: Call .read()
+CharDev -> Driver: my_read()
+Driver -> Hardware: Read from memory-mapped\nregister or DMA buffer
+Driver -> Driver: copy_to_user(buf)
+CharDev --> VFS: return bytes_read
+VFS --> Userspace: return bytes_read
+
+== ioctl Path ==
+Userspace -> VFS: ioctl("/dev/mydev", cmd, arg)
+VFS -> CharDev: Call .unlocked_ioctl()
+CharDev -> Driver: my_ioctl(cmd, arg)
+Driver -> Driver: Validate command
+Driver -> Hardware: Hardware-specific operation
+Driver -> Driver: copy_to_user() if needed
+CharDev --> VFS: return 0
+VFS --> Userspace: return 0
+
+note right of Driver
+  Must handle:
+  - User/kernel buffer copy
+  - Permission checks
+  - Error codes (EFAULT, EINVAL, etc)
+  - Locking (spinlock for quick ops)
+end note
+
+@enduml

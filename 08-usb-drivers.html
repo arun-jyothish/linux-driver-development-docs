@@ -1,0 +1,712 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<!-- 2026-08-17 Mon 20:37 -->
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>USB Drivers</title>
+<meta name="author" content="Arun Jyothish K" />
+<meta name="generator" content="Org Mode" />
+<style type="text/css">
+  #content { max-width: 60em; margin: auto; }
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #e6e6e6;
+    border-radius: 3px;
+    background-color: #f2f2f2;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: auto;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    top: -8px;
+    right: 12px;
+    padding: 3px;
+    color: #555;
+    background-color: #f2f2f299;
+  }
+  pre.src:hover:before { display: inline; margin-top: 14px;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-authinfo::before { content: 'Authinfo'; }
+  pre.src-c:before { content: 'C'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'JavaScript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .equation-container {
+    display: table;
+    text-align: center;
+    width: 100%;
+  }
+  .equation {
+    vertical-align: middle;
+  }
+  .equation-label {
+    display: table-cell;
+    text-align: right;
+    vertical-align: middle;
+  }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { }
+</style>
+<link rel="stylesheet" type="text/css" href="/home/jeis/.apps/emacs-styles/light_green.css" />
+</head>
+<body>
+<div id="content" class="content">
+<h1 class="title">USB Drivers</h1>
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#org38322fa">1. USB Driver Fundamentals</a></li>
+<li><a href="#orgc4c127a">2. Driver Registration</a></li>
+<li><a href="#orgf649986">3. URB (USB Request Block)</a></li>
+<li><a href="#org2728da3">4. USB Pipes</a></li>
+<li><a href="#org88efe37">5. Control Transfers (Setup Requests)</a></li>
+<li><a href="#org234c23d">6. Example: Simple USB Device Driver</a></li>
+<li><a href="#org437936e">7. Userspace Access (via libusb)</a></li>
+<li><a href="#orgaa5e8c9">8. Common Patterns</a></li>
+<li><a href="#org8cdce66">9. USB Enumeration Diagram</a></li>
+<li><a href="#org2eefb7b">10. See Also</a></li>
+</ul>
+</div>
+</div>
+<p>
+<b>USB device drivers: URB (USB Request Block), endpoints, async transfers, HID. Includes simple USB device example.</b>
+</p>
+<div id="outline-container-org38322fa" class="outline-2">
+<h2 id="org38322fa"><span class="section-number-2">1.</span> USB Driver Fundamentals</h2>
+<div class="outline-text-2" id="text-1">
+<p>
+USB drivers communicate via:
+</p>
+<ul class="org-ul">
+<li><b>Descriptors</b>: device, config, interface, endpoint (static hardware metadata)</li>
+<li><b>URBs</b>: USB Request Blocks (async transfer requests)</li>
+<li><b>Endpoints</b>: unidirectional pipes (CONTROL, INTERRUPT, BULK, ISOC)</li>
+</ul>
+
+<p>
+Kernel abstracts USB devices via <code>struct usb_device</code> and drivers via <code>struct usb_driver</code>.
+</p>
+</div>
+</div>
+<div id="outline-container-orgc4c127a" class="outline-2">
+<h2 id="orgc4c127a"><span class="section-number-2">2.</span> Driver Registration</h2>
+<div class="outline-text-2" id="text-2">
+<div class="org-src-container">
+<pre class="src src-c"><code><span style="color: #FF1493;">#include</span> <span style="color: #AF87FF;">&lt;</span><span style="color: #CDC673;">linux/usb.h</span><span style="color: #AF87FF;">&gt;</span>
+<span style="color: #FF1493;">#include</span> <span style="color: #AF87FF;">&lt;</span><span style="color: #CDC673;">linux/usb/input.h</span><span style="color: #AF87FF;">&gt;</span>
+
+<span style="color: #8B8878;">// </span><span style="color: #8B8878;">Device ID table (matches VID:PID pairs)
+</span><span style="color: #FF1493;">static</span> <span style="color: #FF1493;">const</span> <span style="color: #FF1493;">struct</span> <span style="color: #5FD7FF;">usb_device_id</span> <span style="color: #FF8C00;">my_usb_devices</span><span style="color: #AF87FF;">[]</span> = <span style="color: #AF87FF;">{</span>
+    <span style="color: #5FD7FF;">{</span> USB_DEVICE<span style="color: #87D700;">(</span><span style="color: #AF87FF;">0x1234</span>, <span style="color: #AF87FF;">0x5678</span><span style="color: #87D700;">)</span> <span style="color: #5FD7FF;">}</span>,      <span style="color: #8B8878;">// </span><span style="color: #8B8878;">Vendor ID 0x1234, Product ID 0x5678
+</span>    <span style="color: #5FD7FF;">{</span> USB_DEVICE<span style="color: #87D700;">(</span><span style="color: #AF87FF;">0x1234</span>, <span style="color: #AF87FF;">0x5679</span><span style="color: #87D700;">)</span> <span style="color: #5FD7FF;">}</span>,
+    <span style="color: #5FD7FF;">{</span> <span style="color: #8B8878;">/* </span><span style="color: #8B8878;">terminator</span><span style="color: #8B8878;"> */</span> <span style="color: #5FD7FF;">}</span>
+<span style="color: #AF87FF;">}</span>;
+<span style="color: #87D700;">MODULE_DEVICE_TABLE</span><span style="color: #AF87FF;">(</span>usb, my_usb_devices<span style="color: #AF87FF;">)</span>;
+
+<span style="color: #FF1493;">struct</span> <span style="color: #5FD7FF;">my_usb_dev</span> <span style="color: #AF87FF;">{</span>
+    <span style="color: #FF1493;">struct</span> <span style="color: #5FD7FF;">usb_device</span> *<span style="color: #FF8C00;">udev</span>;            <span style="color: #8B8878;">// </span><span style="color: #8B8878;">underlying USB device
+</span>    <span style="color: #FF1493;">struct</span> <span style="color: #5FD7FF;">usb_interface</span> *<span style="color: #FF8C00;">interface</span>;    <span style="color: #8B8878;">// </span><span style="color: #8B8878;">selected interface
+</span>    <span style="color: #5FD7FF;">unsigned</span> <span style="color: #5FD7FF;">char</span> *<span style="color: #FF8C00;">bulk_in_buffer</span>;
+    <span style="color: #5FD7FF;">size_t</span> <span style="color: #FF8C00;">bulk_in_size</span>;
+    <span style="color: #5FD7FF;">__u8</span> <span style="color: #FF8C00;">bulk_in_endpointAddr</span>;
+    <span style="color: #5FD7FF;">__u8</span> <span style="color: #FF8C00;">bulk_out_endpointAddr</span>;
+
+    <span style="color: #FF1493;">struct</span> <span style="color: #5FD7FF;">urb</span> *<span style="color: #FF8C00;">bulk_in_urb</span>;            <span style="color: #8B8878;">// </span><span style="color: #8B8878;">async read request
+</span>    <span style="color: #FF1493;">struct</span> <span style="color: #5FD7FF;">urb</span> *<span style="color: #FF8C00;">bulk_out_urb</span>;           <span style="color: #8B8878;">// </span><span style="color: #8B8878;">async write request
+</span><span style="color: #AF87FF;">}</span>;
+
+<span style="color: #FF1493;">static</span> <span style="color: #5FD7FF;">int</span> <span style="color: #87D700;">my_usb_probe</span><span style="color: #AF87FF;">(</span><span style="color: #FF1493;">struct</span> <span style="color: #5FD7FF;">usb_interface</span> *<span style="color: #FF8C00;">intf</span>,
+                       <span style="color: #FF1493;">const</span> <span style="color: #FF1493;">struct</span> <span style="color: #5FD7FF;">usb_device_id</span> *<span style="color: #FF8C00;">id</span><span style="color: #AF87FF;">)</span>
+<span style="color: #AF87FF;">{</span>
+    <span style="color: #FF1493;">struct</span> <span style="color: #5FD7FF;">usb_device</span> *<span style="color: #FF8C00;">udev</span> = interface_to_usbdev<span style="color: #5FD7FF;">(</span>intf<span style="color: #5FD7FF;">)</span>;
+    <span style="color: #FF1493;">struct</span> <span style="color: #5FD7FF;">usb_host_interface</span> *<span style="color: #FF8C00;">altsetting</span> = intf-&gt;cur_altsetting;
+    <span style="color: #FF1493;">struct</span> <span style="color: #5FD7FF;">usb_endpoint_descriptor</span> *<span style="color: #FF8C00;">endpoint</span>;
+    <span style="color: #FF1493;">struct</span> <span style="color: #5FD7FF;">my_usb_dev</span> *<span style="color: #FF8C00;">dev</span>;
+    <span style="color: #5FD7FF;">int</span> <span style="color: #FF8C00;">retval</span> = -ENOMEM;
+    <span style="color: #5FD7FF;">int</span> <span style="color: #FF8C00;">i</span>;
+
+    dev = kzalloc<span style="color: #5FD7FF;">(</span><span style="color: #FF1493;">sizeof</span><span style="color: #87D700;">(</span>*dev<span style="color: #87D700;">)</span>, GFP_KERNEL<span style="color: #5FD7FF;">)</span>;
+    <span style="color: #FF1493;">if</span> <span style="color: #5FD7FF;">(</span><span style="color: #CDC673; font-weight: bold;">!</span>dev<span style="color: #5FD7FF;">)</span>
+        <span style="color: #FF1493;">return</span> -ENOMEM;
+
+    dev-&gt;udev = usb_get_dev<span style="color: #5FD7FF;">(</span>udev<span style="color: #5FD7FF;">)</span>;
+    dev-&gt;interface = intf;
+
+    <span style="color: #8B8878;">// </span><span style="color: #8B8878;">Find bulk endpoints
+</span>    <span style="color: #FF1493;">for</span> <span style="color: #5FD7FF;">(</span>i = <span style="color: #AF87FF;">0</span>; i &lt; altsetting-&gt;desc.bNumEndpoints; i++<span style="color: #5FD7FF;">)</span> <span style="color: #5FD7FF;">{</span>
+        endpoint = &amp;altsetting-&gt;endpoint<span style="color: #87D700;">[</span>i<span style="color: #87D700;">]</span>.desc;
+
+        <span style="color: #FF1493;">if</span> <span style="color: #87D700;">(</span><span style="color: #CDC673; font-weight: bold;">!</span>dev-&gt;bulk_in_endpointAddr &amp;&amp; usb_endpoint_is_bulk_in<span style="color: #FF8C00;">(</span>endpoint<span style="color: #FF8C00;">)</span><span style="color: #87D700;">)</span> <span style="color: #87D700;">{</span>
+            dev-&gt;bulk_in_endpointAddr = endpoint-&gt;bEndpointAddress;
+            dev-&gt;bulk_in_size = usb_endpoint_maxp<span style="color: #FF8C00;">(</span>endpoint<span style="color: #FF8C00;">)</span>;
+        <span style="color: #87D700;">}</span>
+
+        <span style="color: #FF1493;">if</span> <span style="color: #87D700;">(</span><span style="color: #CDC673; font-weight: bold;">!</span>dev-&gt;bulk_out_endpointAddr &amp;&amp; usb_endpoint_is_bulk_out<span style="color: #FF8C00;">(</span>endpoint<span style="color: #FF8C00;">)</span><span style="color: #87D700;">)</span> <span style="color: #87D700;">{</span>
+            dev-&gt;bulk_out_endpointAddr = endpoint-&gt;bEndpointAddress;
+        <span style="color: #87D700;">}</span>
+    <span style="color: #5FD7FF;">}</span>
+
+    <span style="color: #FF1493;">if</span> <span style="color: #5FD7FF;">(</span><span style="color: #CDC673; font-weight: bold;">!</span>dev-&gt;bulk_in_endpointAddr || <span style="color: #CDC673; font-weight: bold;">!</span>dev-&gt;bulk_out_endpointAddr<span style="color: #5FD7FF;">)</span> <span style="color: #5FD7FF;">{</span>
+        dev_err<span style="color: #87D700;">(</span>&amp;intf-&gt;dev, <span style="color: #CDC673;">"Could not find bulk endpoints\n"</span><span style="color: #87D700;">)</span>;
+        retval = -ENODEV;
+        <span style="color: #FF1493;">goto</span> <span style="color: #AF87FF;">error</span>;
+    <span style="color: #5FD7FF;">}</span>
+
+    <span style="color: #8B8878;">// </span><span style="color: #8B8878;">Allocate RX buffer
+</span>    dev-&gt;bulk_in_buffer = kmalloc<span style="color: #5FD7FF;">(</span>dev-&gt;bulk_in_size, GFP_KERNEL<span style="color: #5FD7FF;">)</span>;
+    <span style="color: #FF1493;">if</span> <span style="color: #5FD7FF;">(</span><span style="color: #CDC673; font-weight: bold;">!</span>dev-&gt;bulk_in_buffer<span style="color: #5FD7FF;">)</span> <span style="color: #5FD7FF;">{</span>
+        retval = -ENOMEM;
+        <span style="color: #FF1493;">goto</span> <span style="color: #AF87FF;">error</span>;
+    <span style="color: #5FD7FF;">}</span>
+
+    <span style="color: #8B8878;">// </span><span style="color: #8B8878;">Create URBs
+</span>    dev-&gt;bulk_in_urb = usb_alloc_urb<span style="color: #5FD7FF;">(</span><span style="color: #AF87FF;">0</span>, GFP_KERNEL<span style="color: #5FD7FF;">)</span>;
+    <span style="color: #FF1493;">if</span> <span style="color: #5FD7FF;">(</span><span style="color: #CDC673; font-weight: bold;">!</span>dev-&gt;bulk_in_urb<span style="color: #5FD7FF;">)</span> <span style="color: #5FD7FF;">{</span>
+        retval = -ENOMEM;
+        <span style="color: #FF1493;">goto</span> <span style="color: #AF87FF;">error</span>;
+    <span style="color: #5FD7FF;">}</span>
+
+    dev-&gt;bulk_out_urb = usb_alloc_urb<span style="color: #5FD7FF;">(</span><span style="color: #AF87FF;">0</span>, GFP_KERNEL<span style="color: #5FD7FF;">)</span>;
+    <span style="color: #FF1493;">if</span> <span style="color: #5FD7FF;">(</span><span style="color: #CDC673; font-weight: bold;">!</span>dev-&gt;bulk_out_urb<span style="color: #5FD7FF;">)</span> <span style="color: #5FD7FF;">{</span>
+        retval = -ENOMEM;
+        <span style="color: #FF1493;">goto</span> <span style="color: #AF87FF;">error</span>;
+    <span style="color: #5FD7FF;">}</span>
+
+    <span style="color: #8B8878;">// </span><span style="color: #8B8878;">Register device for user access
+</span>    usb_set_intfdata<span style="color: #5FD7FF;">(</span>intf, dev<span style="color: #5FD7FF;">)</span>;
+
+    dev_info<span style="color: #5FD7FF;">(</span>&amp;intf-&gt;dev, <span style="color: #CDC673;">"USB device connected\n"</span><span style="color: #5FD7FF;">)</span>;
+    <span style="color: #FF1493;">return</span> <span style="color: #AF87FF;">0</span>;
+
+<span style="color: #AF87FF;">error</span>:
+    <span style="color: #FF1493;">if</span> <span style="color: #5FD7FF;">(</span>dev<span style="color: #5FD7FF;">)</span> <span style="color: #5FD7FF;">{</span>
+        usb_free_urb<span style="color: #87D700;">(</span>dev-&gt;bulk_in_urb<span style="color: #87D700;">)</span>;
+        usb_free_urb<span style="color: #87D700;">(</span>dev-&gt;bulk_out_urb<span style="color: #87D700;">)</span>;
+        kfree<span style="color: #87D700;">(</span>dev-&gt;bulk_in_buffer<span style="color: #87D700;">)</span>;
+        usb_put_dev<span style="color: #87D700;">(</span>dev-&gt;udev<span style="color: #87D700;">)</span>;
+        kfree<span style="color: #87D700;">(</span>dev<span style="color: #87D700;">)</span>;
+    <span style="color: #5FD7FF;">}</span>
+    <span style="color: #FF1493;">return</span> retval;
+<span style="color: #AF87FF;">}</span>
+
+<span style="color: #FF1493;">static</span> <span style="color: #5FD7FF;">void</span> <span style="color: #87D700;">my_usb_disconnect</span><span style="color: #AF87FF;">(</span><span style="color: #FF1493;">struct</span> <span style="color: #5FD7FF;">usb_interface</span> *<span style="color: #FF8C00;">intf</span><span style="color: #AF87FF;">)</span>
+<span style="color: #AF87FF;">{</span>
+    <span style="color: #FF1493;">struct</span> <span style="color: #5FD7FF;">my_usb_dev</span> *<span style="color: #FF8C00;">dev</span> = usb_get_intfdata<span style="color: #5FD7FF;">(</span>intf<span style="color: #5FD7FF;">)</span>;
+
+    usb_set_intfdata<span style="color: #5FD7FF;">(</span>intf, <span style="color: #AF87FF;">NULL</span><span style="color: #5FD7FF;">)</span>;
+
+    <span style="color: #8B8878;">// </span><span style="color: #8B8878;">Unlink pending URBs
+</span>    usb_kill_urb<span style="color: #5FD7FF;">(</span>dev-&gt;bulk_in_urb<span style="color: #5FD7FF;">)</span>;
+    usb_kill_urb<span style="color: #5FD7FF;">(</span>dev-&gt;bulk_out_urb<span style="color: #5FD7FF;">)</span>;
+
+    <span style="color: #8B8878;">// </span><span style="color: #8B8878;">Cleanup
+</span>    usb_free_urb<span style="color: #5FD7FF;">(</span>dev-&gt;bulk_in_urb<span style="color: #5FD7FF;">)</span>;
+    usb_free_urb<span style="color: #5FD7FF;">(</span>dev-&gt;bulk_out_urb<span style="color: #5FD7FF;">)</span>;
+    kfree<span style="color: #5FD7FF;">(</span>dev-&gt;bulk_in_buffer<span style="color: #5FD7FF;">)</span>;
+    usb_put_dev<span style="color: #5FD7FF;">(</span>dev-&gt;udev<span style="color: #5FD7FF;">)</span>;
+    kfree<span style="color: #5FD7FF;">(</span>dev<span style="color: #5FD7FF;">)</span>;
+
+    dev_info<span style="color: #5FD7FF;">(</span>&amp;intf-&gt;dev, <span style="color: #CDC673;">"USB device disconnected\n"</span><span style="color: #5FD7FF;">)</span>;
+<span style="color: #AF87FF;">}</span>
+
+<span style="color: #FF1493;">static</span> <span style="color: #FF1493;">struct</span> <span style="color: #5FD7FF;">usb_driver</span> <span style="color: #FF8C00;">my_usb_driver</span> = <span style="color: #AF87FF;">{</span>
+    .name = <span style="color: #CDC673;">"my_usb_device"</span>,
+    .probe = my_usb_probe,
+    .disconnect = my_usb_disconnect,
+    .id_table = my_usb_devices,
+<span style="color: #AF87FF;">}</span>;
+
+<span style="color: #87D700;">module_usb_driver</span><span style="color: #AF87FF;">(</span>my_usb_driver<span style="color: #AF87FF;">)</span>;
+</code></pre>
+</div>
+</div>
+</div>
+<div id="outline-container-orgf649986" class="outline-2">
+<h2 id="orgf649986"><span class="section-number-2">3.</span> URB (USB Request Block)</h2>
+<div class="outline-text-2" id="text-3">
+<p>
+URBs are async transfer requests. Setup, submit, completion callback handles transfer:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-c"><code><span style="color: #8B8878;">// </span><span style="color: #8B8878;">Bulk read (async)
+</span><span style="color: #FF1493;">static</span> <span style="color: #5FD7FF;">void</span> <span style="color: #87D700;">my_read_bulk_callback</span><span style="color: #AF87FF;">(</span><span style="color: #FF1493;">struct</span> <span style="color: #5FD7FF;">urb</span> *<span style="color: #FF8C00;">urb</span><span style="color: #AF87FF;">)</span>
+<span style="color: #AF87FF;">{</span>
+    <span style="color: #FF1493;">struct</span> <span style="color: #5FD7FF;">my_usb_dev</span> *<span style="color: #FF8C00;">dev</span> = urb-&gt;context;
+
+    <span style="color: #FF1493;">if</span> <span style="color: #5FD7FF;">(</span>urb-&gt;status<span style="color: #5FD7FF;">)</span> <span style="color: #5FD7FF;">{</span>
+        <span style="color: #FF1493;">if</span> <span style="color: #87D700;">(</span>urb-&gt;status == -ENOENT ||
+            urb-&gt;status == -ECONNRESET ||
+            urb-&gt;status == -ESHUTDOWN<span style="color: #87D700;">)</span> <span style="color: #87D700;">{</span>
+            <span style="color: #8B8878;">// </span><span style="color: #8B8878;">Device disconnected or shutdown
+</span>            dev_dbg<span style="color: #FF8C00;">(</span>&amp;dev-&gt;interface-&gt;dev, <span style="color: #CDC673;">"read unlinked\n"</span><span style="color: #FF8C00;">)</span>;
+        <span style="color: #87D700;">}</span> <span style="color: #FF1493;">else</span> <span style="color: #87D700;">{</span>
+            dev_err<span style="color: #FF8C00;">(</span>&amp;dev-&gt;interface-&gt;dev, <span style="color: #CDC673;">"read error: %d\n"</span>, urb-&gt;status<span style="color: #FF8C00;">)</span>;
+        <span style="color: #87D700;">}</span>
+        <span style="color: #FF1493;">return</span>;
+    <span style="color: #5FD7FF;">}</span>
+
+    <span style="color: #8B8878;">// </span><span style="color: #8B8878;">Process received data
+</span>    pr_info<span style="color: #5FD7FF;">(</span><span style="color: #CDC673;">"Received %d bytes\n"</span>, urb-&gt;actual_length<span style="color: #5FD7FF;">)</span>;
+
+    <span style="color: #8B8878;">// </span><span style="color: #8B8878;">Resubmit for continuous reading
+</span>    usb_fill_bulk_urb<span style="color: #5FD7FF;">(</span>dev-&gt;bulk_in_urb,
+                      dev-&gt;udev,
+                      usb_rcvbulkpipe<span style="color: #87D700;">(</span>dev-&gt;udev, dev-&gt;bulk_in_endpointAddr<span style="color: #87D700;">)</span>,
+                      dev-&gt;bulk_in_buffer,
+                      dev-&gt;bulk_in_size,
+                      my_read_bulk_callback,
+                      dev<span style="color: #5FD7FF;">)</span>;
+
+    usb_submit_urb<span style="color: #5FD7FF;">(</span>dev-&gt;bulk_in_urb, GFP_ATOMIC<span style="color: #5FD7FF;">)</span>;
+<span style="color: #AF87FF;">}</span>
+
+<span style="color: #8B8878;">// </span><span style="color: #8B8878;">Submit read
+</span><span style="color: #FF1493;">static</span> <span style="color: #5FD7FF;">int</span> <span style="color: #87D700;">my_start_reading</span><span style="color: #AF87FF;">(</span><span style="color: #FF1493;">struct</span> <span style="color: #5FD7FF;">my_usb_dev</span> *<span style="color: #FF8C00;">dev</span><span style="color: #AF87FF;">)</span>
+<span style="color: #AF87FF;">{</span>
+    <span style="color: #5FD7FF;">int</span> <span style="color: #FF8C00;">retval</span>;
+
+    usb_fill_bulk_urb<span style="color: #5FD7FF;">(</span>dev-&gt;bulk_in_urb,
+                      dev-&gt;udev,
+                      usb_rcvbulkpipe<span style="color: #87D700;">(</span>dev-&gt;udev, dev-&gt;bulk_in_endpointAddr<span style="color: #87D700;">)</span>,
+                      dev-&gt;bulk_in_buffer,
+                      dev-&gt;bulk_in_size,
+                      my_read_bulk_callback,
+                      dev<span style="color: #5FD7FF;">)</span>;
+
+    retval = usb_submit_urb<span style="color: #5FD7FF;">(</span>dev-&gt;bulk_in_urb, GFP_KERNEL<span style="color: #5FD7FF;">)</span>;
+    <span style="color: #FF1493;">if</span> <span style="color: #5FD7FF;">(</span>retval<span style="color: #5FD7FF;">)</span>
+        dev_err<span style="color: #5FD7FF;">(</span>&amp;dev-&gt;interface-&gt;dev, <span style="color: #CDC673;">"failed to submit URB: %d\n"</span>, retval<span style="color: #5FD7FF;">)</span>;
+
+    <span style="color: #FF1493;">return</span> retval;
+<span style="color: #AF87FF;">}</span>
+
+<span style="color: #8B8878;">// </span><span style="color: #8B8878;">Bulk write (sync for simplicity)
+</span><span style="color: #FF1493;">static</span> <span style="color: #5FD7FF;">int</span> <span style="color: #87D700;">my_write_bulk</span><span style="color: #AF87FF;">(</span><span style="color: #FF1493;">struct</span> <span style="color: #5FD7FF;">my_usb_dev</span> *<span style="color: #FF8C00;">dev</span>, <span style="color: #FF1493;">const</span> <span style="color: #5FD7FF;">void</span> *<span style="color: #FF8C00;">data</span>, <span style="color: #5FD7FF;">size_t</span> <span style="color: #FF8C00;">len</span><span style="color: #AF87FF;">)</span>
+<span style="color: #AF87FF;">{</span>
+    <span style="color: #5FD7FF;">int</span> <span style="color: #FF8C00;">actual_length</span>;
+    <span style="color: #5FD7FF;">int</span> <span style="color: #FF8C00;">retval</span>;
+
+    retval = usb_bulk_msg<span style="color: #5FD7FF;">(</span>dev-&gt;udev,
+                         usb_sndbulkpipe<span style="color: #87D700;">(</span>dev-&gt;udev, dev-&gt;bulk_out_endpointAddr<span style="color: #87D700;">)</span>,
+                         <span style="color: #87D700;">(</span><span style="color: #5FD7FF;">void</span> *<span style="color: #87D700;">)</span>data,
+                         len,
+                         &amp;actual_length,
+                         <span style="color: #AF87FF;">5000</span><span style="color: #5FD7FF;">)</span>;  <span style="color: #8B8878;">// </span><span style="color: #8B8878;">5 second timeout
+</span>
+    <span style="color: #FF1493;">if</span> <span style="color: #5FD7FF;">(</span>retval &lt; <span style="color: #AF87FF;">0</span><span style="color: #5FD7FF;">)</span>
+        dev_err<span style="color: #5FD7FF;">(</span>&amp;dev-&gt;interface-&gt;dev, <span style="color: #CDC673;">"write error: %d\n"</span>, retval<span style="color: #5FD7FF;">)</span>;
+
+    <span style="color: #FF1493;">return</span> retval;
+<span style="color: #AF87FF;">}</span>
+</code></pre>
+</div>
+</div>
+</div>
+<div id="outline-container-org2728da3" class="outline-2">
+<h2 id="org2728da3"><span class="section-number-2">4.</span> USB Pipes</h2>
+<div class="outline-text-2" id="text-4">
+<p>
+Pipes encode direction and endpoint type:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-c"><code><span style="color: #87D700;">usb_rcvctrlpipe</span><span style="color: #AF87FF;">(</span>dev, endpoint<span style="color: #AF87FF;">)</span>       <span style="color: #8B8878;">// </span><span style="color: #8B8878;">control read (host -&gt; device)
+</span><span style="color: #87D700;">usb_sndctrlpipe</span><span style="color: #AF87FF;">(</span>dev, endpoint<span style="color: #AF87FF;">)</span>       <span style="color: #8B8878;">// </span><span style="color: #8B8878;">control write (device -&gt; host)
+</span>
+<span style="color: #87D700;">usb_rcvbulkpipe</span><span style="color: #AF87FF;">(</span>dev, endpoint<span style="color: #AF87FF;">)</span>       <span style="color: #8B8878;">// </span><span style="color: #8B8878;">bulk read
+</span><span style="color: #87D700;">usb_sndbulkpipe</span><span style="color: #AF87FF;">(</span>dev, endpoint<span style="color: #AF87FF;">)</span>       <span style="color: #8B8878;">// </span><span style="color: #8B8878;">bulk write
+</span>
+<span style="color: #87D700;">usb_rcvintpipe</span><span style="color: #AF87FF;">(</span>dev, endpoint<span style="color: #AF87FF;">)</span>        <span style="color: #8B8878;">// </span><span style="color: #8B8878;">interrupt read
+</span><span style="color: #87D700;">usb_sndintpipe</span><span style="color: #AF87FF;">(</span>dev, endpoint<span style="color: #AF87FF;">)</span>        <span style="color: #8B8878;">// </span><span style="color: #8B8878;">interrupt write
+</span>
+<span style="color: #87D700;">usb_rcvisocpipe</span><span style="color: #AF87FF;">(</span>dev, endpoint<span style="color: #AF87FF;">)</span>       <span style="color: #8B8878;">// </span><span style="color: #8B8878;">isochronous read
+</span><span style="color: #87D700;">usb_sndisocpipe</span><span style="color: #AF87FF;">(</span>dev, endpoint<span style="color: #AF87FF;">)</span>       <span style="color: #8B8878;">// </span><span style="color: #8B8878;">isochronous write</span>
+</code></pre>
+</div>
+</div>
+</div>
+<div id="outline-container-org88efe37" class="outline-2">
+<h2 id="org88efe37"><span class="section-number-2">5.</span> Control Transfers (Setup Requests)</h2>
+<div class="outline-text-2" id="text-5">
+<p>
+Setup packets for device commands:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-c"><code><span style="color: #FF1493;">static</span> <span style="color: #5FD7FF;">int</span> <span style="color: #87D700;">my_usb_control_msg</span><span style="color: #AF87FF;">(</span><span style="color: #FF1493;">struct</span> <span style="color: #5FD7FF;">my_usb_dev</span> *<span style="color: #FF8C00;">dev</span>, <span style="color: #5FD7FF;">u8</span> <span style="color: #FF8C00;">request</span>, <span style="color: #5FD7FF;">u16</span> <span style="color: #FF8C00;">value</span><span style="color: #AF87FF;">)</span>
+<span style="color: #AF87FF;">{</span>
+    <span style="color: #5FD7FF;">int</span> <span style="color: #FF8C00;">retval</span>;
+    <span style="color: #5FD7FF;">unsigned</span> <span style="color: #5FD7FF;">char</span> *<span style="color: #FF8C00;">buf</span>;
+
+    buf = kmalloc<span style="color: #5FD7FF;">(</span><span style="color: #AF87FF;">8</span>, GFP_KERNEL<span style="color: #5FD7FF;">)</span>;
+    <span style="color: #FF1493;">if</span> <span style="color: #5FD7FF;">(</span><span style="color: #CDC673; font-weight: bold;">!</span>buf<span style="color: #5FD7FF;">)</span>
+        <span style="color: #FF1493;">return</span> -ENOMEM;
+
+    <span style="color: #8B8878;">// </span><span style="color: #8B8878;">bmRequestType (direction | type | recipient)
+</span>    <span style="color: #8B8878;">// </span><span style="color: #8B8878;">bRequest, wValue, wIndex, wLength
+</span>    retval = usb_control_msg<span style="color: #5FD7FF;">(</span>dev-&gt;udev,
+                            usb_sndctrlpipe<span style="color: #87D700;">(</span>dev-&gt;udev, <span style="color: #AF87FF;">0</span><span style="color: #87D700;">)</span>,
+                            request,
+                            USB_DIR_OUT | USB_TYPE_VENDOR | USB_RECIP_DEVICE,
+                            value,
+                            <span style="color: #AF87FF;">0</span>,
+                            buf,
+                            <span style="color: #AF87FF;">8</span>,
+                            <span style="color: #AF87FF;">5000</span><span style="color: #5FD7FF;">)</span>;  <span style="color: #8B8878;">// </span><span style="color: #8B8878;">timeout ms
+</span>
+    kfree<span style="color: #5FD7FF;">(</span>buf<span style="color: #5FD7FF;">)</span>;
+    <span style="color: #FF1493;">return</span> retval;
+<span style="color: #AF87FF;">}</span>
+</code></pre>
+</div>
+</div>
+</div>
+<div id="outline-container-org234c23d" class="outline-2">
+<h2 id="org234c23d"><span class="section-number-2">6.</span> Example: Simple USB Device Driver</h2>
+<div class="outline-text-2" id="text-6">
+<p>
+Minimal USB device with read/write endpoints:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-c"><code><span style="color: #8B8878;">// </span><span style="color: #8B8878;">usb_simple.c
+</span><span style="color: #FF1493;">#include</span> <span style="color: #AF87FF;">&lt;</span><span style="color: #CDC673;">linux/module.h</span><span style="color: #AF87FF;">&gt;</span>
+<span style="color: #FF1493;">#include</span> <span style="color: #AF87FF;">&lt;</span><span style="color: #CDC673;">linux/usb.h</span><span style="color: #AF87FF;">&gt;</span>
+
+<span style="color: #FF1493;">#define</span> <span style="color: #FF8C00;">VENDOR_ID</span>  <span style="color: #AF87FF;">0x1234</span>
+<span style="color: #FF1493;">#define</span> <span style="color: #FF8C00;">PRODUCT_ID</span> <span style="color: #AF87FF;">0x5678</span>
+
+<span style="color: #FF1493;">static</span> <span style="color: #FF1493;">const</span> <span style="color: #FF1493;">struct</span> <span style="color: #5FD7FF;">usb_device_id</span> <span style="color: #FF8C00;">usb_device_table</span><span style="color: #AF87FF;">[]</span> = <span style="color: #AF87FF;">{</span>
+    <span style="color: #5FD7FF;">{</span> USB_DEVICE<span style="color: #87D700;">(</span>VENDOR_ID, PRODUCT_ID<span style="color: #87D700;">)</span> <span style="color: #5FD7FF;">}</span>,
+    <span style="color: #5FD7FF;">{</span> <span style="color: #5FD7FF;">}</span>
+<span style="color: #AF87FF;">}</span>;
+<span style="color: #87D700;">MODULE_DEVICE_TABLE</span><span style="color: #AF87FF;">(</span>usb, usb_device_table<span style="color: #AF87FF;">)</span>;
+
+<span style="color: #FF1493;">struct</span> <span style="color: #5FD7FF;">usb_device_ctx</span> <span style="color: #AF87FF;">{</span>
+    <span style="color: #FF1493;">struct</span> <span style="color: #5FD7FF;">usb_device</span> *<span style="color: #FF8C00;">udev</span>;
+    <span style="color: #FF1493;">struct</span> <span style="color: #5FD7FF;">usb_interface</span> *<span style="color: #FF8C00;">intf</span>;
+    <span style="color: #5FD7FF;">unsigned</span> <span style="color: #5FD7FF;">char</span> *<span style="color: #FF8C00;">in_buffer</span>;
+    <span style="color: #5FD7FF;">unsigned</span> <span style="color: #5FD7FF;">char</span> *<span style="color: #FF8C00;">out_buffer</span>;
+    <span style="color: #5FD7FF;">__u8</span> <span style="color: #FF8C00;">in_ep</span>, <span style="color: #FF8C00;">out_ep</span>;
+<span style="color: #AF87FF;">}</span>;
+
+<span style="color: #FF1493;">static</span> <span style="color: #5FD7FF;">int</span> <span style="color: #87D700;">usb_probe</span><span style="color: #AF87FF;">(</span><span style="color: #FF1493;">struct</span> <span style="color: #5FD7FF;">usb_interface</span> *<span style="color: #FF8C00;">intf</span>, <span style="color: #FF1493;">const</span> <span style="color: #FF1493;">struct</span> <span style="color: #5FD7FF;">usb_device_id</span> *<span style="color: #FF8C00;">id</span><span style="color: #AF87FF;">)</span>
+<span style="color: #AF87FF;">{</span>
+    <span style="color: #FF1493;">struct</span> <span style="color: #5FD7FF;">usb_device_ctx</span> *<span style="color: #FF8C00;">ctx</span>;
+    <span style="color: #FF1493;">struct</span> <span style="color: #5FD7FF;">usb_device</span> *<span style="color: #FF8C00;">udev</span> = interface_to_usbdev<span style="color: #5FD7FF;">(</span>intf<span style="color: #5FD7FF;">)</span>;
+    <span style="color: #FF1493;">struct</span> <span style="color: #5FD7FF;">usb_endpoint_descriptor</span> *<span style="color: #FF8C00;">in_ep</span> = <span style="color: #AF87FF;">NULL</span>, *<span style="color: #FF8C00;">out_ep</span> = <span style="color: #AF87FF;">NULL</span>;
+    <span style="color: #FF1493;">struct</span> <span style="color: #5FD7FF;">usb_host_interface</span> *<span style="color: #FF8C00;">altsetting</span> = intf-&gt;cur_altsetting;
+    <span style="color: #5FD7FF;">int</span> <span style="color: #FF8C00;">i</span>, <span style="color: #FF8C00;">retval</span> = -ENOMEM;
+
+    ctx = kzalloc<span style="color: #5FD7FF;">(</span><span style="color: #FF1493;">sizeof</span><span style="color: #87D700;">(</span>*ctx<span style="color: #87D700;">)</span>, GFP_KERNEL<span style="color: #5FD7FF;">)</span>;
+    <span style="color: #FF1493;">if</span> <span style="color: #5FD7FF;">(</span><span style="color: #CDC673; font-weight: bold;">!</span>ctx<span style="color: #5FD7FF;">)</span>
+        <span style="color: #FF1493;">return</span> -ENOMEM;
+
+    ctx-&gt;udev = usb_get_dev<span style="color: #5FD7FF;">(</span>udev<span style="color: #5FD7FF;">)</span>;
+    ctx-&gt;intf = intf;
+
+    <span style="color: #8B8878;">// </span><span style="color: #8B8878;">Find endpoints
+</span>    <span style="color: #FF1493;">for</span> <span style="color: #5FD7FF;">(</span>i = <span style="color: #AF87FF;">0</span>; i &lt; altsetting-&gt;desc.bNumEndpoints; i++<span style="color: #5FD7FF;">)</span> <span style="color: #5FD7FF;">{</span>
+        <span style="color: #FF1493;">struct</span> <span style="color: #5FD7FF;">usb_endpoint_descriptor</span> *<span style="color: #FF8C00;">ep</span> = &amp;altsetting-&gt;endpoint<span style="color: #87D700;">[</span>i<span style="color: #87D700;">]</span>.desc;
+
+        <span style="color: #FF1493;">if</span> <span style="color: #87D700;">(</span>usb_endpoint_is_bulk_in<span style="color: #FF8C00;">(</span>ep<span style="color: #FF8C00;">)</span><span style="color: #87D700;">)</span>
+            in_ep = ep;
+        <span style="color: #FF1493;">else</span> <span style="color: #FF1493;">if</span> <span style="color: #87D700;">(</span>usb_endpoint_is_bulk_out<span style="color: #FF8C00;">(</span>ep<span style="color: #FF8C00;">)</span><span style="color: #87D700;">)</span>
+            out_ep = ep;
+    <span style="color: #5FD7FF;">}</span>
+
+    <span style="color: #FF1493;">if</span> <span style="color: #5FD7FF;">(</span><span style="color: #CDC673; font-weight: bold;">!</span>in_ep || <span style="color: #CDC673; font-weight: bold;">!</span>out_ep<span style="color: #5FD7FF;">)</span> <span style="color: #5FD7FF;">{</span>
+        retval = -ENODEV;
+        <span style="color: #FF1493;">goto</span> <span style="color: #AF87FF;">error</span>;
+    <span style="color: #5FD7FF;">}</span>
+
+    ctx-&gt;in_ep = in_ep-&gt;bEndpointAddress;
+    ctx-&gt;out_ep = out_ep-&gt;bEndpointAddress;
+
+    ctx-&gt;in_buffer = kmalloc<span style="color: #5FD7FF;">(</span><span style="color: #AF87FF;">512</span>, GFP_KERNEL<span style="color: #5FD7FF;">)</span>;
+    ctx-&gt;out_buffer = kmalloc<span style="color: #5FD7FF;">(</span><span style="color: #AF87FF;">512</span>, GFP_KERNEL<span style="color: #5FD7FF;">)</span>;
+    <span style="color: #FF1493;">if</span> <span style="color: #5FD7FF;">(</span><span style="color: #CDC673; font-weight: bold;">!</span>ctx-&gt;in_buffer || <span style="color: #CDC673; font-weight: bold;">!</span>ctx-&gt;out_buffer<span style="color: #5FD7FF;">)</span> <span style="color: #5FD7FF;">{</span>
+        retval = -ENOMEM;
+        <span style="color: #FF1493;">goto</span> <span style="color: #AF87FF;">error</span>;
+    <span style="color: #5FD7FF;">}</span>
+
+    usb_set_intfdata<span style="color: #5FD7FF;">(</span>intf, ctx<span style="color: #5FD7FF;">)</span>;
+    dev_info<span style="color: #5FD7FF;">(</span>&amp;intf-&gt;dev, <span style="color: #CDC673;">"USB device connected\n"</span><span style="color: #5FD7FF;">)</span>;
+
+    <span style="color: #FF1493;">return</span> <span style="color: #AF87FF;">0</span>;
+
+<span style="color: #AF87FF;">error</span>:
+    <span style="color: #FF1493;">if</span> <span style="color: #5FD7FF;">(</span>ctx<span style="color: #5FD7FF;">)</span> <span style="color: #5FD7FF;">{</span>
+        kfree<span style="color: #87D700;">(</span>ctx-&gt;in_buffer<span style="color: #87D700;">)</span>;
+        kfree<span style="color: #87D700;">(</span>ctx-&gt;out_buffer<span style="color: #87D700;">)</span>;
+        usb_put_dev<span style="color: #87D700;">(</span>ctx-&gt;udev<span style="color: #87D700;">)</span>;
+        kfree<span style="color: #87D700;">(</span>ctx<span style="color: #87D700;">)</span>;
+    <span style="color: #5FD7FF;">}</span>
+    <span style="color: #FF1493;">return</span> retval;
+<span style="color: #AF87FF;">}</span>
+
+<span style="color: #FF1493;">static</span> <span style="color: #5FD7FF;">void</span> <span style="color: #87D700;">usb_disconnect</span><span style="color: #AF87FF;">(</span><span style="color: #FF1493;">struct</span> <span style="color: #5FD7FF;">usb_interface</span> *<span style="color: #FF8C00;">intf</span><span style="color: #AF87FF;">)</span>
+<span style="color: #AF87FF;">{</span>
+    <span style="color: #FF1493;">struct</span> <span style="color: #5FD7FF;">usb_device_ctx</span> *<span style="color: #FF8C00;">ctx</span> = usb_get_intfdata<span style="color: #5FD7FF;">(</span>intf<span style="color: #5FD7FF;">)</span>;
+
+    <span style="color: #FF1493;">if</span> <span style="color: #5FD7FF;">(</span>ctx<span style="color: #5FD7FF;">)</span> <span style="color: #5FD7FF;">{</span>
+        kfree<span style="color: #87D700;">(</span>ctx-&gt;in_buffer<span style="color: #87D700;">)</span>;
+        kfree<span style="color: #87D700;">(</span>ctx-&gt;out_buffer<span style="color: #87D700;">)</span>;
+        usb_put_dev<span style="color: #87D700;">(</span>ctx-&gt;udev<span style="color: #87D700;">)</span>;
+        kfree<span style="color: #87D700;">(</span>ctx<span style="color: #87D700;">)</span>;
+    <span style="color: #5FD7FF;">}</span>
+
+    dev_info<span style="color: #5FD7FF;">(</span>&amp;intf-&gt;dev, <span style="color: #CDC673;">"USB device disconnected\n"</span><span style="color: #5FD7FF;">)</span>;
+<span style="color: #AF87FF;">}</span>
+
+<span style="color: #FF1493;">static</span> <span style="color: #FF1493;">struct</span> <span style="color: #5FD7FF;">usb_driver</span> <span style="color: #FF8C00;">usb_driver</span> = <span style="color: #AF87FF;">{</span>
+    .name = <span style="color: #CDC673;">"usb_simple"</span>,
+    .probe = usb_probe,
+    .disconnect = usb_disconnect,
+    .id_table = usb_device_table,
+<span style="color: #AF87FF;">}</span>;
+
+<span style="color: #87D700;">module_usb_driver</span><span style="color: #AF87FF;">(</span>usb_driver<span style="color: #AF87FF;">)</span>;
+
+MODULE_LICENSE<span style="color: #AF87FF;">(</span><span style="color: #CDC673;">"GPL"</span><span style="color: #AF87FF;">)</span>;
+MODULE_AUTHOR<span style="color: #AF87FF;">(</span><span style="color: #CDC673;">"Your Name"</span><span style="color: #AF87FF;">)</span>;
+MODULE_DESCRIPTION<span style="color: #AF87FF;">(</span><span style="color: #CDC673;">"Simple USB device driver"</span><span style="color: #AF87FF;">)</span>;
+</code></pre>
+</div>
+</div>
+</div>
+<div id="outline-container-org437936e" class="outline-2">
+<h2 id="org437936e"><span class="section-number-2">7.</span> Userspace Access (via libusb)</h2>
+<div class="outline-text-2" id="text-7">
+<div class="org-src-container">
+<pre class="src src-c"><code><span style="color: #FF1493;">#include</span> <span style="color: #AF87FF;">&lt;</span><span style="color: #CDC673;">libusb-1.0/libusb.h</span><span style="color: #AF87FF;">&gt;</span>
+<span style="color: #FF1493;">#include</span> <span style="color: #AF87FF;">&lt;</span><span style="color: #CDC673;">stdio.h</span><span style="color: #AF87FF;">&gt;</span>
+
+<span style="color: #5FD7FF;">int</span> <span style="color: #87D700;">main</span><span style="color: #AF87FF;">()</span> <span style="color: #AF87FF;">{</span>
+    <span style="color: #5FD7FF;">libusb_device_handle</span> *<span style="color: #FF8C00;">handle</span>;
+    <span style="color: #5FD7FF;">libusb_context</span> *<span style="color: #FF8C00;">ctx</span> = <span style="color: #AF87FF;">NULL</span>;
+    <span style="color: #5FD7FF;">unsigned</span> <span style="color: #5FD7FF;">char</span> <span style="color: #FF8C00;">data</span><span style="color: #5FD7FF;">[</span><span style="color: #AF87FF;">512</span><span style="color: #5FD7FF;">]</span>;
+    <span style="color: #5FD7FF;">int</span> <span style="color: #FF8C00;">transferred</span>;
+
+    libusb_init<span style="color: #5FD7FF;">(</span>&amp;ctx<span style="color: #5FD7FF;">)</span>;
+
+    <span style="color: #8B8878;">// </span><span style="color: #8B8878;">Find device
+</span>    handle = libusb_open_device_with_vid_pid<span style="color: #5FD7FF;">(</span>ctx, VENDOR_ID, PRODUCT_ID<span style="color: #5FD7FF;">)</span>;
+    <span style="color: #FF1493;">if</span> <span style="color: #5FD7FF;">(</span><span style="color: #CDC673; font-weight: bold;">!</span>handle<span style="color: #5FD7FF;">)</span> <span style="color: #5FD7FF;">{</span>
+        fprintf<span style="color: #87D700;">(</span>stderr, <span style="color: #CDC673;">"Device not found\n"</span><span style="color: #87D700;">)</span>;
+        <span style="color: #FF1493;">return</span> <span style="color: #AF87FF;">1</span>;
+    <span style="color: #5FD7FF;">}</span>
+
+    <span style="color: #8B8878;">// </span><span style="color: #8B8878;">Read from bulk IN endpoint
+</span>    libusb_bulk_transfer<span style="color: #5FD7FF;">(</span>handle, <span style="color: #AF87FF;">0x81</span>,  <span style="color: #8B8878;">// </span><span style="color: #8B8878;">endpoint address
+</span>                        data, <span style="color: #FF1493;">sizeof</span><span style="color: #87D700;">(</span>data<span style="color: #87D700;">)</span>,
+                        &amp;transferred, <span style="color: #AF87FF;">5000</span><span style="color: #5FD7FF;">)</span>;
+    printf<span style="color: #5FD7FF;">(</span><span style="color: #CDC673;">"Read %d bytes\n"</span>, transferred<span style="color: #5FD7FF;">)</span>;
+
+    <span style="color: #8B8878;">// </span><span style="color: #8B8878;">Write to bulk OUT endpoint
+</span>    libusb_bulk_transfer<span style="color: #5FD7FF;">(</span>handle, <span style="color: #AF87FF;">0x01</span>,  <span style="color: #8B8878;">// </span><span style="color: #8B8878;">endpoint address
+</span>                        <span style="color: #87D700;">(</span><span style="color: #5FD7FF;">unsigned</span> <span style="color: #5FD7FF;">char</span> *<span style="color: #87D700;">)</span><span style="color: #CDC673;">"hello"</span>, <span style="color: #AF87FF;">5</span>,
+                        &amp;transferred, <span style="color: #AF87FF;">5000</span><span style="color: #5FD7FF;">)</span>;
+
+    libusb_close<span style="color: #5FD7FF;">(</span>handle<span style="color: #5FD7FF;">)</span>;
+    libusb_exit<span style="color: #5FD7FF;">(</span>ctx<span style="color: #5FD7FF;">)</span>;
+
+    <span style="color: #FF1493;">return</span> <span style="color: #AF87FF;">0</span>;
+<span style="color: #AF87FF;">}</span>
+</code></pre>
+</div>
+</div>
+</div>
+<div id="outline-container-orgaa5e8c9" class="outline-2">
+<h2 id="orgaa5e8c9"><span class="section-number-2">8.</span> Common Patterns</h2>
+<div class="outline-text-2" id="text-8">
+<ul class="org-ul">
+<li>Always check URB status in completion callback</li>
+<li>Use <code>usb_get_dev()</code> to increment refcount, <code>usb_put_dev()</code> to decrement</li>
+<li>Kill/unlink pending URBs in disconnect</li>
+<li>Bulk transfers can be sync (<code>usb_bulk_msg</code>) or async (URB-based)</li>
+<li>Use timeouts (5000ms typical) for reliability</li>
+</ul>
+</div>
+</div>
+<div id="outline-container-org8cdce66" class="outline-2">
+<h2 id="org8cdce66"><span class="section-number-2">9.</span> USB Enumeration Diagram</h2>
+<div class="outline-text-2" id="text-9">
+
+<div id="orgb24c5cf" class="figure">
+<p><img src="res/07-usb-enumeration.svg" alt="07-usb-enumeration.svg" class="org-svg" />
+</p>
+</div>
+
+
+<div id="org8c1696e" class="figure">
+<p><img src="res/07-usb-enumeration.svg" alt="07-usb-enumeration.svg" class="org-svg" />
+</p>
+</div>
+</div>
+</div>
+<div id="outline-container-org2eefb7b" class="outline-2">
+<h2 id="org2eefb7b"><span class="section-number-2">10.</span> See Also</h2>
+<div class="outline-text-2" id="text-10">
+<ul class="org-ul">
+<li><a href="01-kernel-module-fundamentals.html#ID-f1a2b3c4-d5e6-47f8-99a1-b2c3d4e5f6a7">Kernel Module Fundamentals</a></li>
+<li><a href="09-debugging-techniques.html#ID-i1j2k3l4-m5n6-4789-99a1-b2c3d4e5f6a7">Debugging Techniques</a></li>
+</ul>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p class="author">Author: Arun Jyothish K</p>
+<p class="date">Created: 2026-08-17 Mon 20:37</p>
+</div>
+</body>
+</html>

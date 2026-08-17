@@ -1,0 +1,62 @@
+@startuml usb_enumeration
+!theme plain
+title USB Device Enumeration & Driver Probe
+
+participant Host as "USB Host\nController"
+participant USBCore as "USB Core\nStack"
+participant USBDriver as "USB Driver\n(my_usb_driver)"
+participant Device as "USB Device"
+
+== Device Connection ==
+Device -> Host: D+/D- signal\n(device detected)
+Host -> USBCore: usb_new_device()
+
+== Enumeration ==
+USBCore -> Device: Get Device Descriptor
+Device --> USBCore: bDeviceClass, idVendor, idProduct
+USBCore -> Device: Set Address
+USBCore -> Device: Get Config Descriptor
+Device --> USBCore: wNumInterfaces, endpoints
+USBCore -> Device: Set Configuration
+
+note right of USBCore
+  Creates usb_device structure
+  Parses descriptors
+  Creates usb_interface objects
+  One interface per configuration
+end note
+
+== Driver Matching ==
+USBCore -> USBCore: Iterate registered\nusb_driver instances
+USBCore -> USBCore: Check id_table\n(idVendor, idProduct match)
+
+alt No driver found
+  USBCore -> USBCore: Device unbound
+else Driver found
+  USBCore -> USBDriver: Call probe()
+end
+
+== Probe Execution ==
+activate USBDriver
+USBDriver -> USBDriver: struct my_usb_dev *dev =\nkzalloc()
+
+USBDriver -> USBDriver: Find bulk endpoints\n(iterate descriptors)
+USBDriver -> USBDriver: Allocate URBs\n(usb_alloc_urb)
+USBDriver -> USBDriver: Allocate buffers
+
+USBDriver -> USBDriver: Submit read URB\n(usb_submit_urb)
+USBDriver -> USBDriver: usb_set_intfdata()
+USBDriver --> USBCore: return 0 (success)
+deactivate USBDriver
+
+USBCore -> USBDriver: probe complete
+
+note right of USBDriver
+  Must call usb_get_dev()
+  to increment refcount
+
+  Can now receive IRQs
+  and URB completions
+end note
+
+@enduml
