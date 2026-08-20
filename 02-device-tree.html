@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2026-08-17 Mon 20:35 -->
+<!-- 2026-08-20 Thu 07:10 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Device Tree (DTS) &amp; Bindings</title>
@@ -203,23 +203,23 @@
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents" role="doc-toc">
 <ul>
-<li><a href="#org9f822fc">1. DTS Structure</a></li>
-<li><a href="#org701fdc0">2. Common Properties</a></li>
-<li><a href="#org98b79ba">3. Device Tree Bindings Documentation</a></li>
-<li><a href="#org4d20427">4. Driver Integration: Platform Device</a></li>
-<li><a href="#orgf27ef38">5. DTS Properties in Code</a></li>
-<li><a href="#org0121826">6. DTS Compilation</a></li>
-<li><a href="#org3b3df64">7. Probe Flow</a></li>
-<li><a href="#org32ebfb8">8. Device Tree Matching Flow</a></li>
-<li><a href="#org3acc2a9">9. See Also</a></li>
+<li><a href="#orgae3a82d">1. DTS Structure</a></li>
+<li><a href="#orgeb57fdb">2. Common Properties</a></li>
+<li><a href="#org6190374">3. Device Tree Bindings Documentation</a></li>
+<li><a href="#org0ce8014">4. Driver Integration: Platform Device</a></li>
+<li><a href="#org91fc167">5. DTS Properties in Code</a></li>
+<li><a href="#org8d57f30">6. DTS Compilation</a></li>
+<li><a href="#org13f83ca">7. Probe Flow</a></li>
+<li><a href="#org17a3757">8. Device Tree Matching Flow</a></li>
+<li><a href="#orga2a4f52">9. See Also</a></li>
 </ul>
 </div>
 </div>
 <p>
 <b>Device tree source (DTS) format, bindings documentation, and integration with driver probe.</b>
 </p>
-<div id="outline-container-org9f822fc" class="outline-2">
-<h2 id="org9f822fc"><span class="section-number-2">1.</span> DTS Structure</h2>
+<div id="outline-container-orgae3a82d" class="outline-2">
+<h2 id="orgae3a82d"><span class="section-number-2">1.</span> DTS Structure</h2>
 <div class="outline-text-2" id="text-1">
 <p>
 Device tree describes hardware in declarative form. Bootloader passes compiled .dtb (device tree blob) to kernel.
@@ -261,8 +261,8 @@ Device tree describes hardware in declarative form. Bootloader passes compiled .
 </div>
 </div>
 </div>
-<div id="outline-container-org701fdc0" class="outline-2">
-<h2 id="org701fdc0"><span class="section-number-2">2.</span> Common Properties</h2>
+<div id="outline-container-orgeb57fdb" class="outline-2">
+<h2 id="orgeb57fdb"><span class="section-number-2">2.</span> Common Properties</h2>
 <div class="outline-text-2" id="text-2">
 <table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
 
@@ -321,8 +321,8 @@ Device tree describes hardware in declarative form. Bootloader passes compiled .
 </table>
 </div>
 </div>
-<div id="outline-container-org98b79ba" class="outline-2">
-<h2 id="org98b79ba"><span class="section-number-2">3.</span> Device Tree Bindings Documentation</h2>
+<div id="outline-container-org6190374" class="outline-2">
+<h2 id="org6190374"><span class="section-number-2">3.</span> Device Tree Bindings Documentation</h2>
 <div class="outline-text-2" id="text-3">
 <p>
 Bindings define the contract between device tree and driver. Bindings live in kernel source:
@@ -362,8 +362,8 @@ Example:
 </div>
 </div>
 </div>
-<div id="outline-container-org4d20427" class="outline-2">
-<h2 id="org4d20427"><span class="section-number-2">4.</span> Driver Integration: Platform Device</h2>
+<div id="outline-container-org0ce8014" class="outline-2">
+<h2 id="org0ce8014"><span class="section-number-2">4.</span> Driver Integration: Platform Device</h2>
 <div class="outline-text-2" id="text-4">
 <p>
 Platform drivers probe via device tree match:
@@ -409,8 +409,8 @@ Platform drivers probe via device tree match:
 </div>
 </div>
 </div>
-<div id="outline-container-orgf27ef38" class="outline-2">
-<h2 id="orgf27ef38"><span class="section-number-2">5.</span> DTS Properties in Code</h2>
+<div id="outline-container-org91fc167" class="outline-2">
+<h2 id="org91fc167"><span class="section-number-2">5.</span> DTS Properties in Code</h2>
 <div class="outline-text-2" id="text-5">
 <p>
 Common <code>of_*</code> functions to read DTS properties:
@@ -443,8 +443,8 @@ Common <code>of_*</code> functions to read DTS properties:
 </div>
 </div>
 </div>
-<div id="outline-container-org0121826" class="outline-2">
-<h2 id="org0121826"><span class="section-number-2">6.</span> DTS Compilation</h2>
+<div id="outline-container-org8d57f30" class="outline-2">
+<h2 id="org8d57f30"><span class="section-number-2">6.</span> DTS Compilation</h2>
 <div class="outline-text-2" id="text-6">
 <p>
 Bootloader/build system compiles .dts → .dtb:
@@ -460,8 +460,8 @@ Bootloader/build system compiles .dts → .dtb:
 </div>
 </div>
 </div>
-<div id="outline-container-org3b3df64" class="outline-2">
-<h2 id="org3b3df64"><span class="section-number-2">7.</span> Probe Flow</h2>
+<div id="outline-container-org13f83ca" class="outline-2">
+<h2 id="org13f83ca"><span class="section-number-2">7.</span> Probe Flow</h2>
 <div class="outline-text-2" id="text-7">
 <ol class="org-ol">
 <li>Bootloader loads .dtb, passes to kernel</li>
@@ -472,35 +472,37 @@ Bootloader/build system compiles .dts → .dtb:
 </ol>
 </div>
 </div>
-<div id="outline-container-org32ebfb8" class="outline-2">
-<h2 id="org32ebfb8"><span class="section-number-2">8.</span> Device Tree Matching Flow</h2>
+<div id="outline-container-org17a3757" class="outline-2">
+<h2 id="org17a3757"><span class="section-number-2">8.</span> Device Tree Matching Flow</h2>
 <div class="outline-text-2" id="text-8">
 
-<div id="org9c79490" class="figure">
+<div id="org38e256b" class="figure">
 <p><img src="res/02-dts-matching-flow.svg" alt="02-dts-matching-flow.svg" class="org-svg" />
 </p>
 </div>
 
 
-<div id="org3f4f018" class="figure">
+<div id="orge6831e8" class="figure">
 <p><img src="res/02-dts-matching-flow.svg" alt="02-dts-matching-flow.svg" class="org-svg" />
 </p>
 </div>
 </div>
 </div>
-<div id="outline-container-org3acc2a9" class="outline-2">
-<h2 id="org3acc2a9"><span class="section-number-2">9.</span> See Also</h2>
+<div id="outline-container-orga2a4f52" class="outline-2">
+<h2 id="orga2a4f52"><span class="section-number-2">9.</span> See Also</h2>
 <div class="outline-text-2" id="text-9">
 <ul class="org-ul">
 <li><a href="01-kernel-module-fundamentals.html#ID-f1a2b3c4-d5e6-47f8-99a1-b2c3d4e5f6a7">Kernel Module Fundamentals</a></li>
 <li><a href="07-platform-drivers.html#ID-g1h2i3j4-k5l6-4789-99a1-b2c3d4e5f6a7">Platform Drivers</a> — full platform driver example</li>
+<li><a href="14-i2c-spi-subsystem.html#ID-41bfcbfa-8054-4ff6-86e9-fc663348d7ed">I2C &amp; SPI Subsystem Drivers</a> — <code>reg=/=interrupts</code> binding usage on bus-attached devices</li>
+<li><a href="11-linux-boot-sequence.html#ID-k1l2m3n4-o5p6-4789-99a1-b2c3d4e5f6a7">Linux Boot Sequence</a> — device tree loading and probe during boot</li>
 </ul>
 </div>
 </div>
 </div>
 <div id="postamble" class="status">
 <p class="author">Author: Arun Jyothish K</p>
-<p class="date">Created: 2026-08-17 Mon 20:35</p>
+<p class="date">Created: 2026-08-20 Thu 07:10</p>
 </div>
 </body>
 </html>

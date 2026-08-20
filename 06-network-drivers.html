@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2026-08-17 Mon 20:36 -->
+<!-- 2026-08-20 Thu 07:10 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Network Drivers</title>
@@ -203,23 +203,23 @@
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents" role="doc-toc">
 <ul>
-<li><a href="#org1883c26">1. Network Device Fundamentals</a></li>
-<li><a href="#orgf28b5ad">2. Device Registration</a></li>
-<li><a href="#orgb9670fb">3. Open/Close</a></li>
-<li><a href="#orgceeaeb8">4. Transmit (TX)</a></li>
-<li><a href="#org3e64dd2">5. Receive (RX) - NAPI Poll</a></li>
-<li><a href="#org1e287e8">6. skbuff (Socket Buffer)</a></li>
-<li><a href="#org51a2c33">7. Example: Virtual Ethernet Driver</a></li>
-<li><a href="#org8a3ffe8">8. Network RX Flow Diagram</a></li>
-<li><a href="#orgae6b993">9. See Also</a></li>
+<li><a href="#orga6a0922">1. Network Device Fundamentals</a></li>
+<li><a href="#org53582b2">2. Device Registration</a></li>
+<li><a href="#org6080a03">3. Open/Close</a></li>
+<li><a href="#org59c4fbb">4. Transmit (TX)</a></li>
+<li><a href="#orgc0c67da">5. Receive (RX) - NAPI Poll</a></li>
+<li><a href="#org94547d7">6. skbuff (Socket Buffer)</a></li>
+<li><a href="#org61793fb">7. Example: Virtual Ethernet Driver</a></li>
+<li><a href="#org65d18d8">8. Network RX Flow Diagram</a></li>
+<li><a href="#org56de90e">9. See Also</a></li>
 </ul>
 </div>
 </div>
 <p>
 <b>Network device drivers: netdev_ops, skbuff (sk_buff), packet handling. Includes virtual ethernet example.</b>
 </p>
-<div id="outline-container-org1883c26" class="outline-2">
-<h2 id="org1883c26"><span class="section-number-2">1.</span> Network Device Fundamentals</h2>
+<div id="outline-container-orga6a0922" class="outline-2">
+<h2 id="orga6a0922"><span class="section-number-2">1.</span> Network Device Fundamentals</h2>
 <div class="outline-text-2" id="text-1">
 <p>
 Network drivers provide packet I/O. Kernel abstracts as <code>struct net_device</code>:
@@ -230,8 +230,8 @@ Network drivers provide packet I/O. Kernel abstracts as <code>struct net_device<
 </ul>
 </div>
 </div>
-<div id="outline-container-orgf28b5ad" class="outline-2">
-<h2 id="orgf28b5ad"><span class="section-number-2">2.</span> Device Registration</h2>
+<div id="outline-container-org53582b2" class="outline-2">
+<h2 id="org53582b2"><span class="section-number-2">2.</span> Device Registration</h2>
 <div class="outline-text-2" id="text-2">
 <div class="org-src-container">
 <pre class="src src-c"><code><span style="color: #FF1493;">#include</span> <span style="color: #AF87FF;">&lt;</span><span style="color: #CDC673;">linux/netdevice.h</span><span style="color: #AF87FF;">&gt;</span>
@@ -312,8 +312,8 @@ Network drivers provide packet I/O. Kernel abstracts as <code>struct net_device<
 </div>
 </div>
 </div>
-<div id="outline-container-orgb9670fb" class="outline-2">
-<h2 id="orgb9670fb"><span class="section-number-2">3.</span> Open/Close</h2>
+<div id="outline-container-org6080a03" class="outline-2">
+<h2 id="org6080a03"><span class="section-number-2">3.</span> Open/Close</h2>
 <div class="outline-text-2" id="text-3">
 <div class="org-src-container">
 <pre class="src src-c"><code><span style="color: #FF1493;">static</span> <span style="color: #5FD7FF;">int</span> <span style="color: #87D700;">my_open</span><span style="color: #AF87FF;">(</span><span style="color: #FF1493;">struct</span> <span style="color: #5FD7FF;">net_device</span> *<span style="color: #FF8C00;">netdev</span><span style="color: #AF87FF;">)</span>
@@ -344,8 +344,8 @@ Network drivers provide packet I/O. Kernel abstracts as <code>struct net_device<
 </div>
 </div>
 </div>
-<div id="outline-container-orgceeaeb8" class="outline-2">
-<h2 id="orgceeaeb8"><span class="section-number-2">4.</span> Transmit (TX)</h2>
+<div id="outline-container-org59c4fbb" class="outline-2">
+<h2 id="org59c4fbb"><span class="section-number-2">4.</span> Transmit (TX)</h2>
 <div class="outline-text-2" id="text-4">
 <p>
 Net stack calls <code>ndo_start_xmit()</code> with packet to send:
@@ -395,8 +395,8 @@ Net stack calls <code>ndo_start_xmit()</code> with packet to send:
 </div>
 </div>
 </div>
-<div id="outline-container-org3e64dd2" class="outline-2">
-<h2 id="org3e64dd2"><span class="section-number-2">5.</span> Receive (RX) - NAPI Poll</h2>
+<div id="outline-container-orgc0c67da" class="outline-2">
+<h2 id="orgc0c67da"><span class="section-number-2">5.</span> Receive (RX) - NAPI Poll</h2>
 <div class="outline-text-2" id="text-5">
 <p>
 Use NAPI (New API) for receive processing — more efficient than interrupt-per-packet:
@@ -497,8 +497,8 @@ Use NAPI (New API) for receive processing — more efficient than interrupt-per-
 </div>
 </div>
 </div>
-<div id="outline-container-org1e287e8" class="outline-2">
-<h2 id="org1e287e8"><span class="section-number-2">6.</span> skbuff (Socket Buffer)</h2>
+<div id="outline-container-org94547d7" class="outline-2">
+<h2 id="org94547d7"><span class="section-number-2">6.</span> skbuff (Socket Buffer)</h2>
 <div class="outline-text-2" id="text-6">
 <p>
 skbuff structure holds packet data and metadata:
@@ -533,8 +533,8 @@ skbuff structure holds packet data and metadata:
 </div>
 </div>
 </div>
-<div id="outline-container-org51a2c33" class="outline-2">
-<h2 id="org51a2c33"><span class="section-number-2">7.</span> Example: Virtual Ethernet Driver</h2>
+<div id="outline-container-org61793fb" class="outline-2">
+<h2 id="org61793fb"><span class="section-number-2">7.</span> Example: Virtual Ethernet Driver</h2>
 <div class="outline-text-2" id="text-7">
 <p>
 Simple virtual network device:
@@ -649,35 +649,37 @@ MODULE_DESCRIPTION<span style="color: #AF87FF;">(</span><span style="color: #CDC
 </div>
 </div>
 </div>
-<div id="outline-container-org8a3ffe8" class="outline-2">
-<h2 id="org8a3ffe8"><span class="section-number-2">8.</span> Network RX Flow Diagram</h2>
+<div id="outline-container-org65d18d8" class="outline-2">
+<h2 id="org65d18d8"><span class="section-number-2">8.</span> Network RX Flow Diagram</h2>
 <div class="outline-text-2" id="text-8">
 
-<div id="org27eab02" class="figure">
+<div id="orgb6f2a5d" class="figure">
 <p><img src="res/05-network-rx-flow.svg" alt="05-network-rx-flow.svg" class="org-svg" />
 </p>
 </div>
 
 
-<div id="orgb2320bb" class="figure">
+<div id="org2c3f209" class="figure">
 <p><img src="res/05-network-rx-flow.svg" alt="05-network-rx-flow.svg" class="org-svg" />
 </p>
 </div>
 </div>
 </div>
-<div id="outline-container-orgae6b993" class="outline-2">
-<h2 id="orgae6b993"><span class="section-number-2">9.</span> See Also</h2>
+<div id="outline-container-org56de90e" class="outline-2">
+<h2 id="org56de90e"><span class="section-number-2">9.</span> See Also</h2>
 <div class="outline-text-2" id="text-9">
 <ul class="org-ul">
 <li><a href="01-kernel-module-fundamentals.html#ID-f1a2b3c4-d5e6-47f8-99a1-b2c3d4e5f6a7">Kernel Module Fundamentals</a></li>
 <li><a href="10-performance.html#ID-j1k2l3m4-n5o6-4789-99a1-b2c3d4e5f6a7">Performance Considerations</a> — NAPI, RCU, lockless queues</li>
+<li><a href="13-dma-and-memory-mapping.html#ID-4fe1ea81-ea79-4b83-8435-83dea4337125">DMA &amp; Memory Mapping</a> — skbuff DMA mapping on TX/RX</li>
+<li><a href="12-interrupt-handling.html#ID-bee17a98-9ba2-49bb-8169-6f1ff0f0132b">Interrupt Handling</a> — NAPI poll scheduling from the RX IRQ</li>
 </ul>
 </div>
 </div>
 </div>
 <div id="postamble" class="status">
 <p class="author">Author: Arun Jyothish K</p>
-<p class="date">Created: 2026-08-17 Mon 20:36</p>
+<p class="date">Created: 2026-08-20 Thu 07:10</p>
 </div>
 </body>
 </html>

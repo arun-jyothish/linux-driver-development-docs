@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2026-08-17 Mon 20:36 -->
+<!-- 2026-08-20 Thu 07:10 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Debugging Techniques</title>
@@ -203,26 +203,26 @@
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents" role="doc-toc">
 <ul>
-<li><a href="#orgdeed90d">1. printk: Kernel Logging</a></li>
-<li><a href="#org76364a7">2. Dynamic Debug</a></li>
-<li><a href="#org630bfcd">3. Trace Events (kernel tracing)</a></li>
-<li><a href="#orgdfc6e0d">4. Kernel Debugger (kgdb)</a></li>
-<li><a href="#org916b5f3">5. pr_devel and Compile-Time Debug</a></li>
-<li><a href="#org20104cf">6. Module Parameter Debugging</a></li>
-<li><a href="#org89d26d5">7. Hardware Inspection</a></li>
-<li><a href="#orga00d6ed">8. Crash Dump Analysis</a></li>
-<li><a href="#orgf3e879c">9. Common Debugging Workflow</a></li>
-<li><a href="#org82c6da6">10. Example: Debug-enabled driver</a></li>
-<li><a href="#orga577f51">11. Debugging Workflow Diagram</a></li>
-<li><a href="#orge0e8047">12. See Also</a></li>
+<li><a href="#org8fc20fe">1. printk: Kernel Logging</a></li>
+<li><a href="#org18aa85c">2. Dynamic Debug</a></li>
+<li><a href="#org35212b7">3. Trace Events (kernel tracing)</a></li>
+<li><a href="#orga8d7d2d">4. Kernel Debugger (kgdb)</a></li>
+<li><a href="#org6f0b6a1">5. pr_devel and Compile-Time Debug</a></li>
+<li><a href="#org8efbbdc">6. Module Parameter Debugging</a></li>
+<li><a href="#orgb3df3ca">7. Hardware Inspection</a></li>
+<li><a href="#org52f27f7">8. Crash Dump Analysis</a></li>
+<li><a href="#orgf193386">9. Common Debugging Workflow</a></li>
+<li><a href="#org7697761">10. Example: Debug-enabled driver</a></li>
+<li><a href="#orgafb6380">11. Debugging Workflow Diagram</a></li>
+<li><a href="#org78ba9a1">12. See Also</a></li>
 </ul>
 </div>
 </div>
 <p>
 <b>Kernel debugging: printk, dynamic debug, trace events, kgdb, crash analysis.</b>
 </p>
-<div id="outline-container-orgdeed90d" class="outline-2">
-<h2 id="orgdeed90d"><span class="section-number-2">1.</span> printk: Kernel Logging</h2>
+<div id="outline-container-org8fc20fe" class="outline-2">
+<h2 id="org8fc20fe"><span class="section-number-2">1.</span> printk: Kernel Logging</h2>
 <div class="outline-text-2" id="text-1">
 <p>
 Basic logging with log levels:
@@ -249,8 +249,8 @@ tail -f /var/log/kern.log
 </div>
 </div>
 </div>
-<div id="outline-container-org76364a7" class="outline-2">
-<h2 id="org76364a7"><span class="section-number-2">2.</span> Dynamic Debug</h2>
+<div id="outline-container-org18aa85c" class="outline-2">
+<h2 id="org18aa85c"><span class="section-number-2">2.</span> Dynamic Debug</h2>
 <div class="outline-text-2" id="text-2">
 <p>
 Enable per-module debugging at runtime (compile-time overhead minimal):
@@ -283,8 +283,8 @@ pr_debug<span style="color: #AF87FF;">(</span><span style="color: #CDC673;">"val
 </div>
 </div>
 </div>
-<div id="outline-container-org630bfcd" class="outline-2">
-<h2 id="org630bfcd"><span class="section-number-2">3.</span> Trace Events (kernel tracing)</h2>
+<div id="outline-container-org35212b7" class="outline-2">
+<h2 id="org35212b7"><span class="section-number-2">3.</span> Trace Events (kernel tracing)</h2>
 <div class="outline-text-2" id="text-3">
 <p>
 Higher-level tracing via ftrace/trace-cmd:
@@ -323,8 +323,8 @@ trace-cmd report
 </div>
 </div>
 </div>
-<div id="outline-container-orgdfc6e0d" class="outline-2">
-<h2 id="orgdfc6e0d"><span class="section-number-2">4.</span> Kernel Debugger (kgdb)</h2>
+<div id="outline-container-orga8d7d2d" class="outline-2">
+<h2 id="orga8d7d2d"><span class="section-number-2">4.</span> Kernel Debugger (kgdb)</h2>
 <div class="outline-text-2" id="text-4">
 <p>
 Remote debugging via serial/network:
@@ -364,8 +364,8 @@ gdb vmlinux
 </p>
 </div>
 </div>
-<div id="outline-container-org916b5f3" class="outline-2">
-<h2 id="org916b5f3"><span class="section-number-2">5.</span> pr_devel and Compile-Time Debug</h2>
+<div id="outline-container-org6f0b6a1" class="outline-2">
+<h2 id="org6f0b6a1"><span class="section-number-2">5.</span> pr_devel and Compile-Time Debug</h2>
 <div class="outline-text-2" id="text-5">
 <p>
 Conditional compilation:
@@ -385,8 +385,8 @@ pr_debug_devel<span style="color: #AF87FF;">(</span><span style="color: #CDC673;
 </div>
 </div>
 </div>
-<div id="outline-container-org20104cf" class="outline-2">
-<h2 id="org20104cf"><span class="section-number-2">6.</span> Module Parameter Debugging</h2>
+<div id="outline-container-org8efbbdc" class="outline-2">
+<h2 id="org8efbbdc"><span class="section-number-2">6.</span> Module Parameter Debugging</h2>
 <div class="outline-text-2" id="text-6">
 <p>
 Allow runtime parameter changes:
@@ -412,8 +412,8 @@ Allow runtime parameter changes:
 </div>
 </div>
 </div>
-<div id="outline-container-org89d26d5" class="outline-2">
-<h2 id="org89d26d5"><span class="section-number-2">7.</span> Hardware Inspection</h2>
+<div id="outline-container-orgb3df3ca" class="outline-2">
+<h2 id="orgb3df3ca"><span class="section-number-2">7.</span> Hardware Inspection</h2>
 <div class="outline-text-2" id="text-7">
 <p>
 Read/write memory-mapped registers for debugging:
@@ -437,8 +437,8 @@ Read/write memory-mapped registers for debugging:
 </div>
 </div>
 </div>
-<div id="outline-container-orga00d6ed" class="outline-2">
-<h2 id="orga00d6ed"><span class="section-number-2">8.</span> Crash Dump Analysis</h2>
+<div id="outline-container-org52f27f7" class="outline-2">
+<h2 id="org52f27f7"><span class="section-number-2">8.</span> Crash Dump Analysis</h2>
 <div class="outline-text-2" id="text-8">
 <p>
 When kernel crashes, capture dmesg and use crash utility:
@@ -461,8 +461,8 @@ crash vmlinux /var/crash/vmcore
 </p>
 </div>
 </div>
-<div id="outline-container-orgf3e879c" class="outline-2">
-<h2 id="orgf3e879c"><span class="section-number-2">9.</span> Common Debugging Workflow</h2>
+<div id="outline-container-orgf193386" class="outline-2">
+<h2 id="orgf193386"><span class="section-number-2">9.</span> Common Debugging Workflow</h2>
 <div class="outline-text-2" id="text-9">
 <ol class="org-ol">
 <li><b><b>Probe issues</b></b>: Add <code>pr_info()</code> at key points in probe/remove</li>
@@ -474,8 +474,8 @@ crash vmlinux /var/crash/vmcore
 </ol>
 </div>
 </div>
-<div id="outline-container-org82c6da6" class="outline-2">
-<h2 id="org82c6da6"><span class="section-number-2">10.</span> Example: Debug-enabled driver</h2>
+<div id="outline-container-org7697761" class="outline-2">
+<h2 id="org7697761"><span class="section-number-2">10.</span> Example: Debug-enabled driver</h2>
 <div class="outline-text-2" id="text-10">
 <div class="org-src-container">
 <pre class="src src-c"><code><span style="color: #FF1493;">#define</span> <span style="color: #87D700;">pr_fmt</span><span style="color: #AF87FF;">(</span><span style="color: #FF8C00;">fmt</span><span style="color: #AF87FF;">)</span> KBUILD_MODNAME <span style="color: #CDC673;">": "</span> fmt
@@ -514,35 +514,37 @@ crash vmlinux /var/crash/vmcore
 </div>
 </div>
 </div>
-<div id="outline-container-orga577f51" class="outline-2">
-<h2 id="orga577f51"><span class="section-number-2">11.</span> Debugging Workflow Diagram</h2>
+<div id="outline-container-orgafb6380" class="outline-2">
+<h2 id="orgafb6380"><span class="section-number-2">11.</span> Debugging Workflow Diagram</h2>
 <div class="outline-text-2" id="text-11">
 
-<div id="org9f6ff30" class="figure">
+<div id="orgd9a4a2b" class="figure">
 <p><img src="res/10-debugging-workflow.svg" alt="10-debugging-workflow.svg" class="org-svg" />
 </p>
 </div>
 
 
-<div id="orga33ae54" class="figure">
+<div id="org9651476" class="figure">
 <p><img src="res/10-debugging-workflow.svg" alt="10-debugging-workflow.svg" class="org-svg" />
 </p>
 </div>
 </div>
 </div>
-<div id="outline-container-orge0e8047" class="outline-2">
-<h2 id="orge0e8047"><span class="section-number-2">12.</span> See Also</h2>
+<div id="outline-container-org78ba9a1" class="outline-2">
+<h2 id="org78ba9a1"><span class="section-number-2">12.</span> See Also</h2>
 <div class="outline-text-2" id="text-12">
 <ul class="org-ul">
 <li><a href="10-performance.html#ID-j1k2l3m4-n5o6-4789-99a1-b2c3d4e5f6a7">Performance Considerations</a></li>
 <li><a href="01-kernel-module-fundamentals.html#ID-f1a2b3c4-d5e6-47f8-99a1-b2c3d4e5f6a7">Kernel Module Fundamentals</a></li>
+<li><a href="12-interrupt-handling.html#ID-bee17a98-9ba2-49bb-8169-6f1ff0f0132b">Interrupt Handling</a> — <code>/proc/interrupts</code>, affinity, "irq nobody cared"</li>
+<li><a href="11-linux-boot-sequence.html#ID-k1l2m3n4-o5p6-4789-99a1-b2c3d4e5f6a7">Linux Boot Sequence</a> — debugging boot issues with kgdb</li>
 </ul>
 </div>
 </div>
 </div>
 <div id="postamble" class="status">
 <p class="author">Author: Arun Jyothish K</p>
-<p class="date">Created: 2026-08-17 Mon 20:36</p>
+<p class="date">Created: 2026-08-20 Thu 07:10</p>
 </div>
 </body>
 </html>

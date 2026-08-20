@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2026-08-17 Mon 21:10 -->
+<!-- 2026-08-20 Thu 07:10 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Kernel Module Fundamentals</title>
@@ -203,20 +203,20 @@
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents" role="doc-toc">
 <ul>
-<li><a href="#orgd2326df">1. Module Entry/Exit</a></li>
-<li><a href="#orgef3806f">2. License &amp; Metadata</a></li>
-<li><a href="#orgce1c748">3. Built-in vs Loadable</a></li>
-<li><a href="#org63c007c">4. Return Value Semantics</a></li>
-<li><a href="#org1e489ac">5. Module Lifecycle Diagram</a></li>
-<li><a href="#org6e04eb5">6. See Also</a></li>
+<li><a href="#orgef6be50">1. Module Entry/Exit</a></li>
+<li><a href="#org9ee691c">2. License &amp; Metadata</a></li>
+<li><a href="#org5357965">3. Built-in vs Loadable</a></li>
+<li><a href="#orgbb2653a">4. Return Value Semantics</a></li>
+<li><a href="#orgcdd43c5">5. Module Lifecycle Diagram</a></li>
+<li><a href="#org7fb4034">6. See Also</a></li>
 </ul>
 </div>
 </div>
 <p>
 <b>Essential patterns and attributes for kernel modules and built-in drivers.</b>
 </p>
-<div id="outline-container-orgd2326df" class="outline-2">
-<h2 id="orgd2326df"><span class="section-number-2">1.</span> Module Entry/Exit</h2>
+<div id="outline-container-orgef6be50" class="outline-2">
+<h2 id="orgef6be50"><span class="section-number-2">1.</span> Module Entry/Exit</h2>
 <div class="outline-text-2" id="text-1">
 <p>
 <code>__init</code> and <code>__exit</code> are optional but recommended:
@@ -257,16 +257,16 @@ MODULE_VERSION<span style="color: #AF87FF;">(</span><span style="color: #CDC673;
 </div>
 </div>
 </div>
-<div id="outline-container-orgef3806f" class="outline-2">
-<h2 id="orgef3806f"><span class="section-number-2">2.</span> License &amp; Metadata</h2>
+<div id="outline-container-org9ee691c" class="outline-2">
+<h2 id="org9ee691c"><span class="section-number-2">2.</span> License &amp; Metadata</h2>
 <div class="outline-text-2" id="text-2">
 <p>
 Always include <code>MODULE_LICENSE("GPL")</code> or appropriate license. Unlicensed modules may taint the kernel (affects oops reports, debugging, support).
 </p>
 </div>
 </div>
-<div id="outline-container-orgce1c748" class="outline-2">
-<h2 id="orgce1c748"><span class="section-number-2">3.</span> Built-in vs Loadable</h2>
+<div id="outline-container-org5357965" class="outline-2">
+<h2 id="org5357965"><span class="section-number-2">3.</span> Built-in vs Loadable</h2>
 <div class="outline-text-2" id="text-3">
 <table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
 
@@ -319,8 +319,8 @@ Always include <code>MODULE_LICENSE("GPL")</code> or appropriate license. Unlice
 </table>
 </div>
 </div>
-<div id="outline-container-org63c007c" class="outline-2">
-<h2 id="org63c007c"><span class="section-number-2">4.</span> Return Value Semantics</h2>
+<div id="outline-container-orgbb2653a" class="outline-2">
+<h2 id="orgbb2653a"><span class="section-number-2">4.</span> Return Value Semantics</h2>
 <div class="outline-text-2" id="text-4">
 <ul class="org-ul">
 <li><code>module_init()</code> returns 0 on success, non-zero on failure (insmod returns error)</li>
@@ -332,29 +332,30 @@ For probe functions in device drivers, return 0 for success, negative errno (e.g
 </p>
 </div>
 </div>
-<div id="outline-container-org1e489ac" class="outline-2">
-<h2 id="org1e489ac"><span class="section-number-2">5.</span> Module Lifecycle Diagram</h2>
+<div id="outline-container-orgcdd43c5" class="outline-2">
+<h2 id="orgcdd43c5"><span class="section-number-2">5.</span> Module Lifecycle Diagram</h2>
 <div class="outline-text-2" id="text-5">
 
-<div id="org9d1ed52" class="figure">
+<div id="orgc581f53" class="figure">
 <p><img src="res/01-module-lifecycle.svg" alt="01-module-lifecycle.svg" class="org-svg" />
 </p>
 </div>
 </div>
 </div>
-<div id="outline-container-org6e04eb5" class="outline-2">
-<h2 id="org6e04eb5"><span class="section-number-2">6.</span> See Also</h2>
+<div id="outline-container-org7fb4034" class="outline-2">
+<h2 id="org7fb4034"><span class="section-number-2">6.</span> See Also</h2>
 <div class="outline-text-2" id="text-6">
 <ul class="org-ul">
 <li><a href="03-kbuild.html#ID-c1d2e3f4-g5h6-4789-99a1-b2c3d4e5f6a7">Kernel Build System (Kbuild)</a></li>
 <li><a href="02-device-tree.html#ID-a1b2c3d4-e5f6-4789-99a1-b2c3d4e5f6a7">Device Tree (DTS) &amp; Bindings</a></li>
+<li><a href="11-linux-boot-sequence.html#ID-k1l2m3n4-o5p6-4789-99a1-b2c3d4e5f6a7">Linux Boot Sequence</a> — where module init fits during boot</li>
 </ul>
 </div>
 </div>
 </div>
 <div id="postamble" class="status">
 <p class="author">Author: Arun Jyothish K</p>
-<p class="date">Created: 2026-08-17 Mon 21:10</p>
+<p class="date">Created: 2026-08-20 Thu 07:10</p>
 </div>
 </body>
 </html>

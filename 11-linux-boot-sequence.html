@@ -1,0 +1,1217 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<!-- 2026-08-20 Thu 07:10 -->
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Linux Boot Sequence</title>
+<meta name="author" content="Arun Jyothish K" />
+<meta name="generator" content="Org Mode" />
+<style type="text/css">
+  #content { max-width: 60em; margin: auto; }
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #e6e6e6;
+    border-radius: 3px;
+    background-color: #f2f2f2;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: auto;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    top: -8px;
+    right: 12px;
+    padding: 3px;
+    color: #555;
+    background-color: #f2f2f299;
+  }
+  pre.src:hover:before { display: inline; margin-top: 14px;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-authinfo::before { content: 'Authinfo'; }
+  pre.src-c:before { content: 'C'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'JavaScript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .equation-container {
+    display: table;
+    text-align: center;
+    width: 100%;
+  }
+  .equation {
+    vertical-align: middle;
+  }
+  .equation-label {
+    display: table-cell;
+    text-align: right;
+    vertical-align: middle;
+  }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { }
+</style>
+<link rel="stylesheet" type="text/css" href="/home/jeis/.apps/emacs-styles/light_green.css" />
+</head>
+<body>
+<div id="content" class="content">
+<h1 class="title">Linux Boot Sequence</h1>
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#org88bfc0b">1. Boot Sequence Overview</a></li>
+<li><a href="#org8df04a8">2. Stage 1: Firmware &amp; Bootloader</a>
+<ul>
+<li><a href="#org465f4ba">2.1. Power On &amp; Firmware</a></li>
+<li><a href="#orge80bc81">2.2. Bootloader Execution</a></li>
+</ul>
+</li>
+<li><a href="#org66ef2b1">3. Stage 2: Kernel Decompression &amp; Early Boot</a>
+<ul>
+<li><a href="#org64f6c06">3.1. Kernel Image Format</a></li>
+<li><a href="#org258e634">3.2. Early Boot (Head Code)</a></li>
+</ul>
+</li>
+<li><a href="#orgee39772">4. Stage 3: Kernel Initialization (start_kernel)</a>
+<ul>
+<li><a href="#orge00f09c">4.1. Main Kernel Entry</a></li>
+<li><a href="#org7d58939">4.2. Initcalls: Ordered Subsystem Initialization</a></li>
+</ul>
+</li>
+<li><a href="#orgd839b91">5. Stage 4: Device Tree Parsing &amp; Platform Device Discovery</a>
+<ul>
+<li><a href="#orgeb2f7b3">5.1. Device Tree Parsing</a></li>
+</ul>
+</li>
+<li><a href="#org598883a">6. Stage 5: Driver Probe &amp; Hardware Initialization</a>
+<ul>
+<li><a href="#org089f010">6.1. Device Matching &amp; Probe</a></li>
+</ul>
+</li>
+<li><a href="#orgbc01087">7. Stage 6: Initramfs (Optional Early Userspace)</a>
+<ul>
+<li><a href="#orgc21b114">7.1. Initramfs Purpose</a></li>
+<li><a href="#org46616d9">7.2. Initramfs Boot Flow</a></li>
+</ul>
+</li>
+<li><a href="#org4df84aa">8. Stage 7: Init System Startup</a>
+<ul>
+<li><a href="#orgfbcf8e7">8.1. Transition to Init</a></li>
+</ul>
+</li>
+<li><a href="#org7c78443">9. Stage 8: Userspace Services &amp; Desktop</a></li>
+<li><a href="#org9b2b67f">10. Complete Boot Sequence Diagram</a></li>
+<li><a href="#orgab11ced">11. Detailed Boot Stages</a>
+<ul>
+<li><a href="#org893649d">11.1. Stage 0: Power-On Self-Test (POST)</a></li>
+<li><a href="#org5e8a5c8">11.2. Stage 1: Bootloader (GRUB2)</a></li>
+<li><a href="#org12804ab">11.3. Stage 2: Decompression &amp; Real Mode → Protected Mode</a></li>
+<li><a href="#orgc6929be">11.4. Stage 3: Kernel Memory Layout (x86_64)</a></li>
+<li><a href="#org93a78dd">11.5. Stage 4-5: Subsystem Initialization Order</a></li>
+<li><a href="#orgedda1c1">11.6. Stage 6: Device Probe Sequence</a></li>
+<li><a href="#org6ab78e2">11.7. Stage 7: Initramfs Exit</a></li>
+<li><a href="#org5364367">11.8. Stage 8-9: Init System (systemd) Boot</a></li>
+</ul>
+</li>
+<li><a href="#org08dfcb5">12. Boot Parameters (Kernel Cmdline)</a></li>
+<li><a href="#org3725223">13. Performance Tuning</a></li>
+<li><a href="#orgef801ce">14. See Also</a></li>
+</ul>
+</div>
+</div>
+<p>
+<b>Complete Linux boot sequence from bootloader through userspace, covering all stages, initialization sequence, and driver loading.</b>
+</p>
+<div id="outline-container-org88bfc0b" class="outline-2">
+<h2 id="org88bfc0b"><span class="section-number-2">1.</span> Boot Sequence Overview</h2>
+<div class="outline-text-2" id="text-1">
+<p>
+Linux boot is a multi-stage process that transitions from firmware → bootloader → kernel → init system → userspace applications.
+</p>
+
+<p>
+Key stages:
+</p>
+<ol class="org-ol">
+<li><b><b>Firmware/BIOS</b></b> — Hardware initialization, bootloader selection</li>
+<li><b><b>Bootloader</b></b> — Load kernel image and device tree</li>
+<li><b><b>Kernel Decompression</b></b> — Extract and decompress vmlinuz</li>
+<li><b><b>Early Boot</b></b> — Setup arch-specific hardware, memory, interrupts</li>
+<li><b><b>Kernel Initialization</b></b> — Initialize subsystems (VFS, scheduler, etc.)</li>
+<li><b><b>Driver Probe</b></b> — Match and initialize hardware devices</li>
+<li><b><b>Initramfs</b></b> — Optional early userspace</li>
+<li><b><b>Init System</b></b> — Start PID 1 (systemd, OpenRC, etc.)</li>
+<li><b><b>Userspace</b></b> — System services and user applications</li>
+</ol>
+</div>
+</div>
+<div id="outline-container-org8df04a8" class="outline-2">
+<h2 id="org8df04a8"><span class="section-number-2">2.</span> Stage 1: Firmware &amp; Bootloader</h2>
+<div class="outline-text-2" id="text-2">
+</div>
+<div id="outline-container-org465f4ba" class="outline-3">
+<h3 id="org465f4ba"><span class="section-number-3">2.1.</span> Power On &amp; Firmware</h3>
+<div class="outline-text-3" id="text-2-1">
+<p>
+Boot flow:
+</p>
+<ol class="org-ol">
+<li>CPU executes reset vector (architecture-specific memory address)</li>
+<li><b><b>BIOS/UEFI</b></b> initializes:
+<ul class="org-ul">
+<li>CPU (enable caches, set MMU)</li>
+<li>Chipset configuration</li>
+<li>Memory detection</li>
+<li>PCI device enumeration</li>
+<li>Console (serial/video)</li>
+</ul></li>
+<li>Firmware searches for bootable device (disk MBR, UEFI ESP, network)</li>
+<li>Loads bootloader into memory</li>
+</ol>
+</div>
+</div>
+<div id="outline-container-orge80bc81" class="outline-3">
+<h3 id="orge80bc81"><span class="section-number-3">2.2.</span> Bootloader Execution</h3>
+<div class="outline-text-3" id="text-2-2">
+<p>
+Common bootloaders: GRUB2, U-Boot, LILO, Coreboot
+</p>
+
+<p>
+GRUB2 boot sequence:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-c"><code><span style="color: #8B8878;">// </span><span style="color: #8B8878;">Stage 1: MBR boot code (512 bytes)
+</span><span style="color: #8B8878;">// </span><span style="color: #8B8878;">- Locate stage 1.5 or stage 2
+</span><span style="color: #8B8878;">// </span><span style="color: #8B8878;">- Load via BIOS disk reads
+</span>
+<span style="color: #8B8878;">// </span><span style="color: #8B8878;">Stage 1.5: Load filesystem drivers
+</span><span style="color: #8B8878;">// </span><span style="color: #8B8878;">- Read /boot/grub/ directory
+</span>
+<span style="color: #8B8878;">// </span><span style="color: #8B8878;">Stage 2: Full GRUB environment
+</span><span style="color: #8B8878;">// </span><span style="color: #8B8878;">- Parse grub.cfg
+</span><span style="color: #8B8878;">// </span><span style="color: #8B8878;">- Present menu (or auto-boot)
+</span><span style="color: #8B8878;">// </span><span style="color: #8B8878;">- Load kernel: linux /vmlinuz root=/dev/sda1
+</span><span style="color: #8B8878;">// </span><span style="color: #8B8878;">- Load initramfs: initrd /initrd.img
+</span><span style="color: #8B8878;">// </span><span style="color: #8B8878;">- Load device tree (ARM): devicetree /dtb.dtb
+</span><span style="color: #8B8878;">// </span><span style="color: #8B8878;">- Pass boot parameters to kernel</span>
+</code></pre>
+</div>
+
+<p>
+Boot parameters:
+</p>
+<ul class="org-ul">
+<li>`root=/dev/sda1` — root filesystem device</li>
+<li>`ro` — mount root read-only initially</li>
+<li>`console=ttyS0,115200` — console output</li>
+<li>`init=/bin/sh` — override init process</li>
+<li>`loglevel=7` — kernel log verbosity</li>
+<li>`quiet` — suppress boot messages</li>
+</ul>
+</div>
+</div>
+</div>
+<div id="outline-container-org66ef2b1" class="outline-2">
+<h2 id="org66ef2b1"><span class="section-number-2">3.</span> Stage 2: Kernel Decompression &amp; Early Boot</h2>
+<div class="outline-text-2" id="text-3">
+</div>
+<div id="outline-container-org64f6c06" class="outline-3">
+<h3 id="org64f6c06"><span class="section-number-3">3.1.</span> Kernel Image Format</h3>
+<div class="outline-text-3" id="text-3-1">
+<p>
+Modern kernels are compressed (zImage or bzImage on x86):
+</p>
+
+<div class="org-src-container">
+<pre class="src src-nil"><code>Linux kernel image layout:
+┌─────────────────────────────┐
+│ Boot sector (512 bytes)     │ ← Bootloader entry point
+│ Kernel setup (&gt; 4KB)        │ ← Parameter setup
+│ Compressed kernel (vmlinuz) │ ← gzip/bzip2/xz compressed
+│ Decompressor code           │ ← Minimal decompressor
+└─────────────────────────────┘
+
+Bootloader:
+1. Loads boot sector
+2. Calls entry point with parameters
+3. Kernel decompressor runs (16-bit, real mode on x86)
+4. Decompresses bzImage → uncompressed vmlinux
+5. Jumps to kernel start_kernel()
+</code></pre>
+</div>
+</div>
+</div>
+<div id="outline-container-org258e634" class="outline-3">
+<h3 id="org258e634"><span class="section-number-3">3.2.</span> Early Boot (Head Code)</h3>
+<div class="outline-text-3" id="text-3-2">
+<p>
+Architecture-specific initialization (usually in assembly):
+</p>
+
+<div class="org-src-container">
+<pre class="src src-c"><code><span style="color: #8B8878;">// </span><span style="color: #8B8878;">arch/x86/kernel/head.S (simplified)
+</span>
+.globl startup_32
+startup_32:
+    <span style="color: #8B8878;">// </span><span style="color: #8B8878;">1. Enable protected mode
+</span>    movl %eax, %cr0
+    ljmp $__BOOT_CS, $1f    <span style="color: #8B8878;">// </span><span style="color: #8B8878;">Jump to 32-bit code
+</span>
+<span style="color: #AF87FF;">1</span>:  <span style="color: #8B8878;">// </span><span style="color: #8B8878;">2. Setup GDT (Global Descriptor Table)
+</span>    lgdt gdt_descr
+
+    <span style="color: #8B8878;">// </span><span style="color: #8B8878;">3. Setup IDT (Interrupt Descriptor Table - placeholder)
+</span>    <span style="color: #8B8878;">// </span><span style="color: #8B8878;">4. Setup page tables (identity mapping early on)
+</span>    movl %cr3, %eax
+
+    <span style="color: #8B8878;">// </span><span style="color: #8B8878;">5. Enable paging
+</span>    movl %eax, %cr0
+    movl %eax, %cr4
+
+    <span style="color: #8B8878;">// </span><span style="color: #8B8878;">6. Jump to kernel_start (C code)
+</span>    jmp kernel_start
+
+    <span style="color: #8B8878;">// </span><span style="color: #8B8878;">All cpus reach this point eventually</span>
+</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div id="outline-container-orgee39772" class="outline-2">
+<h2 id="orgee39772"><span class="section-number-2">4.</span> Stage 3: Kernel Initialization (start_kernel)</h2>
+<div class="outline-text-2" id="text-4">
+</div>
+<div id="outline-container-orge00f09c" class="outline-3">
+<h3 id="orge00f09c"><span class="section-number-3">4.1.</span> Main Kernel Entry</h3>
+<div class="outline-text-3" id="text-4-1">
+<p>
+All architecture-specific code converges at <code>start_kernel()</code> (kernel/main.c):
+</p>
+
+<p>
+#+begin_src c
+// kernel/main.c
+asmlinkage __visible void __init start_kernel(void)
+{
+    char *command_line;
+</p>
+
+<p>
+<i>/ 1. Setup CPU &amp; memory subsystem
+setup_arch(&amp;command_line);              /</i> Arch-specific setup
+mm_init();                              <i>/ Memory management
+setup_interrupts();                     /</i> IDT, IRQ routing
+</p>
+
+<p>
+<i>/ 2. Parse boot parameters
+parse_early_param();                    /</i> Early cmdline parsing
+setup_log_buf();                        // Kernel log buffer
+</p>
+
+<p>
+<i>/ 3. Initialize core subsystems
+boot_cpu_init();                        /</i> CPU (BSP bootstrap)
+page_address_init();                    <i>/ Page allocator
+setup_per_cpu_areas();                  /</i> Per-CPU data
+</p>
+
+<p>
+<i>/ 4. Initialize memory zones
+mem_init();                             /</i> High memory, page cache
+kmem_cache_init();                      // SLAB allocator
+</p>
+
+<p>
+<i>/ 5. Initialize core kernel systems
+setup_vfs();                            /</i> VFS, root filesystem
+inode_init();                           <i>/ Inode cache
+dcache_init();                          /</i> Directory cache
+</p>
+
+<p>
+<i>/ 6. Initialize tasking/scheduling
+fork_init();                            /</i> Process creation
+sched_init();                           <i>/ Scheduler
+init_IRQ();                             /</i> Interrupt handlers
+</p>
+
+<p>
+<i>/ 7. Initialize timekeeping
+time_init();                            /</i> Clocks, timers
+tick_init();                            // Periodic tick
+</p>
+
+<p>
+<i>/ 8. Device &amp; driver core
+driver_init();                          /</i> Device model
+usb_init(), pci_init(), etc.            // Subsystem inits
+</p>
+
+<p>
+    <i>/ 9. Mounted initial ramdisk or device tree
+    /</i> 10. Start init process
+    kernel_init();                          // Calls init program
+}
+#+end_str&gt;
+</p>
+</div>
+</div>
+<div id="outline-container-org7d58939" class="outline-3">
+<h3 id="org7d58939"><span class="section-number-3">4.2.</span> Initcalls: Ordered Subsystem Initialization</h3>
+<div class="outline-text-3" id="text-4-2">
+<p>
+Kernel uses <code>__initcall</code> macros to register initialization functions at different levels:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-c"><code><span style="color: #8B8878;">// </span><span style="color: #8B8878;">Called in order during boot
+</span><span style="color: #87D700;">pure_initcall</span><span style="color: #AF87FF;">(</span>x<span style="color: #AF87FF;">)</span>           <span style="color: #8B8878;">// </span><span style="color: #8B8878;">Level 0: Core
+</span><span style="color: #87D700;">core_initcall</span><span style="color: #AF87FF;">(</span>x<span style="color: #AF87FF;">)</span>           <span style="color: #8B8878;">// </span><span style="color: #8B8878;">Level 1: Core subsystems
+</span><span style="color: #87D700;">postcore_initcall</span><span style="color: #AF87FF;">(</span>x<span style="color: #AF87FF;">)</span>       <span style="color: #8B8878;">// </span><span style="color: #8B8878;">Level 2: Post-core
+</span><span style="color: #87D700;">arch_initcall</span><span style="color: #AF87FF;">(</span>x<span style="color: #AF87FF;">)</span>           <span style="color: #8B8878;">// </span><span style="color: #8B8878;">Level 3: Architecture-specific
+</span><span style="color: #87D700;">subsys_initcall</span><span style="color: #AF87FF;">(</span>x<span style="color: #AF87FF;">)</span>         <span style="color: #8B8878;">// </span><span style="color: #8B8878;">Level 4: Subsystems (buses, drivers)
+</span><span style="color: #87D700;">fs_initcall</span><span style="color: #AF87FF;">(</span>x<span style="color: #AF87FF;">)</span>             <span style="color: #8B8878;">// </span><span style="color: #8B8878;">Level 5: Filesystems
+</span><span style="color: #87D700;">device_initcall</span><span style="color: #AF87FF;">(</span>x<span style="color: #AF87FF;">)</span>         <span style="color: #8B8878;">// </span><span style="color: #8B8878;">Level 6: Devices (platform, pci, usb)
+</span><span style="color: #87D700;">late_initcall</span><span style="color: #AF87FF;">(</span>x<span style="color: #AF87FF;">)</span>           <span style="color: #8B8878;">// </span><span style="color: #8B8878;">Level 7: Late (final setup)
+</span><span style="color: #87D700;">module_init</span><span style="color: #AF87FF;">(</span>x<span style="color: #AF87FF;">)</span>             <span style="color: #8B8878;">// </span><span style="color: #8B8878;">Level 8: Loadable modules
+</span>
+<span style="color: #8B8878;">// </span><span style="color: #8B8878;">Example: PCI subsystem initialization
+</span><span style="color: #87D700;">subsys_initcall</span><span style="color: #AF87FF;">(</span>pci_driver_init<span style="color: #AF87FF;">)</span>;
+
+<span style="color: #8B8878;">// </span><span style="color: #8B8878;">Example: Platform bus driver probe
+</span><span style="color: #87D700;">device_initcall</span><span style="color: #AF87FF;">(</span>platform_driver_register<span style="color: #5FD7FF;">(</span>&amp;my_driver<span style="color: #5FD7FF;">)</span><span style="color: #AF87FF;">)</span>;
+</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div id="outline-container-orgd839b91" class="outline-2">
+<h2 id="orgd839b91"><span class="section-number-2">5.</span> Stage 4: Device Tree Parsing &amp; Platform Device Discovery</h2>
+<div class="outline-text-2" id="text-5">
+</div>
+<div id="outline-container-orgeb2f7b3" class="outline-3">
+<h3 id="orgeb2f7b3"><span class="section-number-3">5.1.</span> Device Tree Parsing</h3>
+<div class="outline-text-3" id="text-5-1">
+<p>
+Device tree blob (DTB) passed by bootloader:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-c"><code><span style="color: #8B8878;">// </span><span style="color: #8B8878;">kernel/of/fdt.c
+</span><span style="color: #5FD7FF;">void</span> <span style="color: #FF8C00;">__init</span> unflatten_device_tree<span style="color: #AF87FF;">(</span><span style="color: #5FD7FF;">void</span><span style="color: #AF87FF;">)</span>
+<span style="color: #AF87FF;">{</span>
+    <span style="color: #8B8878;">// </span><span style="color: #8B8878;">1. Parse DTB passed by bootloader (in __dtb_start)
+</span>    <span style="color: #8B8878;">// </span><span style="color: #8B8878;">2. Create in-memory device tree
+</span>    <span style="color: #8B8878;">// </span><span style="color: #8B8878;">3. For each device node:
+</span>
+    <span style="color: #8B8878;">// </span><span style="color: #8B8878;">Create device_node structure
+</span>    <span style="color: #FF1493;">struct</span> <span style="color: #5FD7FF;">device_node</span> *<span style="color: #FF8C00;">node</span>;
+    node-&gt;full_name = <span style="color: #CDC673;">"/soc/gpio@1000"</span>;
+    node-&gt;properties = <span style="color: #5FD7FF;">{</span> <span style="color: #CDC673;">"compatible"</span>, <span style="color: #CDC673;">"vendor,gpio-controller"</span>, ... <span style="color: #5FD7FF;">}</span>;
+
+    <span style="color: #8B8878;">// </span><span style="color: #8B8878;">4. Add to global device tree
+</span>    of_root = root_node;
+<span style="color: #AF87FF;">}</span>
+
+<span style="color: #8B8878;">// </span><span style="color: #8B8878;">Later: arch-specific setup
+</span><span style="color: #5FD7FF;">void</span> <span style="color: #FF8C00;">__init</span> arch_of_populate_buses<span style="color: #AF87FF;">(</span><span style="color: #5FD7FF;">void</span><span style="color: #AF87FF;">)</span>
+<span style="color: #AF87FF;">{</span>
+    <span style="color: #8B8878;">// </span><span style="color: #8B8878;">Create platform_device for each compatible node
+</span>    of_platform_populate<span style="color: #5FD7FF;">(</span>of_root, <span style="color: #AF87FF;">NULL</span>, <span style="color: #AF87FF;">NULL</span>, <span style="color: #AF87FF;">NULL</span><span style="color: #5FD7FF;">)</span>;
+<span style="color: #AF87FF;">}</span>
+</code></pre>
+</div>
+
+<p>
+Device tree nodes become platform devices:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-dts"><code>// Device tree source
+soc {
+  gpio@1000 {
+    compatible = "vendor,gpio-controller";
+    reg = &lt;0x1000 0x100&gt;;
+  };
+
+  led@2000 {
+    compatible = "vendor,led-controller";
+    reg = &lt;0x2000 0x50&gt;;
+  };
+};
+</code></pre>
+</div>
+
+<p>
+Becomes (after parsing):
+</p>
+
+<p>
+#+begin_src
+platform_device("gpio.0")           <i>/ compatible="vendor,gpio-controller"
+platform_device("led.0")            /</i> compatible="vendor,led-controller"
+#+end_str&gt;
+</p>
+</div>
+</div>
+</div>
+<div id="outline-container-org598883a" class="outline-2">
+<h2 id="org598883a"><span class="section-number-2">6.</span> Stage 5: Driver Probe &amp; Hardware Initialization</h2>
+<div class="outline-text-2" id="text-6">
+</div>
+<div id="outline-container-org089f010" class="outline-3">
+<h3 id="org089f010"><span class="section-number-3">6.1.</span> Device Matching &amp; Probe</h3>
+<div class="outline-text-3" id="text-6-1">
+<p>
+Driver core matches devices with drivers:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-c"><code><span style="color: #8B8878;">// </span><span style="color: #8B8878;">drivers/base/dd.c
+</span><span style="color: #5FD7FF;">int</span> <span style="color: #87D700;">driver_probe_device</span><span style="color: #AF87FF;">(</span><span style="color: #FF1493;">struct</span> <span style="color: #5FD7FF;">device_driver</span> *<span style="color: #FF8C00;">drv</span>, <span style="color: #FF1493;">struct</span> <span style="color: #5FD7FF;">device</span> *<span style="color: #FF8C00;">dev</span><span style="color: #AF87FF;">)</span>
+<span style="color: #AF87FF;">{</span>
+    <span style="color: #8B8878;">// </span><span style="color: #8B8878;">1. Check if driver matches device
+</span>    <span style="color: #FF1493;">if</span> <span style="color: #5FD7FF;">(</span><span style="color: #CDC673; font-weight: bold;">!</span>drv-&gt;bus-&gt;match<span style="color: #87D700;">(</span>dev, drv<span style="color: #87D700;">)</span><span style="color: #5FD7FF;">)</span> <span style="color: #5FD7FF;">{</span>
+        <span style="color: #FF1493;">return</span> -ENODEV;
+    <span style="color: #5FD7FF;">}</span>
+
+    <span style="color: #8B8878;">// </span><span style="color: #8B8878;">2. Call driver probe
+</span>    ret = drv-&gt;probe<span style="color: #5FD7FF;">(</span>dev<span style="color: #5FD7FF;">)</span>;          <span style="color: #8B8878;">// </span><span style="color: #8B8878;">my_gpio_probe()
+</span>
+    <span style="color: #FF1493;">if</span> <span style="color: #5FD7FF;">(</span>ret == <span style="color: #AF87FF;">0</span><span style="color: #5FD7FF;">)</span> <span style="color: #5FD7FF;">{</span>
+        <span style="color: #8B8878;">// </span><span style="color: #8B8878;">Probe succeeded
+</span>        dev-&gt;driver = drv;
+        device_bind_driver<span style="color: #87D700;">(</span>dev<span style="color: #87D700;">)</span>;
+    <span style="color: #5FD7FF;">}</span>
+
+    <span style="color: #FF1493;">return</span> ret;
+<span style="color: #AF87FF;">}</span>
+</code></pre>
+</div>
+
+<p>
+Platform driver probe runs during device_initcall() level:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-nil"><code>[ 0.000000] Linux version 6.1.0 (build)
+[ 0.000000] Command line: root=/dev/sda1 ro
+[ 0.000000] KERNEL supported cpus:
+[ 0.000000] x86/fpu: Supporting XSAVE feature 0x001: 'x87 floating point registers'
+...
+[ 0.345678] [Firmware Bug]: ACPI: DSDT has incorrect length (1234 vs 5678)
+[ 1.234567] gpio-controller 1000.gpio: GPIO chip registered
+[ 1.234890] led-controller 2000.led: LED device registered
+[ 1.567890] EXT4-fs (sda1): mounted filesystem
+[ 1.891234] VFS: Mounted root (ext4 filesystem)
+</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div id="outline-container-orgbc01087" class="outline-2">
+<h2 id="orgbc01087"><span class="section-number-2">7.</span> Stage 6: Initramfs (Optional Early Userspace)</h2>
+<div class="outline-text-2" id="text-7">
+</div>
+<div id="outline-container-orgc21b114" class="outline-3">
+<h3 id="orgc21b114"><span class="section-number-3">7.1.</span> Initramfs Purpose</h3>
+<div class="outline-text-3" id="text-7-1">
+<p>
+Initramfs (initial RAM filesystem) provides early userspace utilities:
+</p>
+<ul class="org-ul">
+<li>Find and mount real root filesystem</li>
+<li>Setup LVM/RAID</li>
+<li>Load kernel modules needed for root</li>
+<li>Handle device discovery on live systems</li>
+</ul>
+</div>
+</div>
+<div id="outline-container-org46616d9" class="outline-3">
+<h3 id="org46616d9"><span class="section-number-3">7.2.</span> Initramfs Boot Flow</h3>
+<div class="outline-text-3" id="text-7-2">
+<p>
+#+begin_src bash
+</p>
+
+<p>
+mount /initramfs
+</p>
+
+<p>
+exec /init
+</p>
+
+<p>
+#!/bin/sh
+</p>
+
+<p>
+modprobe ata_piix           # IDE driver
+modprobe ext4               # Filesystem
+</p>
+
+<p>
+ROOTDEV=$(blkid -U UUID-FROM-CMDLINE)
+</p>
+
+<p>
+mount $ROOTDEV /real_root
+</p>
+
+<p>
+cd /real_root
+pivot_root . old_root       # Chroot to new root
+exec /sbin/init             # Start real init
+#+end_bash
+</p>
+</div>
+</div>
+</div>
+<div id="outline-container-org4df84aa" class="outline-2">
+<h2 id="org4df84aa"><span class="section-number-2">8.</span> Stage 7: Init System Startup</h2>
+<div class="outline-text-2" id="text-8">
+</div>
+<div id="outline-container-orgfbcf8e7" class="outline-3">
+<h3 id="orgfbcf8e7"><span class="section-number-3">8.1.</span> Transition to Init</h3>
+<div class="outline-text-3" id="text-8-1">
+<p>
+Kernel calls init process (PID 1):
+</p>
+
+<div class="org-src-container">
+<pre class="src src-c"><code><span style="color: #8B8878;">// </span><span style="color: #8B8878;">kernel/init.c
+</span><span style="color: #FF1493;">static</span> <span style="color: #5FD7FF;">int</span> <span style="color: #87D700;">kernel_init</span><span style="color: #AF87FF;">(</span><span style="color: #5FD7FF;">void</span> *<span style="color: #FF8C00;">unused</span><span style="color: #AF87FF;">)</span>
+<span style="color: #AF87FF;">{</span>
+    <span style="color: #8B8878;">// </span><span style="color: #8B8878;">... kernel setup ...
+</span>
+    <span style="color: #8B8878;">// </span><span style="color: #8B8878;">Execute init program (from /proc/cmdline init= parameter)
+</span>    <span style="color: #FF1493;">if</span> <span style="color: #5FD7FF;">(</span><span style="color: #CDC673; font-weight: bold;">!</span>execute_command<span style="color: #5FD7FF;">)</span> <span style="color: #5FD7FF;">{</span>
+        <span style="color: #8B8878;">// </span><span style="color: #8B8878;">Default init programs (tried in order)
+</span>        <span style="color: #FF1493;">if</span> <span style="color: #87D700;">(</span>try_to_run_init_process<span style="color: #FF8C00;">(</span><span style="color: #CDC673;">"/sbin/init"</span><span style="color: #FF8C00;">)</span><span style="color: #87D700;">)</span>
+            try_to_run_init_process<span style="color: #87D700;">(</span><span style="color: #CDC673;">"/etc/init"</span><span style="color: #87D700;">)</span>;
+            try_to_run_init_process<span style="color: #87D700;">(</span><span style="color: #CDC673;">"/bin/init"</span><span style="color: #87D700;">)</span>;
+            try_to_run_init_process<span style="color: #87D700;">(</span><span style="color: #CDC673;">"/bin/sh"</span><span style="color: #87D700;">)</span>;
+    <span style="color: #5FD7FF;">}</span>
+
+    panic<span style="color: #5FD7FF;">(</span><span style="color: #CDC673;">"No init process"</span><span style="color: #5FD7FF;">)</span>;  <span style="color: #8B8878;">// </span><span style="color: #8B8878;">If all fail
+</span><span style="color: #AF87FF;">}</span>
+</code></pre>
+</div>
+
+<p>
+Modern systems use <b><b>systemd</b></b> (PID 1):
+</p>
+
+<div class="org-src-container">
+<pre class="src src-nil"><code>[ 2.123456] systemd[1]: systemd 247.0 running in system mode. (+PAM +AUDIT +SELINUX +IMA +APPARMOR +SMACK +SYSVINIT +UTMP +LIBCRYPTSETUP +GCRYPT +GNUTLS +ACL +XZ +LZ4 +ZSTD +SECCOMP +BLKID +ELFUTILS +KMOD +IDN2 -IDNA +PCRE2)
+[ 2.234567] systemd[1]: Detected architecture x86-64.
+[ 2.345678] systemd[1]: Started udev Kernel Device Manager.
+[ 2.456789] systemd[1]: Started Load Kernel Modules.
+[ 2.567890] systemd[1]: Started Network Manager.
+[ 2.678901] systemd[1]: Reached target Multi-User System.
+</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div id="outline-container-org7c78443" class="outline-2">
+<h2 id="org7c78443"><span class="section-number-2">9.</span> Stage 8: Userspace Services &amp; Desktop</h2>
+<div class="outline-text-2" id="text-9">
+<p>
+Init system (systemd) starts services:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-nil"><code>systemd boot flow:
+1. Read /etc/fstab → mount filesystems
+2. Start services marked [Install] WantedBy=multi-user.target
+3. Common services:
+   - udev: device naming/hotplug
+   - networking: ifup, dhcp
+   - sshd: remote access
+   - user session manager
+   - X11/Wayland (if desktop)
+4. Reaches target.wants (multi-user, graphical, etc.)
+</code></pre>
+</div>
+</div>
+</div>
+<div id="outline-container-org9b2b67f" class="outline-2">
+<h2 id="org9b2b67f"><span class="section-number-2">10.</span> Complete Boot Sequence Diagram</h2>
+<div class="outline-text-2" id="text-10">
+
+<div id="org0832950" class="figure">
+<p><img src="res/11-linux-boot-sequence.svg" alt="11-linux-boot-sequence.svg" class="org-svg" />
+</p>
+</div>
+
+
+<div id="org07e4db3" class="figure">
+<p><img src="res/11-linux-boot-sequence.svg" alt="11-linux-boot-sequence.svg" class="org-svg" />
+</p>
+</div>
+</div>
+</div>
+<div id="outline-container-orgab11ced" class="outline-2">
+<h2 id="orgab11ced"><span class="section-number-2">11.</span> Detailed Boot Stages</h2>
+<div class="outline-text-2" id="text-11">
+</div>
+<div id="outline-container-org893649d" class="outline-3">
+<h3 id="org893649d"><span class="section-number-3">11.1.</span> Stage 0: Power-On Self-Test (POST)</h3>
+<div class="outline-text-3" id="text-11-1">
+<p>
+CPU starts at reset vector → firmware executes:
+</p>
+<ul class="org-ul">
+<li>Detect/test memory (memory size verification)</li>
+<li>Initialize chipset registers</li>
+<li>Enable/test caches</li>
+<li>Setup LAPIC (Local APIC) on x86</li>
+<li>Initialize console (serial/video output)</li>
+</ul>
+</div>
+</div>
+<div id="outline-container-org5e8a5c8" class="outline-3">
+<h3 id="org5e8a5c8"><span class="section-number-3">11.2.</span> Stage 1: Bootloader (GRUB2)</h3>
+<div class="outline-text-3" id="text-11-2">
+<div class="org-src-container">
+<pre class="src src-nil"><code>1. MBR Boot Code (512 bytes)
+   - Minimal loader
+   - Searches for Stage 2
+
+2. Stage 1.5 (optional)
+   - Filesystem-specific code
+   - Loads from /boot/
+
+3. Stage 2
+   - Full GRUB environment
+   - Parses grub.cfg
+   - User menu or auto-boot
+   - Loads kernel + initramfs + DTB
+   - Sets up boot parameters
+   - Jumps to kernel entry point
+</code></pre>
+</div>
+
+<p>
+Boot parameters passed to kernel:
+</p>
+
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">Parameter</th>
+<th scope="col" class="org-left">Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left"><code>root=/dev/sda1</code></td>
+<td class="org-left">Root filesystem device</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>ro</code></td>
+<td class="org-left">Mount root read-only</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>console=ttyS0,115200</code></td>
+<td class="org-left">Serial console output</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>quiet</code></td>
+<td class="org-left">Suppress boot messages</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>loglevel=7</code></td>
+<td class="org-left">Kernel verbosity</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>init=/bin/systemd</code></td>
+<td class="org-left">Init program path</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>vga=0x318</code></td>
+<td class="org-left">Video mode (x86)</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>noinitrd</code></td>
+<td class="org-left">Skip initramfs</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div id="outline-container-org12804ab" class="outline-3">
+<h3 id="org12804ab"><span class="section-number-3">11.3.</span> Stage 2: Decompression &amp; Real Mode → Protected Mode</h3>
+<div class="outline-text-3" id="text-11-3">
+<div class="org-src-container">
+<pre class="src src-c"><code><span style="color: #8B8878;">// </span><span style="color: #8B8878;">arch/x86/boot/compressed/head_64.S
+</span>
+<span style="color: #AF87FF;">startup_32</span>:
+    <span style="color: #8B8878;">// </span><span style="color: #8B8878;">16-bit &#8594; 32-bit transition
+</span>    movl %ecx, %ebp         <span style="color: #8B8878;">// </span><span style="color: #8B8878;">Save boot_params
+</span>    jmp <span style="color: #AF87FF;">1f</span>
+<span style="color: #AF87FF;">1</span>:
+    <span style="color: #8B8878;">// </span><span style="color: #8B8878;">Setup 32-bit protected mode
+</span>    lgdt gdt_descr          <span style="color: #8B8878;">// </span><span style="color: #8B8878;">Load GDT
+</span>    movl %cr0, %eax
+    orl $1, %eax            <span style="color: #8B8878;">// </span><span style="color: #8B8878;">Set PE bit
+</span>    movl %eax, %cr0         <span style="color: #8B8878;">// </span><span style="color: #8B8878;">Enable protected mode
+</span>    ljmp $__BOOT_CS, $2f    <span style="color: #8B8878;">// </span><span style="color: #8B8878;">Far jump
+</span>
+<span style="color: #AF87FF;">2</span>:
+    <span style="color: #8B8878;">// </span><span style="color: #8B8878;">Now in 32-bit protected mode
+</span>    <span style="color: #8B8878;">// </span><span style="color: #8B8878;">Setup page tables
+</span>    <span style="color: #8B8878;">// </span><span style="color: #8B8878;">Setup paging (PAE)
+</span>    <span style="color: #8B8878;">// </span><span style="color: #8B8878;">Call decompressor: decompress_kernel()
+</span>    call decompress_kernel
+    <span style="color: #8B8878;">// </span><span style="color: #8B8878;">Jump to uncompressed kernel
+</span>    ljmp $__KERNEL_CS, $0x100000
+</code></pre>
+</div>
+</div>
+</div>
+<div id="outline-container-orgc6929be" class="outline-3">
+<h3 id="orgc6929be"><span class="section-number-3">11.4.</span> Stage 3: Kernel Memory Layout (x86_64)</h3>
+<div class="outline-text-3" id="text-11-4">
+<p>
+After paging enabled:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-nil"><code>Virtual Address Space (64-bit):
+┌─────────────────────────────────────────────┐
+│ ffff800000000000 - ffffffffffffffff (128TB) │ Kernel space
+│                                              │
+│ ffffffff80000000 - ffffffff9fffffff         │ Identity mapping (kernel image)
+│ ffffffff00000000 - ffffffff7fffffff         │ Modules
+│ ffffc90000000000 - ffffc900ffffffff         │ Direct mapping (page cache)
+│                                              │
+└─────────────────────────────────────────────┘
+│ 0000000000000000 - 00007fffffffffff (128TB) │ User space
+│ (applications, libraries, heap, stack)      │
+└─────────────────────────────────────────────┘
+</code></pre>
+</div>
+</div>
+</div>
+<div id="outline-container-org93a78dd" class="outline-3">
+<h3 id="org93a78dd"><span class="section-number-3">11.5.</span> Stage 4-5: Subsystem Initialization Order</h3>
+<div class="outline-text-3" id="text-11-5">
+<p>
+Kernel initializes subsystems in order via initcalls:
+</p>
+
+<ol class="org-ol">
+<li><b><b>pure_initcall</b></b> (early page zeroing, per-cpu areas)</li>
+<li><b><b>core_initcall</b></b> (memory allocators: SLAB, page allocator)</li>
+<li><b><b>postcore_initcall</b></b> (no_printk, tracers)</li>
+<li><b><b>arch_initcall</b></b> (x86: ACPI, APIC setup)</li>
+<li><b><b>subsys_initcall</b></b> (PCI, USB core, device model)</li>
+<li><b><b>fs_initcall</b></b> (filesystem registration: ext4, btrfs, NFS)</li>
+<li><b><b>device_initcall</b></b> (platform drivers, specific devices)</li>
+<li><b><b>late_initcall</b></b> (final setup: console switch, etc.)</li>
+</ol>
+</div>
+</div>
+<div id="outline-container-orgedda1c1" class="outline-3">
+<h3 id="orgedda1c1"><span class="section-number-3">11.6.</span> Stage 6: Device Probe Sequence</h3>
+<div class="outline-text-3" id="text-11-6">
+<p>
+For each hardware device (from device tree or ACPI/PCI):
+</p>
+
+<div class="org-src-container">
+<pre class="src src-nil"><code>1. Device discovered (DTB, ACPI, PCI scan)
+2. device_register(dev) called
+3. Driver core searches registered drivers
+4. compatible string match found
+5. bus-&gt;probe(dev, driver) called
+6. driver-&gt;probe(dev) executed
+7. If successful:
+   - Resources allocated (devm_*)
+   - IRQs requested
+   - Device initialized
+   - sysfs entries created
+   - Subsystem registration (GPIO, network, block, etc.)
+8. If failed:
+   - Resources freed (devm auto-cleanup)
+   - Device remains unbound
+   - May be probed later if driver loads
+</code></pre>
+</div>
+</div>
+</div>
+<div id="outline-container-org6ab78e2" class="outline-3">
+<h3 id="org6ab78e2"><span class="section-number-3">11.7.</span> Stage 7: Initramfs Exit</h3>
+<div class="outline-text-3" id="text-11-7">
+<p>
+On systems with initramfs:
+</p>
+
+<p>
+#+begin_src bash
+</p>
+
+<p>
+pivot_root /new-root /old-root   # Make /new-root the new root
+exec chroot . /sbin/init         # Execute real init
+#+end_bash
+</p>
+</div>
+</div>
+<div id="outline-container-org5364367" class="outline-3">
+<h3 id="org5364367"><span class="section-number-3">11.8.</span> Stage 8-9: Init System (systemd) Boot</h3>
+<div class="outline-text-3" id="text-11-8">
+<div class="org-src-container">
+<pre class="src src-nil"><code>systemd boot sequence:
+
+[*] Parse /etc/fstab
+[*] Mount filesystems (marked "auto" or needed for boot)
+[*] Start udev → /dev population, hotplug handling
+[*] Start sysinit.target
+[*] Execute OrderedAfter=sysinit dependencies
+[*] Start basic.target
+[*] Start multi-user.target
+[*] Start services:
+    - network.target (networking)
+    - getty@tty1.service (login)
+    - sshd.service (remote access)
+    - user-session target (user services)
+
+[OK] Reached multi-user.target
+
+[*] If graphical.target:
+    - Start display-manager (X11/Wayland)
+    - Start user desktop session
+</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div id="outline-container-org08dfcb5" class="outline-2">
+<h2 id="org08dfcb5"><span class="section-number-2">12.</span> Boot Parameters (Kernel Cmdline)</h2>
+<div class="outline-text-2" id="text-12">
+<p>
+Common boot parameters:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-nil"><code># Storage
+root=/dev/sda1                  # Root device
+rootflags=ro,relatime           # Mount flags
+rootfstype=ext4                 # Filesystem type
+
+# Console &amp; Logging
+console=ttyS0,115200            # Serial console
+console=tty0                    # Video console
+loglevel=7                      # Kernel log level (0-8)
+quiet                           # Suppress messages
+debug                           # Verbose logging
+
+# Boot Behavior
+init=/sbin/systemd              # Init program
+ro                              # Mount root read-only initially
+rw                              # Mount root read-write
+
+# Device/Driver
+nvidia.modeset=1                # GPU driver
+acpi=off                        # Disable ACPI
+noapic                          # Disable APIC
+nosmp                           # Disable SMP (multiprocessor)
+nokaslr                         # Disable address space randomization
+
+# Debugging
+kgdb=ttyS0,115200               # Enable kgdb
+kgdboc=ttyS0,115200             # kgdb console
+crash_kexec=1                   # Enable kexec for kdump
+
+# Modules
+modprobe.blacklist=nouveau      # Blacklist module
+</code></pre>
+</div>
+
+<p>
+View/modify boot parameters:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-bash"><code><span style="color: #8B8878;"># </span><span style="color: #8B8878;">View current boot parameters
+</span>cat /proc/cmdline
+
+<span style="color: #8B8878;"># </span><span style="color: #8B8878;">View kernel boot log
+</span>dmesg | head -100
+
+<span style="color: #8B8878;"># </span><span style="color: #8B8878;">View systemd boot times
+</span>systemd-analyze
+systemd-analyze blame           <span style="color: #8B8878;"># </span><span style="color: #8B8878;">Services taking time</span>
+</code></pre>
+</div>
+</div>
+</div>
+<div id="outline-container-org3725223" class="outline-2">
+<h2 id="org3725223"><span class="section-number-2">13.</span> Performance Tuning</h2>
+<div class="outline-text-2" id="text-13">
+<p>
+Boot optimization techniques:
+</p>
+
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">Technique</th>
+<th scope="col" class="org-left">Benefit</th>
+<th scope="col" class="org-left">Trade-off</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left"><code>quiet</code> parameter</td>
+<td class="org-left">Hide messages</td>
+<td class="org-left">Harder to debug</td>
+</tr>
+
+<tr>
+<td class="org-left">Initramfs optimization</td>
+<td class="org-left">Reduce init size</td>
+<td class="org-left">May need more modules</td>
+</tr>
+
+<tr>
+<td class="org-left">Parallel init (systemd)</td>
+<td class="org-left">Parallel service start</td>
+<td class="org-left">Complex dependencies</td>
+</tr>
+
+<tr>
+<td class="org-left">Module pre-loading</td>
+<td class="org-left">Faster device probe</td>
+<td class="org-left">Wasted memory if unused</td>
+</tr>
+
+<tr>
+<td class="org-left">Disable unused subsystems</td>
+<td class="org-left">Smaller kernel</td>
+<td class="org-left">Lost functionality</td>
+</tr>
+
+<tr>
+<td class="org-left">eBPF early load</td>
+<td class="org-left">Kernel code as modules</td>
+<td class="org-left">Debugging complexity</td>
+</tr>
+</tbody>
+</table>
+
+<p>
+Measure boot time:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-bash"><code><span style="color: #8B8878;"># </span><span style="color: #8B8878;">Total boot time
+</span>systemd-analyze
+
+<span style="color: #8B8878;"># </span><span style="color: #8B8878;">Per-service boot time
+</span>systemd-analyze blame
+
+<span style="color: #8B8878;"># </span><span style="color: #8B8878;">Boot graph
+</span>systemd-analyze plot &gt; boot-sequence.svg
+
+<span style="color: #8B8878;"># </span><span style="color: #8B8878;">Kernel + userspace breakdown
+</span>systemd-analyze time
+
+<span style="color: #8B8878;"># </span><span style="color: #8B8878;">Monitor during boot
+</span>systemd-analyze log-level debug
+</code></pre>
+</div>
+</div>
+</div>
+<div id="outline-container-orgef801ce" class="outline-2">
+<h2 id="orgef801ce"><span class="section-number-2">14.</span> See Also</h2>
+<div class="outline-text-2" id="text-14">
+<ul class="org-ul">
+<li><a href="01-kernel-module-fundamentals.html#ID-f1a2b3c4-d5e6-47f8-99a1-b2c3d4e5f6a7">Kernel Module Fundamentals</a> — module lifecycle during/after boot</li>
+<li><a href="02-device-tree.html#ID-a1b2c3d4-e5f6-4789-99a1-b2c3d4e5f6a7">Device Tree (DTS) &amp; Bindings</a> — device discovery during boot</li>
+<li><a href="07-platform-drivers.html#ID-g1h2i3j4-k5l6-4789-99a1-b2c3d4e5f6a7">Platform Drivers</a> — platform driver probe during boot</li>
+<li><a href="09-debugging-techniques.html#ID-i1j2k3l4-m5n6-4789-99a1-b2c3d4e5f6a7">Debugging Techniques</a> — debugging boot issues with kgdb</li>
+</ul>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p class="author">Author: Arun Jyothish K</p>
+<p class="date">Created: 2026-08-20 Thu 07:10</p>
+</div>
+</body>
+</html>

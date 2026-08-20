@@ -1,0 +1,253 @@
+:PROPERTIES:
+:ID:       41bfcbfa-8054-4ff6-86e9-fc663348d7ed
+:END:
+#+title: I2C & SPI Subsystem Drivers
+#+author: Arun Jyothish K
+#+filetags: :kernel:drivers:i2c:spi:regmap:
+
+*Writing bus-attached peripheral drivers: I2C client drivers, SPI device drivers, and the regmap abstraction shared between them.*
+
+** I2C: Client/Adapter Model
+
+An I2C *adapter* driver talks to the SoC's I2C controller; a *client* driver talks to a peripheral (sensor, EEPROM, PMIC) sitting on the bus. Peripheral drivers almost always write only the client side — the adapter is provided by the platform.
+
+#+begin_src c
+#include <linux/i2c.h>
+#include <linux/of.h>
+
+struct my_sensor {
+    struct i2c_client *client;
+};
+
+static int my_sensor_probe(struct i2c_client *client)
+{
+    struct my_sensor *s;
+    int val;
+
+    s = devm_kzalloc(&client->dev, sizeof(*s), GFP_KERNEL);
+    if (!s)
+        return -ENOMEM;
+
+    s->client = client;
+    i2c_set_clientdata(client, s);
+
+    val = i2c_smbus_read_byte_data(client, REG_CHIP_ID);
+    if (val < 0)
+        return val;
+    if (val != EXPECTED_CHIP_ID)
+        return -ENODEV;
+
+    return 0;
+}
+
+static void my_sensor_remove(struct i2c_client *client)
+{
+    /* devm-managed resources clean up automatically */
+}
+
+static const struct of_device_id my_sensor_of_match[] = {
+    { .compatible = "vendor,my-sensor" },
+    { }
+};
+MODULE_DEVICE_TABLE(of, my_sensor_of_match);
+
+static const struct i2c_device_id my_sensor_id[] = {
+    { "my-sensor", 0 },
+    { }
+};
+MODULE_DEVICE_TABLE(i2c, my_sensor_id);
+
+static struct i2c_driver my_sensor_driver = {
+    .driver = {
+        .name = "my-sensor",
+        .of_match_table = my_sensor_of_match,
+    },
+    .probe = my_sensor_probe,
+    .remove = my_sensor_remove,
+    .id_table = my_sensor_id,
+};
+module_i2c_driver(my_sensor_driver);
+#+end_src
+
+Matching precedence: device tree =compatible= (via =of_match_table=) takes priority on DT platforms; =id_table= backs ACPI/board-file matching and legacy manual instantiation. Both should be kept in sync.
+
+*** SMBus Helpers vs Raw Transfers
+
+- =i2c_smbus_read/write_byte_data()=, =..._word_data()=, =..._i2c_block_data()= — cover the overwhelming majority of register-based sensor/EEPROM access; simplest option.
+- =i2c_transfer()= with a =struct i2c_msg[]= array — for protocols that don't fit SMBus framing (repeated-start reads, variable-length transactions, non-register-addressed devices):
+
+#+begin_src c
+u8 reg = REG_DATA;
+u8 buf[4];
+struct i2c_msg msgs[2] = {
+    { .addr = client->addr, .flags = 0,        .len = 1, .buf = &reg },
+    { .addr = client->addr, .flags = I2C_M_RD, .len = 4, .buf = buf },
+};
+
+int ret = i2c_transfer(client->adapter, msgs, 2);
+if (ret != 2)
+    return ret < 0 ? ret : -EIO;
+#+end_src
+
+** SPI: Master/Device Model
+
+SPI has no addressing on the wire — chip select does the job I2C's 7-bit address does. Drivers build a =spi_message= from one or more =spi_transfer= segments and submit synchronously or asynchronously:
+
+#+begin_src c
+#include <linux/spi/spi.h>
+
+static int my_spi_read_reg(struct spi_device *spi, u8 reg, u8 *val)
+{
+    u8 tx = reg | 0x80;   /* read bit, device-specific convention */
+    struct spi_transfer xfers[2] = {
+        { .tx_buf = &tx,  .len = 1 },
+        { .rx_buf = val,  .len = 1 },
+    };
+    struct spi_message msg;
+
+    spi_message_init(&msg);
+    spi_message_add_tail(&xfers[0], &msg);
+    spi_message_add_tail(&xfers[1], &msg);
+
+    return spi_sync(spi, &msg);
+}
+
+static int my_spi_probe(struct spi_device *spi)
+{
+    u8 chip_id;
+    int ret;
+
+    spi->bits_per_word = 8;
+    spi->mode = SPI_MODE_0;
+    ret = spi_setup(spi);
+    if (ret)
+        return ret;
+
+    ret = my_spi_read_reg(spi, REG_CHIP_ID, &chip_id);
+    if (ret)
+        return ret;
+
+    return chip_id == EXPECTED_CHIP_ID ? 0 : -ENODEV;
+}
+
+static const struct of_device_id my_spi_of_match[] = {
+    { .compatible = "vendor,my-spi-dev" },
+    { }
+};
+MODULE_DEVICE_TABLE(of, my_spi_of_match);
+
+static struct spi_driver my_spi_driver = {
+    .driver = {
+        .name = "my-spi-dev",
+        .of_match_table = my_spi_of_match,
+    },
+    .probe = my_spi_probe,
+};
+module_spi_driver(my_spi_driver);
+#+end_src
+
+=spi_sync()= blocks until completion (fine in probe/threaded-IRQ context); =spi_async()= queues and returns immediately, completion via callback — used on hot paths where blocking the caller is unacceptable.
+
+** regmap: One Abstraction, Any Bus
+
+Most register-based chips (sensors, codecs, PMICs) support both I2C and SPI variants of the same silicon. =regmap= lets the driver logic be written once against a register map, independent of the underlying bus:
+
+#+begin_src c
+#include <linux/regmap.h>
+
+static const struct regmap_config my_regmap_config = {
+    .reg_bits = 8,
+    .val_bits = 8,
+    .max_register = 0x7f,
+    .cache_type = REGCACHE_RBTREE,   /* cache reads, coalesce writes */
+};
+
+/* I2C variant */
+static int my_probe_i2c(struct i2c_client *client)
+{
+    struct regmap *map = devm_regmap_init_i2c(client, &my_regmap_config);
+    if (IS_ERR(map))
+        return PTR_ERR(map);
+    return my_dev_probe_common(&client->dev, map);
+}
+
+/* SPI variant: same config struct, different bus init call */
+static int my_probe_spi(struct spi_device *spi)
+{
+    struct regmap *map = devm_regmap_init_spi(spi, &my_regmap_config);
+    if (IS_ERR(map))
+        return PTR_ERR(map);
+    return my_dev_probe_common(&spi->dev, map);
+}
+
+/* shared logic, bus-agnostic */
+static int my_dev_probe_common(struct device *dev, struct regmap *map)
+{
+    unsigned int chip_id;
+    int ret = regmap_read(map, REG_CHIP_ID, &chip_id);
+    if (ret)
+        return ret;
+    if (chip_id != EXPECTED_CHIP_ID)
+        return -ENODEV;
+
+    return regmap_update_bits(map, REG_CTRL, CTRL_ENABLE, CTRL_ENABLE);
+}
+#+end_src
+
+=regmap= also backs =regmap-mmio= for platform/MMIO devices, so the same pattern extends to [[id:g1h2i3j4-k5l6-4789-99a1-b2c3d4e5f6a7][Platform Drivers]]. The register cache avoids redundant bus traffic and lets =regcache_sync()= replay state after suspend/resume.
+
+** Device Tree Binding
+
+#+begin_src dts
+&i2c1 {
+    status = "okay";
+
+    sensor@48 {
+        compatible = "vendor,my-sensor";
+        reg = <0x48>;              /* 7-bit I2C address */
+        interrupt-parent = <&gpio1>;
+        interrupts = <17 IRQ_TYPE_LEVEL_LOW>;
+    };
+};
+
+&spi0 {
+    status = "okay";
+
+    imu@0 {
+        compatible = "vendor,my-spi-dev";
+        reg = <0>;                 /* chip select index */
+        spi-max-frequency = <10000000>;
+    };
+};
+#+end_src
+
+See [[id:a1b2c3d4-e5f6-4789-99a1-b2c3d4e5f6a7][Device Tree (DTS) & Bindings]] for property parsing (=of_property_read_*=) on top of the =reg=/=interrupts= cells shown here.
+
+** Bus Timing & Error Handling
+
+- I2C: transactions are slow (100 kHz–1 MHz typical) relative to CPU speed — never call blocking I2C access from hard-IRQ context; use a threaded IRQ (see [[id:bee17a98-9ba2-49bb-8169-6f1ff0f0132b][Interrupt Handling]]).
+- SPI: full-duplex and generally much faster (MHz–tens of MHz); still avoid =spi_sync()= in atomic context.
+- =-ETIMEDOUT=, =-EREMOTEIO= (I2C NAK) are common and often transient (bus contention, device still booting after power-on) — bound retries, don't spin unbounded.
+- Always check =i2c_smbus_*= and =regmap_*= return values; a chip in a bad power state fails silently otherwise.
+
+** Debugging
+
+#+begin_src bash
+# Enumerate I2C buses and devices
+i2cdetect -l
+i2cdetect -y 1                 # probe addresses on bus 1
+
+# Manual register peek (bypasses driver, useful to isolate driver vs hardware bugs)
+i2cget -y 1 0x48 0x00
+i2cset -y 1 0x48 0x00 0x01
+
+# SPI: no equivalent userspace scanner; use spidev + spi-tools, or a logic analyzer
+# regmap register cache/state, if exposed:
+cat /sys/kernel/debug/regmap/*/registers
+#+end_src
+
+** See Also
+- [[id:g1h2i3j4-k5l6-4789-99a1-b2c3d4e5f6a7][Platform Drivers]] — probe/remove model this chapter's I2C/SPI probes mirror
+- [[id:a1b2c3d4-e5f6-4789-99a1-b2c3d4e5f6a7][Device Tree (DTS) & Bindings]] — binding documentation and =reg=/=interrupts= parsing
+- [[id:bee17a98-9ba2-49bb-8169-6f1ff0f0132b][Interrupt Handling]] — threaded IRQs for bus-backed device events
+- [[id:i1j2k3l4-m5n6-4789-99a1-b2c3d4e5f6a7][Debugging Techniques]] — dynamic debug and tracing for bus transactions

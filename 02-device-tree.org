@@ -230,3 +230,5 @@ end note
 ** See Also
 - [[id:f1a2b3c4-d5e6-47f8-99a1-b2c3d4e5f6a7][Kernel Module Fundamentals]]
 - [[id:g1h2i3j4-k5l6-4789-99a1-b2c3d4e5f6a7][Platform Drivers]] — full platform driver example
+- [[id:41bfcbfa-8054-4ff6-86e9-fc663348d7ed][I2C & SPI Subsystem Drivers]] — =reg=/=interrupts= binding usage on bus-attached devices
+- [[id:k1l2m3n4-o5p6-4789-99a1-b2c3d4e5f6a7][Linux Boot Sequence]] — device tree loading and probe during boot

@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2026-08-17 Mon 20:36 -->
+<!-- 2026-08-20 Thu 07:10 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Character Drivers</title>
@@ -203,22 +203,22 @@
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents" role="doc-toc">
 <ul>
-<li><a href="#orge782780">1. Device File Interface</a></li>
-<li><a href="#orgf998448">2. File Operations</a></li>
-<li><a href="#org1ee144e">3. Device Registration</a></li>
-<li><a href="#orgabcb8d5">4. Example: LED Controller Driver</a></li>
-<li><a href="#orge52d562">5. Userspace Usage</a></li>
-<li><a href="#org20d359d">6. Character Device I/O Flow Diagram</a></li>
-<li><a href="#org831f647">7. Common Patterns</a></li>
-<li><a href="#orgc7f08d1">8. See Also</a></li>
+<li><a href="#org9fc9f56">1. Device File Interface</a></li>
+<li><a href="#org41b3294">2. File Operations</a></li>
+<li><a href="#org11cad3a">3. Device Registration</a></li>
+<li><a href="#org5a8b0a1">4. Example: LED Controller Driver</a></li>
+<li><a href="#org87c7ed7">5. Userspace Usage</a></li>
+<li><a href="#org8026604">6. Character Device I/O Flow Diagram</a></li>
+<li><a href="#org7472e88">7. Common Patterns</a></li>
+<li><a href="#orgaf65e3b">8. See Also</a></li>
 </ul>
 </div>
 </div>
 <p>
 <b>Character device drivers: device files, read/write, ioctl, mmap. Includes LED controller example.</b>
 </p>
-<div id="outline-container-orge782780" class="outline-2">
-<h2 id="orge782780"><span class="section-number-2">1.</span> Device File Interface</h2>
+<div id="outline-container-org9fc9f56" class="outline-2">
+<h2 id="org9fc9f56"><span class="section-number-2">1.</span> Device File Interface</h2>
 <div class="outline-text-2" id="text-1">
 <p>
 Character devices provide byte-stream I/O via device files (e.g., <code>/dev/ttyUSB0</code>, <code>/dev/null</code>).
@@ -245,8 +245,8 @@ Kernel exports device via <code>cdev</code> (character device) abstraction:
 </div>
 </div>
 </div>
-<div id="outline-container-orgf998448" class="outline-2">
-<h2 id="orgf998448"><span class="section-number-2">2.</span> File Operations</h2>
+<div id="outline-container-org41b3294" class="outline-2">
+<h2 id="org41b3294"><span class="section-number-2">2.</span> File Operations</h2>
 <div class="outline-text-2" id="text-2">
 <p>
 Kernel calls file_operations methods when userspace reads/writes/ioctls:
@@ -339,8 +339,8 @@ Kernel calls file_operations methods when userspace reads/writes/ioctls:
 </div>
 </div>
 </div>
-<div id="outline-container-org1ee144e" class="outline-2">
-<h2 id="org1ee144e"><span class="section-number-2">3.</span> Device Registration</h2>
+<div id="outline-container-org11cad3a" class="outline-2">
+<h2 id="org11cad3a"><span class="section-number-2">3.</span> Device Registration</h2>
 <div class="outline-text-2" id="text-3">
 <p>
 Register character device and create device file:
@@ -429,8 +429,8 @@ Register character device and create device file:
 </div>
 </div>
 </div>
-<div id="outline-container-orgabcb8d5" class="outline-2">
-<h2 id="orgabcb8d5"><span class="section-number-2">4.</span> Example: LED Controller Driver</h2>
+<div id="outline-container-org5a8b0a1" class="outline-2">
+<h2 id="org5a8b0a1"><span class="section-number-2">4.</span> Example: LED Controller Driver</h2>
 <div class="outline-text-2" id="text-4">
 <p>
 Simple LED controller with read/write and ioctl:
@@ -541,8 +541,8 @@ MODULE_DESCRIPTION<span style="color: #AF87FF;">(</span><span style="color: #CDC
 </div>
 </div>
 </div>
-<div id="outline-container-orge52d562" class="outline-2">
-<h2 id="orge52d562"><span class="section-number-2">5.</span> Userspace Usage</h2>
+<div id="outline-container-org87c7ed7" class="outline-2">
+<h2 id="org87c7ed7"><span class="section-number-2">5.</span> Userspace Usage</h2>
 <div class="outline-text-2" id="text-5">
 <div class="org-src-container">
 <pre class="src src-c"><code><span style="color: #8B8878;">// </span><span style="color: #8B8878;">user_led_app.c
@@ -574,24 +574,24 @@ MODULE_DESCRIPTION<span style="color: #AF87FF;">(</span><span style="color: #CDC
 </div>
 </div>
 </div>
-<div id="outline-container-org20d359d" class="outline-2">
-<h2 id="org20d359d"><span class="section-number-2">6.</span> Character Device I/O Flow Diagram</h2>
+<div id="outline-container-org8026604" class="outline-2">
+<h2 id="org8026604"><span class="section-number-2">6.</span> Character Device I/O Flow Diagram</h2>
 <div class="outline-text-2" id="text-6">
 
-<div id="org817f473" class="figure">
+<div id="org85caec6" class="figure">
 <p><img src="res/03-char-device-io.svg" alt="03-char-device-io.svg" class="org-svg" />
 </p>
 </div>
 
 
-<div id="orgbbf5bb6" class="figure">
+<div id="org4171e69" class="figure">
 <p><img src="res/03-char-device-io.svg" alt="03-char-device-io.svg" class="org-svg" />
 </p>
 </div>
 </div>
 </div>
-<div id="outline-container-org831f647" class="outline-2">
-<h2 id="org831f647"><span class="section-number-2">7.</span> Common Patterns</h2>
+<div id="outline-container-org7472e88" class="outline-2">
+<h2 id="org7472e88"><span class="section-number-2">7.</span> Common Patterns</h2>
 <div class="outline-text-2" id="text-7">
 <ul class="org-ul">
 <li>Use <code>devm_*</code> allocators for automatic cleanup</li>
@@ -602,8 +602,8 @@ MODULE_DESCRIPTION<span style="color: #AF87FF;">(</span><span style="color: #CDC
 </ul>
 </div>
 </div>
-<div id="outline-container-orgc7f08d1" class="outline-2">
-<h2 id="orgc7f08d1"><span class="section-number-2">8.</span> See Also</h2>
+<div id="outline-container-orgaf65e3b" class="outline-2">
+<h2 id="orgaf65e3b"><span class="section-number-2">8.</span> See Also</h2>
 <div class="outline-text-2" id="text-8">
 <ul class="org-ul">
 <li><a href="01-kernel-module-fundamentals.html#ID-f1a2b3c4-d5e6-47f8-99a1-b2c3d4e5f6a7">Kernel Module Fundamentals</a></li>
@@ -615,7 +615,7 @@ MODULE_DESCRIPTION<span style="color: #AF87FF;">(</span><span style="color: #CDC
 </div>
 <div id="postamble" class="status">
 <p class="author">Author: Arun Jyothish K</p>
-<p class="date">Created: 2026-08-17 Mon 20:36</p>
+<p class="date">Created: 2026-08-20 Thu 07:10</p>
 </div>
 </body>
 </html>

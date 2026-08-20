@@ -437,3 +437,5 @@ NetStack -> NetStack: Route/socket lookup
 ** See Also
 - [[id:f1a2b3c4-d5e6-47f8-99a1-b2c3d4e5f6a7][Kernel Module Fundamentals]]
 - [[id:j1k2l3m4-n5o6-4789-99a1-b2c3d4e5f6a7][Performance Considerations]] — NAPI, RCU, lockless queues
+- [[id:4fe1ea81-ea79-4b83-8435-83dea4337125][DMA & Memory Mapping]] — skbuff DMA mapping on TX/RX
+- [[id:bee17a98-9ba2-49bb-8169-6f1ff0f0132b][Interrupt Handling]] — NAPI poll scheduling from the RX IRQ

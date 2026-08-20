@@ -401,3 +401,6 @@ Driver --> DriverCore: return 0
 - [[id:a1b2c3d4-e5f6-4789-99a1-b2c3d4e5f6a7][Device Tree (DTS) & Bindings]]
 - [[id:f1a2b3c4-d5e6-47f8-99a1-b2c3d4e5f6a7][Kernel Module Fundamentals]]
 - [[id:i1j2k3l4-m5n6-4789-99a1-b2c3d4e5f6a7][Debugging Techniques]]
+- [[id:bee17a98-9ba2-49bb-8169-6f1ff0f0132b][Interrupt Handling]] — =platform_get_irq()= and requesting the resulting IRQ
+- [[id:41bfcbfa-8054-4ff6-86e9-fc663348d7ed][I2C & SPI Subsystem Drivers]] — same probe/remove model on a different bus
+- [[id:k1l2m3n4-o5p6-4789-99a1-b2c3d4e5f6a7][Linux Boot Sequence]] — platform driver probe during boot

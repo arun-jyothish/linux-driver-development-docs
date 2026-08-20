@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2026-08-17 Mon 20:37 -->
+<!-- 2026-08-20 Thu 07:10 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Platform Drivers</title>
@@ -203,23 +203,23 @@
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents" role="doc-toc">
 <ul>
-<li><a href="#org3912c93">1. Platform Driver Framework</a></li>
-<li><a href="#orgb7da0e6">2. Driver Registration</a></li>
-<li><a href="#orgcc6bc77">3. Probe Function</a></li>
-<li><a href="#org9ea35ff">4. Remove Function</a></li>
-<li><a href="#org6a1c862">5. Example: GPIO Controller Driver</a></li>
-<li><a href="#org13ed233">6. Device Tree Integration</a></li>
-<li><a href="#orgad42b08">7. Common Patterns</a></li>
-<li><a href="#org846ff77">8. Platform Driver Probe Flow Diagram</a></li>
-<li><a href="#org2c23faa">9. See Also</a></li>
+<li><a href="#org394497d">1. Platform Driver Framework</a></li>
+<li><a href="#org050f3c9">2. Driver Registration</a></li>
+<li><a href="#org02ce150">3. Probe Function</a></li>
+<li><a href="#org9557039">4. Remove Function</a></li>
+<li><a href="#org713a29b">5. Example: GPIO Controller Driver</a></li>
+<li><a href="#org97f6326">6. Device Tree Integration</a></li>
+<li><a href="#org768a513">7. Common Patterns</a></li>
+<li><a href="#org2d13162">8. Platform Driver Probe Flow Diagram</a></li>
+<li><a href="#orgdc8c0e8">9. See Also</a></li>
 </ul>
 </div>
 </div>
 <p>
 <b>Platform driver framework: device discovery, probe/remove lifecycle, device tree integration. Includes GPIO controller example.</b>
 </p>
-<div id="outline-container-org3912c93" class="outline-2">
-<h2 id="org3912c93"><span class="section-number-2">1.</span> Platform Driver Framework</h2>
+<div id="outline-container-org394497d" class="outline-2">
+<h2 id="org394497d"><span class="section-number-2">1.</span> Platform Driver Framework</h2>
 <div class="outline-text-2" id="text-1">
 <p>
 Platform devices are discovered via device tree or platform data (rarely). Kernel matches devices with drivers via <code>compatible</code> string (DTS) or platform name (legacy).
@@ -237,8 +237,8 @@ Driver lifecycle:
 </ol>
 </div>
 </div>
-<div id="outline-container-orgb7da0e6" class="outline-2">
-<h2 id="orgb7da0e6"><span class="section-number-2">2.</span> Driver Registration</h2>
+<div id="outline-container-org050f3c9" class="outline-2">
+<h2 id="org050f3c9"><span class="section-number-2">2.</span> Driver Registration</h2>
 <div class="outline-text-2" id="text-2">
 <div class="org-src-container">
 <pre class="src src-c"><code><span style="color: #FF1493;">#include</span> <span style="color: #AF87FF;">&lt;</span><span style="color: #CDC673;">linux/platform_device.h</span><span style="color: #AF87FF;">&gt;</span>
@@ -287,8 +287,8 @@ Driver lifecycle:
 </div>
 </div>
 </div>
-<div id="outline-container-orgcc6bc77" class="outline-2">
-<h2 id="orgcc6bc77"><span class="section-number-2">3.</span> Probe Function</h2>
+<div id="outline-container-org02ce150" class="outline-2">
+<h2 id="org02ce150"><span class="section-number-2">3.</span> Probe Function</h2>
 <div class="outline-text-2" id="text-3">
 <p>
 Probe runs when device is discovered. Must initialize hardware and export interfaces:
@@ -359,8 +359,8 @@ Probe runs when device is discovered. Must initialize hardware and export interf
 </div>
 </div>
 </div>
-<div id="outline-container-org9ea35ff" class="outline-2">
-<h2 id="org9ea35ff"><span class="section-number-2">4.</span> Remove Function</h2>
+<div id="outline-container-org9557039" class="outline-2">
+<h2 id="org9557039"><span class="section-number-2">4.</span> Remove Function</h2>
 <div class="outline-text-2" id="text-4">
 <p>
 Clean up resources:
@@ -384,8 +384,8 @@ Clean up resources:
 </div>
 </div>
 </div>
-<div id="outline-container-org6a1c862" class="outline-2">
-<h2 id="org6a1c862"><span class="section-number-2">5.</span> Example: GPIO Controller Driver</h2>
+<div id="outline-container-org713a29b" class="outline-2">
+<h2 id="org713a29b"><span class="section-number-2">5.</span> Example: GPIO Controller Driver</h2>
 <div class="outline-text-2" id="text-5">
 <p>
 Complete platform driver for GPIO controller:
@@ -575,8 +575,8 @@ MODULE_DESCRIPTION<span style="color: #AF87FF;">(</span><span style="color: #CDC
 </div>
 </div>
 </div>
-<div id="outline-container-org13ed233" class="outline-2">
-<h2 id="org13ed233"><span class="section-number-2">6.</span> Device Tree Integration</h2>
+<div id="outline-container-org97f6326" class="outline-2">
+<h2 id="org97f6326"><span class="section-number-2">6.</span> Device Tree Integration</h2>
 <div class="outline-text-2" id="text-6">
 <div class="org-src-container">
 <pre class="src src-dts"><code>gpio_controller: gpio@1000 {
@@ -601,8 +601,8 @@ led: led@2000 {
 </div>
 </div>
 </div>
-<div id="outline-container-orgad42b08" class="outline-2">
-<h2 id="orgad42b08"><span class="section-number-2">7.</span> Common Patterns</h2>
+<div id="outline-container-org768a513" class="outline-2">
+<h2 id="org768a513"><span class="section-number-2">7.</span> Common Patterns</h2>
 <div class="outline-text-2" id="text-7">
 <ul class="org-ul">
 <li>Use <code>devm_*</code> allocators (automatic cleanup on probe failure/removal)</li>
@@ -614,36 +614,39 @@ led: led@2000 {
 </ul>
 </div>
 </div>
-<div id="outline-container-org846ff77" class="outline-2">
-<h2 id="org846ff77"><span class="section-number-2">8.</span> Platform Driver Probe Flow Diagram</h2>
+<div id="outline-container-org2d13162" class="outline-2">
+<h2 id="org2d13162"><span class="section-number-2">8.</span> Platform Driver Probe Flow Diagram</h2>
 <div class="outline-text-2" id="text-8">
 
-<div id="org0e671b7" class="figure">
+<div id="orga3a8b1e" class="figure">
 <p><img src="res/06-platform-probe.svg" alt="06-platform-probe.svg" class="org-svg" />
 </p>
 </div>
 
 
-<div id="org87acf9d" class="figure">
+<div id="orgf01dd9d" class="figure">
 <p><img src="res/06-platform-probe.svg" alt="06-platform-probe.svg" class="org-svg" />
 </p>
 </div>
 </div>
 </div>
-<div id="outline-container-org2c23faa" class="outline-2">
-<h2 id="org2c23faa"><span class="section-number-2">9.</span> See Also</h2>
+<div id="outline-container-orgdc8c0e8" class="outline-2">
+<h2 id="orgdc8c0e8"><span class="section-number-2">9.</span> See Also</h2>
 <div class="outline-text-2" id="text-9">
 <ul class="org-ul">
 <li><a href="02-device-tree.html#ID-a1b2c3d4-e5f6-4789-99a1-b2c3d4e5f6a7">Device Tree (DTS) &amp; Bindings</a></li>
 <li><a href="01-kernel-module-fundamentals.html#ID-f1a2b3c4-d5e6-47f8-99a1-b2c3d4e5f6a7">Kernel Module Fundamentals</a></li>
 <li><a href="09-debugging-techniques.html#ID-i1j2k3l4-m5n6-4789-99a1-b2c3d4e5f6a7">Debugging Techniques</a></li>
+<li><a href="12-interrupt-handling.html#ID-bee17a98-9ba2-49bb-8169-6f1ff0f0132b">Interrupt Handling</a> — <code>platform_get_irq()</code> and requesting the resulting IRQ</li>
+<li><a href="14-i2c-spi-subsystem.html#ID-41bfcbfa-8054-4ff6-86e9-fc663348d7ed">I2C &amp; SPI Subsystem Drivers</a> — same probe/remove model on a different bus</li>
+<li><a href="11-linux-boot-sequence.html#ID-k1l2m3n4-o5p6-4789-99a1-b2c3d4e5f6a7">Linux Boot Sequence</a> — platform driver probe during boot</li>
 </ul>
 </div>
 </div>
 </div>
 <div id="postamble" class="status">
 <p class="author">Author: Arun Jyothish K</p>
-<p class="date">Created: 2026-08-17 Mon 20:37</p>
+<p class="date">Created: 2026-08-20 Thu 07:10</p>
 </div>
 </body>
 </html>

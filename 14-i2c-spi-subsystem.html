@@ -1,0 +1,517 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<!-- 2026-08-20 Thu 07:10 -->
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>I2C &amp; SPI Subsystem Drivers</title>
+<meta name="author" content="Arun Jyothish K" />
+<meta name="generator" content="Org Mode" />
+<style type="text/css">
+  #content { max-width: 60em; margin: auto; }
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #e6e6e6;
+    border-radius: 3px;
+    background-color: #f2f2f2;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: auto;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    top: -8px;
+    right: 12px;
+    padding: 3px;
+    color: #555;
+    background-color: #f2f2f299;
+  }
+  pre.src:hover:before { display: inline; margin-top: 14px;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-authinfo::before { content: 'Authinfo'; }
+  pre.src-c:before { content: 'C'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'JavaScript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .equation-container {
+    display: table;
+    text-align: center;
+    width: 100%;
+  }
+  .equation {
+    vertical-align: middle;
+  }
+  .equation-label {
+    display: table-cell;
+    text-align: right;
+    vertical-align: middle;
+  }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { }
+</style>
+<link rel="stylesheet" type="text/css" href="/home/jeis/.apps/emacs-styles/light_green.css" />
+</head>
+<body>
+<div id="content" class="content">
+<h1 class="title">I2C &amp; SPI Subsystem Drivers</h1>
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#org13b5229">1. I2C: Client/Adapter Model</a>
+<ul>
+<li><a href="#orgaa6ef6f">1.1. SMBus Helpers vs Raw Transfers</a></li>
+</ul>
+</li>
+<li><a href="#org6978261">2. SPI: Master/Device Model</a></li>
+<li><a href="#org14f7ac2">3. regmap: One Abstraction, Any Bus</a></li>
+<li><a href="#org1a8d9be">4. Device Tree Binding</a></li>
+<li><a href="#org0a9eb2c">5. Bus Timing &amp; Error Handling</a></li>
+<li><a href="#org5a48c8e">6. Debugging</a></li>
+<li><a href="#orgfd91f8e">7. See Also</a></li>
+</ul>
+</div>
+</div>
+<p>
+<b>Writing bus-attached peripheral drivers: I2C client drivers, SPI device drivers, and the regmap abstraction shared between them.</b>
+</p>
+<div id="outline-container-org13b5229" class="outline-2">
+<h2 id="org13b5229"><span class="section-number-2">1.</span> I2C: Client/Adapter Model</h2>
+<div class="outline-text-2" id="text-1">
+<p>
+An I2C <b>adapter</b> driver talks to the SoC's I2C controller; a <b>client</b> driver talks to a peripheral (sensor, EEPROM, PMIC) sitting on the bus. Peripheral drivers almost always write only the client side — the adapter is provided by the platform.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-c"><code><span style="color: #FF1493;">#include</span> <span style="color: #AF87FF;">&lt;</span><span style="color: #CDC673;">linux/i2c.h</span><span style="color: #AF87FF;">&gt;</span>
+<span style="color: #FF1493;">#include</span> <span style="color: #AF87FF;">&lt;</span><span style="color: #CDC673;">linux/of.h</span><span style="color: #AF87FF;">&gt;</span>
+
+<span style="color: #FF1493;">struct</span> <span style="color: #5FD7FF;">my_sensor</span> <span style="color: #AF87FF;">{</span>
+    <span style="color: #FF1493;">struct</span> <span style="color: #5FD7FF;">i2c_client</span> *<span style="color: #FF8C00;">client</span>;
+<span style="color: #AF87FF;">}</span>;
+
+<span style="color: #FF1493;">static</span> <span style="color: #5FD7FF;">int</span> <span style="color: #87D700;">my_sensor_probe</span><span style="color: #AF87FF;">(</span><span style="color: #FF1493;">struct</span> <span style="color: #5FD7FF;">i2c_client</span> *<span style="color: #FF8C00;">client</span><span style="color: #AF87FF;">)</span>
+<span style="color: #AF87FF;">{</span>
+    <span style="color: #FF1493;">struct</span> <span style="color: #5FD7FF;">my_sensor</span> *<span style="color: #FF8C00;">s</span>;
+    <span style="color: #5FD7FF;">int</span> <span style="color: #FF8C00;">val</span>;
+
+    s = devm_kzalloc<span style="color: #5FD7FF;">(</span>&amp;client-&gt;dev, <span style="color: #FF1493;">sizeof</span><span style="color: #87D700;">(</span>*s<span style="color: #87D700;">)</span>, GFP_KERNEL<span style="color: #5FD7FF;">)</span>;
+    <span style="color: #FF1493;">if</span> <span style="color: #5FD7FF;">(</span><span style="color: #CDC673; font-weight: bold;">!</span>s<span style="color: #5FD7FF;">)</span>
+        <span style="color: #FF1493;">return</span> -ENOMEM;
+
+    s-&gt;client = client;
+    i2c_set_clientdata<span style="color: #5FD7FF;">(</span>client, s<span style="color: #5FD7FF;">)</span>;
+
+    val = i2c_smbus_read_byte_data<span style="color: #5FD7FF;">(</span>client, REG_CHIP_ID<span style="color: #5FD7FF;">)</span>;
+    <span style="color: #FF1493;">if</span> <span style="color: #5FD7FF;">(</span>val &lt; <span style="color: #AF87FF;">0</span><span style="color: #5FD7FF;">)</span>
+        <span style="color: #FF1493;">return</span> val;
+    <span style="color: #FF1493;">if</span> <span style="color: #5FD7FF;">(</span>val != EXPECTED_CHIP_ID<span style="color: #5FD7FF;">)</span>
+        <span style="color: #FF1493;">return</span> -ENODEV;
+
+    <span style="color: #FF1493;">return</span> <span style="color: #AF87FF;">0</span>;
+<span style="color: #AF87FF;">}</span>
+
+<span style="color: #FF1493;">static</span> <span style="color: #5FD7FF;">void</span> <span style="color: #87D700;">my_sensor_remove</span><span style="color: #AF87FF;">(</span><span style="color: #FF1493;">struct</span> <span style="color: #5FD7FF;">i2c_client</span> *<span style="color: #FF8C00;">client</span><span style="color: #AF87FF;">)</span>
+<span style="color: #AF87FF;">{</span>
+    <span style="color: #8B8878;">/* </span><span style="color: #8B8878;">devm-managed resources clean up automatically</span><span style="color: #8B8878;"> */</span>
+<span style="color: #AF87FF;">}</span>
+
+<span style="color: #FF1493;">static</span> <span style="color: #FF1493;">const</span> <span style="color: #FF1493;">struct</span> <span style="color: #5FD7FF;">of_device_id</span> <span style="color: #FF8C00;">my_sensor_of_match</span><span style="color: #AF87FF;">[]</span> = <span style="color: #AF87FF;">{</span>
+    <span style="color: #5FD7FF;">{</span> .compatible = <span style="color: #CDC673;">"vendor,my-sensor"</span> <span style="color: #5FD7FF;">}</span>,
+    <span style="color: #5FD7FF;">{</span> <span style="color: #5FD7FF;">}</span>
+<span style="color: #AF87FF;">}</span>;
+<span style="color: #87D700;">MODULE_DEVICE_TABLE</span><span style="color: #AF87FF;">(</span>of, my_sensor_of_match<span style="color: #AF87FF;">)</span>;
+
+<span style="color: #FF1493;">static</span> <span style="color: #FF1493;">const</span> <span style="color: #FF1493;">struct</span> <span style="color: #5FD7FF;">i2c_device_id</span> <span style="color: #FF8C00;">my_sensor_id</span><span style="color: #AF87FF;">[]</span> = <span style="color: #AF87FF;">{</span>
+    <span style="color: #5FD7FF;">{</span> <span style="color: #CDC673;">"my-sensor"</span>, <span style="color: #AF87FF;">0</span> <span style="color: #5FD7FF;">}</span>,
+    <span style="color: #5FD7FF;">{</span> <span style="color: #5FD7FF;">}</span>
+<span style="color: #AF87FF;">}</span>;
+<span style="color: #87D700;">MODULE_DEVICE_TABLE</span><span style="color: #AF87FF;">(</span>i2c, my_sensor_id<span style="color: #AF87FF;">)</span>;
+
+<span style="color: #FF1493;">static</span> <span style="color: #FF1493;">struct</span> <span style="color: #5FD7FF;">i2c_driver</span> <span style="color: #FF8C00;">my_sensor_driver</span> = <span style="color: #AF87FF;">{</span>
+    .driver = <span style="color: #5FD7FF;">{</span>
+        .name = <span style="color: #CDC673;">"my-sensor"</span>,
+        .of_match_table = my_sensor_of_match,
+    <span style="color: #5FD7FF;">}</span>,
+    .probe = my_sensor_probe,
+    .remove = my_sensor_remove,
+    .id_table = my_sensor_id,
+<span style="color: #AF87FF;">}</span>;
+<span style="color: #87D700;">module_i2c_driver</span><span style="color: #AF87FF;">(</span>my_sensor_driver<span style="color: #AF87FF;">)</span>;
+</code></pre>
+</div>
+
+<p>
+Matching precedence: device tree <code>compatible</code> (via <code>of_match_table</code>) takes priority on DT platforms; <code>id_table</code> backs ACPI/board-file matching and legacy manual instantiation. Both should be kept in sync.
+</p>
+</div>
+<div id="outline-container-orgaa6ef6f" class="outline-3">
+<h3 id="orgaa6ef6f"><span class="section-number-3">1.1.</span> SMBus Helpers vs Raw Transfers</h3>
+<div class="outline-text-3" id="text-1-1">
+<ul class="org-ul">
+<li><code>i2c_smbus_read/write_byte_data()</code>, <code>..._word_data()</code>, <code>..._i2c_block_data()</code> — cover the overwhelming majority of register-based sensor/EEPROM access; simplest option.</li>
+<li><code>i2c_transfer()</code> with a <code>struct i2c_msg[]</code> array — for protocols that don't fit SMBus framing (repeated-start reads, variable-length transactions, non-register-addressed devices):</li>
+</ul>
+
+<div class="org-src-container">
+<pre class="src src-c"><code><span style="color: #5FD7FF;">u8</span> <span style="color: #FF8C00;">reg</span> = REG_DATA;
+<span style="color: #5FD7FF;">u8</span> <span style="color: #FF8C00;">buf</span><span style="color: #AF87FF;">[</span><span style="color: #AF87FF;">4</span><span style="color: #AF87FF;">]</span>;
+<span style="color: #FF1493;">struct</span> <span style="color: #5FD7FF;">i2c_msg</span> <span style="color: #FF8C00;">msgs</span><span style="color: #AF87FF;">[</span><span style="color: #AF87FF;">2</span><span style="color: #AF87FF;">]</span> = <span style="color: #AF87FF;">{</span>
+    <span style="color: #5FD7FF;">{</span> .addr = client-&gt;addr, .flags = <span style="color: #AF87FF;">0</span>,        .len = <span style="color: #AF87FF;">1</span>, .buf = &amp;reg <span style="color: #5FD7FF;">}</span>,
+    <span style="color: #5FD7FF;">{</span> .addr = client-&gt;addr, .flags = I2C_M_RD, .len = <span style="color: #AF87FF;">4</span>, .buf = buf <span style="color: #5FD7FF;">}</span>,
+<span style="color: #AF87FF;">}</span>;
+
+<span style="color: #5FD7FF;">int</span> <span style="color: #FF8C00;">ret</span> = i2c_transfer<span style="color: #AF87FF;">(</span>client-&gt;adapter, msgs, <span style="color: #AF87FF;">2</span><span style="color: #AF87FF;">)</span>;
+<span style="color: #FF1493;">if</span> <span style="color: #AF87FF;">(</span>ret != <span style="color: #AF87FF;">2</span><span style="color: #AF87FF;">)</span>
+    <span style="color: #FF1493;">return</span> ret &lt; <span style="color: #AF87FF;">0</span> ? ret : -EIO;
+</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div id="outline-container-org6978261" class="outline-2">
+<h2 id="org6978261"><span class="section-number-2">2.</span> SPI: Master/Device Model</h2>
+<div class="outline-text-2" id="text-2">
+<p>
+SPI has no addressing on the wire — chip select does the job I2C's 7-bit address does. Drivers build a <code>spi_message</code> from one or more <code>spi_transfer</code> segments and submit synchronously or asynchronously:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-c"><code><span style="color: #FF1493;">#include</span> <span style="color: #AF87FF;">&lt;</span><span style="color: #CDC673;">linux/spi/spi.h</span><span style="color: #AF87FF;">&gt;</span>
+
+<span style="color: #FF1493;">static</span> <span style="color: #5FD7FF;">int</span> <span style="color: #87D700;">my_spi_read_reg</span><span style="color: #AF87FF;">(</span><span style="color: #FF1493;">struct</span> <span style="color: #5FD7FF;">spi_device</span> *<span style="color: #FF8C00;">spi</span>, <span style="color: #5FD7FF;">u8</span> <span style="color: #FF8C00;">reg</span>, <span style="color: #5FD7FF;">u8</span> *<span style="color: #FF8C00;">val</span><span style="color: #AF87FF;">)</span>
+<span style="color: #AF87FF;">{</span>
+    <span style="color: #5FD7FF;">u8</span> <span style="color: #FF8C00;">tx</span> = reg | <span style="color: #AF87FF;">0x80</span>;   <span style="color: #8B8878;">/* </span><span style="color: #8B8878;">read bit, device-specific convention</span><span style="color: #8B8878;"> */</span>
+    <span style="color: #FF1493;">struct</span> <span style="color: #5FD7FF;">spi_transfer</span> <span style="color: #FF8C00;">xfers</span><span style="color: #5FD7FF;">[</span><span style="color: #AF87FF;">2</span><span style="color: #5FD7FF;">]</span> = <span style="color: #5FD7FF;">{</span>
+        <span style="color: #87D700;">{</span> .tx_buf = &amp;tx,  .len = <span style="color: #AF87FF;">1</span> <span style="color: #87D700;">}</span>,
+        <span style="color: #87D700;">{</span> .rx_buf = val,  .len = <span style="color: #AF87FF;">1</span> <span style="color: #87D700;">}</span>,
+    <span style="color: #5FD7FF;">}</span>;
+    <span style="color: #FF1493;">struct</span> <span style="color: #5FD7FF;">spi_message</span> <span style="color: #FF8C00;">msg</span>;
+
+    spi_message_init<span style="color: #5FD7FF;">(</span>&amp;msg<span style="color: #5FD7FF;">)</span>;
+    spi_message_add_tail<span style="color: #5FD7FF;">(</span>&amp;xfers<span style="color: #87D700;">[</span><span style="color: #AF87FF;">0</span><span style="color: #87D700;">]</span>, &amp;msg<span style="color: #5FD7FF;">)</span>;
+    spi_message_add_tail<span style="color: #5FD7FF;">(</span>&amp;xfers<span style="color: #87D700;">[</span><span style="color: #AF87FF;">1</span><span style="color: #87D700;">]</span>, &amp;msg<span style="color: #5FD7FF;">)</span>;
+
+    <span style="color: #FF1493;">return</span> spi_sync<span style="color: #5FD7FF;">(</span>spi, &amp;msg<span style="color: #5FD7FF;">)</span>;
+<span style="color: #AF87FF;">}</span>
+
+<span style="color: #FF1493;">static</span> <span style="color: #5FD7FF;">int</span> <span style="color: #87D700;">my_spi_probe</span><span style="color: #AF87FF;">(</span><span style="color: #FF1493;">struct</span> <span style="color: #5FD7FF;">spi_device</span> *<span style="color: #FF8C00;">spi</span><span style="color: #AF87FF;">)</span>
+<span style="color: #AF87FF;">{</span>
+    <span style="color: #5FD7FF;">u8</span> <span style="color: #FF8C00;">chip_id</span>;
+    <span style="color: #5FD7FF;">int</span> <span style="color: #FF8C00;">ret</span>;
+
+    spi-&gt;bits_per_word = <span style="color: #AF87FF;">8</span>;
+    spi-&gt;mode = SPI_MODE_0;
+    ret = spi_setup<span style="color: #5FD7FF;">(</span>spi<span style="color: #5FD7FF;">)</span>;
+    <span style="color: #FF1493;">if</span> <span style="color: #5FD7FF;">(</span>ret<span style="color: #5FD7FF;">)</span>
+        <span style="color: #FF1493;">return</span> ret;
+
+    ret = my_spi_read_reg<span style="color: #5FD7FF;">(</span>spi, REG_CHIP_ID, &amp;chip_id<span style="color: #5FD7FF;">)</span>;
+    <span style="color: #FF1493;">if</span> <span style="color: #5FD7FF;">(</span>ret<span style="color: #5FD7FF;">)</span>
+        <span style="color: #FF1493;">return</span> ret;
+
+    <span style="color: #FF1493;">return</span> chip_id == EXPECTED_CHIP_ID ? <span style="color: #AF87FF;">0</span> : -ENODEV;
+<span style="color: #AF87FF;">}</span>
+
+<span style="color: #FF1493;">static</span> <span style="color: #FF1493;">const</span> <span style="color: #FF1493;">struct</span> <span style="color: #5FD7FF;">of_device_id</span> <span style="color: #FF8C00;">my_spi_of_match</span><span style="color: #AF87FF;">[]</span> = <span style="color: #AF87FF;">{</span>
+    <span style="color: #5FD7FF;">{</span> .compatible = <span style="color: #CDC673;">"vendor,my-spi-dev"</span> <span style="color: #5FD7FF;">}</span>,
+    <span style="color: #5FD7FF;">{</span> <span style="color: #5FD7FF;">}</span>
+<span style="color: #AF87FF;">}</span>;
+<span style="color: #87D700;">MODULE_DEVICE_TABLE</span><span style="color: #AF87FF;">(</span>of, my_spi_of_match<span style="color: #AF87FF;">)</span>;
+
+<span style="color: #FF1493;">static</span> <span style="color: #FF1493;">struct</span> <span style="color: #5FD7FF;">spi_driver</span> <span style="color: #FF8C00;">my_spi_driver</span> = <span style="color: #AF87FF;">{</span>
+    .driver = <span style="color: #5FD7FF;">{</span>
+        .name = <span style="color: #CDC673;">"my-spi-dev"</span>,
+        .of_match_table = my_spi_of_match,
+    <span style="color: #5FD7FF;">}</span>,
+    .probe = my_spi_probe,
+<span style="color: #AF87FF;">}</span>;
+<span style="color: #87D700;">module_spi_driver</span><span style="color: #AF87FF;">(</span>my_spi_driver<span style="color: #AF87FF;">)</span>;
+</code></pre>
+</div>
+
+<p>
+<code>spi_sync()</code> blocks until completion (fine in probe/threaded-IRQ context); <code>spi_async()</code> queues and returns immediately, completion via callback — used on hot paths where blocking the caller is unacceptable.
+</p>
+</div>
+</div>
+<div id="outline-container-org14f7ac2" class="outline-2">
+<h2 id="org14f7ac2"><span class="section-number-2">3.</span> regmap: One Abstraction, Any Bus</h2>
+<div class="outline-text-2" id="text-3">
+<p>
+Most register-based chips (sensors, codecs, PMICs) support both I2C and SPI variants of the same silicon. <code>regmap</code> lets the driver logic be written once against a register map, independent of the underlying bus:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-c"><code><span style="color: #FF1493;">#include</span> <span style="color: #AF87FF;">&lt;</span><span style="color: #CDC673;">linux/regmap.h</span><span style="color: #AF87FF;">&gt;</span>
+
+<span style="color: #FF1493;">static</span> <span style="color: #FF1493;">const</span> <span style="color: #FF1493;">struct</span> <span style="color: #5FD7FF;">regmap_config</span> <span style="color: #FF8C00;">my_regmap_config</span> = <span style="color: #AF87FF;">{</span>
+    .reg_bits = <span style="color: #AF87FF;">8</span>,
+    .val_bits = <span style="color: #AF87FF;">8</span>,
+    .max_register = <span style="color: #AF87FF;">0x7f</span>,
+    .cache_type = REGCACHE_RBTREE,   <span style="color: #8B8878;">/* </span><span style="color: #8B8878;">cache reads, coalesce writes</span><span style="color: #8B8878;"> */</span>
+<span style="color: #AF87FF;">}</span>;
+
+<span style="color: #8B8878;">/* </span><span style="color: #8B8878;">I2C variant</span><span style="color: #8B8878;"> */</span>
+<span style="color: #FF1493;">static</span> <span style="color: #5FD7FF;">int</span> <span style="color: #87D700;">my_probe_i2c</span><span style="color: #AF87FF;">(</span><span style="color: #FF1493;">struct</span> <span style="color: #5FD7FF;">i2c_client</span> *<span style="color: #FF8C00;">client</span><span style="color: #AF87FF;">)</span>
+<span style="color: #AF87FF;">{</span>
+    <span style="color: #FF1493;">struct</span> <span style="color: #5FD7FF;">regmap</span> *<span style="color: #FF8C00;">map</span> = devm_regmap_init_i2c<span style="color: #5FD7FF;">(</span>client, &amp;my_regmap_config<span style="color: #5FD7FF;">)</span>;
+    <span style="color: #FF1493;">if</span> <span style="color: #5FD7FF;">(</span>IS_ERR<span style="color: #87D700;">(</span>map<span style="color: #87D700;">)</span><span style="color: #5FD7FF;">)</span>
+        <span style="color: #FF1493;">return</span> PTR_ERR<span style="color: #5FD7FF;">(</span>map<span style="color: #5FD7FF;">)</span>;
+    <span style="color: #FF1493;">return</span> my_dev_probe_common<span style="color: #5FD7FF;">(</span>&amp;client-&gt;dev, map<span style="color: #5FD7FF;">)</span>;
+<span style="color: #AF87FF;">}</span>
+
+<span style="color: #8B8878;">/* </span><span style="color: #8B8878;">SPI variant: same config struct, different bus init call</span><span style="color: #8B8878;"> */</span>
+<span style="color: #FF1493;">static</span> <span style="color: #5FD7FF;">int</span> <span style="color: #87D700;">my_probe_spi</span><span style="color: #AF87FF;">(</span><span style="color: #FF1493;">struct</span> <span style="color: #5FD7FF;">spi_device</span> *<span style="color: #FF8C00;">spi</span><span style="color: #AF87FF;">)</span>
+<span style="color: #AF87FF;">{</span>
+    <span style="color: #FF1493;">struct</span> <span style="color: #5FD7FF;">regmap</span> *<span style="color: #FF8C00;">map</span> = devm_regmap_init_spi<span style="color: #5FD7FF;">(</span>spi, &amp;my_regmap_config<span style="color: #5FD7FF;">)</span>;
+    <span style="color: #FF1493;">if</span> <span style="color: #5FD7FF;">(</span>IS_ERR<span style="color: #87D700;">(</span>map<span style="color: #87D700;">)</span><span style="color: #5FD7FF;">)</span>
+        <span style="color: #FF1493;">return</span> PTR_ERR<span style="color: #5FD7FF;">(</span>map<span style="color: #5FD7FF;">)</span>;
+    <span style="color: #FF1493;">return</span> my_dev_probe_common<span style="color: #5FD7FF;">(</span>&amp;spi-&gt;dev, map<span style="color: #5FD7FF;">)</span>;
+<span style="color: #AF87FF;">}</span>
+
+<span style="color: #8B8878;">/* </span><span style="color: #8B8878;">shared logic, bus-agnostic</span><span style="color: #8B8878;"> */</span>
+<span style="color: #FF1493;">static</span> <span style="color: #5FD7FF;">int</span> <span style="color: #87D700;">my_dev_probe_common</span><span style="color: #AF87FF;">(</span><span style="color: #FF1493;">struct</span> <span style="color: #5FD7FF;">device</span> *<span style="color: #FF8C00;">dev</span>, <span style="color: #FF1493;">struct</span> <span style="color: #5FD7FF;">regmap</span> *<span style="color: #FF8C00;">map</span><span style="color: #AF87FF;">)</span>
+<span style="color: #AF87FF;">{</span>
+    <span style="color: #5FD7FF;">unsigned</span> <span style="color: #5FD7FF;">int</span> <span style="color: #FF8C00;">chip_id</span>;
+    <span style="color: #5FD7FF;">int</span> <span style="color: #FF8C00;">ret</span> = regmap_read<span style="color: #5FD7FF;">(</span>map, REG_CHIP_ID, &amp;chip_id<span style="color: #5FD7FF;">)</span>;
+    <span style="color: #FF1493;">if</span> <span style="color: #5FD7FF;">(</span>ret<span style="color: #5FD7FF;">)</span>
+        <span style="color: #FF1493;">return</span> ret;
+    <span style="color: #FF1493;">if</span> <span style="color: #5FD7FF;">(</span>chip_id != EXPECTED_CHIP_ID<span style="color: #5FD7FF;">)</span>
+        <span style="color: #FF1493;">return</span> -ENODEV;
+
+    <span style="color: #FF1493;">return</span> regmap_update_bits<span style="color: #5FD7FF;">(</span>map, REG_CTRL, CTRL_ENABLE, CTRL_ENABLE<span style="color: #5FD7FF;">)</span>;
+<span style="color: #AF87FF;">}</span>
+</code></pre>
+</div>
+
+<p>
+<code>regmap</code> also backs <code>regmap-mmio</code> for platform/MMIO devices, so the same pattern extends to <a href="07-platform-drivers.html#ID-g1h2i3j4-k5l6-4789-99a1-b2c3d4e5f6a7">Platform Drivers</a>. The register cache avoids redundant bus traffic and lets <code>regcache_sync()</code> replay state after suspend/resume.
+</p>
+</div>
+</div>
+<div id="outline-container-org1a8d9be" class="outline-2">
+<h2 id="org1a8d9be"><span class="section-number-2">4.</span> Device Tree Binding</h2>
+<div class="outline-text-2" id="text-4">
+<div class="org-src-container">
+<pre class="src src-dts"><code>&amp;i2c1 {
+    status = "okay";
+
+    sensor@48 {
+        compatible = "vendor,my-sensor";
+        reg = &lt;0x48&gt;;              /* 7-bit I2C address */
+        interrupt-parent = &lt;&amp;gpio1&gt;;
+        interrupts = &lt;17 IRQ_TYPE_LEVEL_LOW&gt;;
+    };
+};
+
+&amp;spi0 {
+    status = "okay";
+
+    imu@0 {
+        compatible = "vendor,my-spi-dev";
+        reg = &lt;0&gt;;                 /* chip select index */
+        spi-max-frequency = &lt;10000000&gt;;
+    };
+};
+</code></pre>
+</div>
+
+<p>
+See <a href="02-device-tree.html#ID-a1b2c3d4-e5f6-4789-99a1-b2c3d4e5f6a7">Device Tree (DTS) &amp; Bindings</a> for property parsing (<code>of_property_read_*</code>) on top of the <code>reg=/=interrupts</code> cells shown here.
+</p>
+</div>
+</div>
+<div id="outline-container-org0a9eb2c" class="outline-2">
+<h2 id="org0a9eb2c"><span class="section-number-2">5.</span> Bus Timing &amp; Error Handling</h2>
+<div class="outline-text-2" id="text-5">
+<ul class="org-ul">
+<li>I2C: transactions are slow (100 kHz–1 MHz typical) relative to CPU speed — never call blocking I2C access from hard-IRQ context; use a threaded IRQ (see <a href="12-interrupt-handling.html#ID-bee17a98-9ba2-49bb-8169-6f1ff0f0132b">Interrupt Handling</a>).</li>
+<li>SPI: full-duplex and generally much faster (MHz–tens of MHz); still avoid <code>spi_sync()</code> in atomic context.</li>
+<li><code>-ETIMEDOUT</code>, <code>-EREMOTEIO</code> (I2C NAK) are common and often transient (bus contention, device still booting after power-on) — bound retries, don't spin unbounded.</li>
+<li>Always check <code>i2c_smbus_*</code> and <code>regmap_*</code> return values; a chip in a bad power state fails silently otherwise.</li>
+</ul>
+</div>
+</div>
+<div id="outline-container-org5a48c8e" class="outline-2">
+<h2 id="org5a48c8e"><span class="section-number-2">6.</span> Debugging</h2>
+<div class="outline-text-2" id="text-6">
+<div class="org-src-container">
+<pre class="src src-bash"><code><span style="color: #8B8878;"># </span><span style="color: #8B8878;">Enumerate I2C buses and devices
+</span>i2cdetect -l
+i2cdetect -y <span style="color: #AF87FF;">1</span>                 <span style="color: #8B8878;"># </span><span style="color: #8B8878;">probe addresses on bus 1
+</span>
+<span style="color: #8B8878;"># </span><span style="color: #8B8878;">Manual register peek (bypasses driver, useful to isolate driver vs hardware bugs)
+</span>i2cget -y <span style="color: #AF87FF;">1</span> <span style="color: #AF87FF;">0x48</span> <span style="color: #AF87FF;">0x00</span>
+i2cset -y <span style="color: #AF87FF;">1</span> <span style="color: #AF87FF;">0x48</span> <span style="color: #AF87FF;">0x00</span> <span style="color: #AF87FF;">0x01</span>
+
+<span style="color: #8B8878;"># </span><span style="color: #8B8878;">SPI: no equivalent userspace scanner; use spidev + spi-tools, or a logic analyzer
+</span><span style="color: #8B8878;"># </span><span style="color: #8B8878;">regmap register cache/state, if exposed:
+</span>cat /sys/kernel/debug/regmap/*/registers
+</code></pre>
+</div>
+</div>
+</div>
+<div id="outline-container-orgfd91f8e" class="outline-2">
+<h2 id="orgfd91f8e"><span class="section-number-2">7.</span> See Also</h2>
+<div class="outline-text-2" id="text-7">
+<ul class="org-ul">
+<li><a href="07-platform-drivers.html#ID-g1h2i3j4-k5l6-4789-99a1-b2c3d4e5f6a7">Platform Drivers</a> — probe/remove model this chapter's I2C/SPI probes mirror</li>
+<li><a href="02-device-tree.html#ID-a1b2c3d4-e5f6-4789-99a1-b2c3d4e5f6a7">Device Tree (DTS) &amp; Bindings</a> — binding documentation and <code>reg=/=interrupts</code> parsing</li>
+<li><a href="12-interrupt-handling.html#ID-bee17a98-9ba2-49bb-8169-6f1ff0f0132b">Interrupt Handling</a> — threaded IRQs for bus-backed device events</li>
+<li><a href="09-debugging-techniques.html#ID-i1j2k3l4-m5n6-4789-99a1-b2c3d4e5f6a7">Debugging Techniques</a> — dynamic debug and tracing for bus transactions</li>
+</ul>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p class="author">Author: Arun Jyothish K</p>
+<p class="date">Created: 2026-08-20 Thu 07:10</p>
+</div>
+</body>
+</html>

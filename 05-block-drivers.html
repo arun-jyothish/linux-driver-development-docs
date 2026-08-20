@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2026-08-17 Mon 20:36 -->
+<!-- 2026-08-20 Thu 07:10 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Block Drivers</title>
@@ -203,24 +203,24 @@
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents" role="doc-toc">
 <ul>
-<li><a href="#org5f41ce1">1. Block Device Fundamentals</a></li>
-<li><a href="#org4eb8376">2. Device Registration</a></li>
-<li><a href="#org2122c48">3. Make Request Handler</a></li>
-<li><a href="#orgd0663cc">4. Request Queue Handler (Alternative)</a></li>
-<li><a href="#org6054be6">5. Block Device File Operations</a></li>
-<li><a href="#orgb66926d">6. Example: Ramdisk Driver</a></li>
-<li><a href="#orgffb2b16">7. Queue Configuration</a></li>
-<li><a href="#orgd837278">8. User Interaction</a></li>
-<li><a href="#org98cce84">9. Block I/O Stack Diagram</a></li>
-<li><a href="#orge37dc9f">10. See Also</a></li>
+<li><a href="#orgb6ba6c1">1. Block Device Fundamentals</a></li>
+<li><a href="#org72483b5">2. Device Registration</a></li>
+<li><a href="#org5186a12">3. Make Request Handler</a></li>
+<li><a href="#orgf9315c6">4. Request Queue Handler (Alternative)</a></li>
+<li><a href="#org052fe1d">5. Block Device File Operations</a></li>
+<li><a href="#orge5ad863">6. Example: Ramdisk Driver</a></li>
+<li><a href="#orgcea1cd2">7. Queue Configuration</a></li>
+<li><a href="#org561df75">8. User Interaction</a></li>
+<li><a href="#org3ba0a79">9. Block I/O Stack Diagram</a></li>
+<li><a href="#org5d7d228">10. See Also</a></li>
 </ul>
 </div>
 </div>
 <p>
 <b>Block device drivers: request queue, I/O scheduling, bio layer. Includes ramdisk example.</b>
 </p>
-<div id="outline-container-org5f41ce1" class="outline-2">
-<h2 id="org5f41ce1"><span class="section-number-2">1.</span> Block Device Fundamentals</h2>
+<div id="outline-container-orgb6ba6c1" class="outline-2">
+<h2 id="orgb6ba6c1"><span class="section-number-2">1.</span> Block Device Fundamentals</h2>
 <div class="outline-text-2" id="text-1">
 <p>
 Block devices provide fixed-size sector access (typically 512 bytes or 4K). Examples: disk drives, USB storage, loop devices, ramdisk.
@@ -234,8 +234,8 @@ Block I/O stack:
 </ul>
 </div>
 </div>
-<div id="outline-container-org4eb8376" class="outline-2">
-<h2 id="org4eb8376"><span class="section-number-2">2.</span> Device Registration</h2>
+<div id="outline-container-org72483b5" class="outline-2">
+<h2 id="org72483b5"><span class="section-number-2">2.</span> Device Registration</h2>
 <div class="outline-text-2" id="text-2">
 <div class="org-src-container">
 <pre class="src src-c"><code><span style="color: #FF1493;">#include</span> <span style="color: #AF87FF;">&lt;</span><span style="color: #CDC673;">linux/blkdev.h</span><span style="color: #AF87FF;">&gt;</span>
@@ -311,8 +311,8 @@ Block I/O stack:
 </div>
 </div>
 </div>
-<div id="outline-container-org2122c48" class="outline-2">
-<h2 id="org2122c48"><span class="section-number-2">3.</span> Make Request Handler</h2>
+<div id="outline-container-org5186a12" class="outline-2">
+<h2 id="org5186a12"><span class="section-number-2">3.</span> Make Request Handler</h2>
 <div class="outline-text-2" id="text-3">
 <p>
 The <code>make_request()</code> callback processes bio (block I/O) structures:
@@ -359,8 +359,8 @@ The <code>make_request()</code> callback processes bio (block I/O) structures:
 </div>
 </div>
 </div>
-<div id="outline-container-orgd0663cc" class="outline-2">
-<h2 id="orgd0663cc"><span class="section-number-2">4.</span> Request Queue Handler (Alternative)</h2>
+<div id="outline-container-orgf9315c6" class="outline-2">
+<h2 id="orgf9315c6"><span class="section-number-2">4.</span> Request Queue Handler (Alternative)</h2>
 <div class="outline-text-2" id="text-4">
 <p>
 For drivers using request queues instead of direct bio handling:
@@ -412,8 +412,8 @@ For drivers using request queues instead of direct bio handling:
 </div>
 </div>
 </div>
-<div id="outline-container-org6054be6" class="outline-2">
-<h2 id="org6054be6"><span class="section-number-2">5.</span> Block Device File Operations</h2>
+<div id="outline-container-org052fe1d" class="outline-2">
+<h2 id="org052fe1d"><span class="section-number-2">5.</span> Block Device File Operations</h2>
 <div class="outline-text-2" id="text-5">
 <div class="org-src-container">
 <pre class="src src-c"><code><span style="color: #FF1493;">static</span> <span style="color: #5FD7FF;">int</span> <span style="color: #87D700;">my_open</span><span style="color: #AF87FF;">(</span><span style="color: #FF1493;">struct</span> <span style="color: #5FD7FF;">block_device</span> *<span style="color: #FF8C00;">bdev</span>, <span style="color: #5FD7FF;">fmode_t</span> <span style="color: #FF8C00;">mode</span><span style="color: #AF87FF;">)</span>
@@ -440,8 +440,8 @@ For drivers using request queues instead of direct bio handling:
 </div>
 </div>
 </div>
-<div id="outline-container-orgb66926d" class="outline-2">
-<h2 id="orgb66926d"><span class="section-number-2">6.</span> Example: Ramdisk Driver</h2>
+<div id="outline-container-orge5ad863" class="outline-2">
+<h2 id="orge5ad863"><span class="section-number-2">6.</span> Example: Ramdisk Driver</h2>
 <div class="outline-text-2" id="text-6">
 <p>
 Minimal in-memory block device:
@@ -558,8 +558,8 @@ MODULE_DESCRIPTION<span style="color: #AF87FF;">(</span><span style="color: #CDC
 </div>
 </div>
 </div>
-<div id="outline-container-orgffb2b16" class="outline-2">
-<h2 id="orgffb2b16"><span class="section-number-2">7.</span> Queue Configuration</h2>
+<div id="outline-container-orgcea1cd2" class="outline-2">
+<h2 id="orgcea1cd2"><span class="section-number-2">7.</span> Queue Configuration</h2>
 <div class="outline-text-2" id="text-7">
 <p>
 Common queue setup:
@@ -581,8 +581,8 @@ Common queue setup:
 </div>
 </div>
 </div>
-<div id="outline-container-orgd837278" class="outline-2">
-<h2 id="orgd837278"><span class="section-number-2">8.</span> User Interaction</h2>
+<div id="outline-container-org561df75" class="outline-2">
+<h2 id="org561df75"><span class="section-number-2">8.</span> User Interaction</h2>
 <div class="outline-text-2" id="text-8">
 <div class="org-src-container">
 <pre class="src src-bash"><code><span style="color: #8B8878;"># </span><span style="color: #8B8878;">List block devices
@@ -603,35 +603,36 @@ Common queue setup:
 </div>
 </div>
 </div>
-<div id="outline-container-org98cce84" class="outline-2">
-<h2 id="org98cce84"><span class="section-number-2">9.</span> Block I/O Stack Diagram</h2>
+<div id="outline-container-org3ba0a79" class="outline-2">
+<h2 id="org3ba0a79"><span class="section-number-2">9.</span> Block I/O Stack Diagram</h2>
 <div class="outline-text-2" id="text-9">
 
-<div id="org1861c81" class="figure">
+<div id="orge3b8621" class="figure">
 <p><img src="res/04-block-io-stack.svg" alt="04-block-io-stack.svg" class="org-svg" />
 </p>
 </div>
 
 
-<div id="orgf617092" class="figure">
+<div id="orgc2318a8" class="figure">
 <p><img src="res/04-block-io-stack.svg" alt="04-block-io-stack.svg" class="org-svg" />
 </p>
 </div>
 </div>
 </div>
-<div id="outline-container-orge37dc9f" class="outline-2">
-<h2 id="orge37dc9f"><span class="section-number-2">10.</span> See Also</h2>
+<div id="outline-container-org5d7d228" class="outline-2">
+<h2 id="org5d7d228"><span class="section-number-2">10.</span> See Also</h2>
 <div class="outline-text-2" id="text-10">
 <ul class="org-ul">
 <li><a href="01-kernel-module-fundamentals.html#ID-f1a2b3c4-d5e6-47f8-99a1-b2c3d4e5f6a7">Kernel Module Fundamentals</a></li>
 <li><a href="09-debugging-techniques.html#ID-i1j2k3l4-m5n6-4789-99a1-b2c3d4e5f6a7">Debugging Techniques</a></li>
+<li><a href="13-dma-and-memory-mapping.html#ID-4fe1ea81-ea79-4b83-8435-83dea4337125">DMA &amp; Memory Mapping</a> — scatter-gather DMA underlying the bio layer</li>
 </ul>
 </div>
 </div>
 </div>
 <div id="postamble" class="status">
 <p class="author">Author: Arun Jyothish K</p>
-<p class="date">Created: 2026-08-17 Mon 20:36</p>
+<p class="date">Created: 2026-08-20 Thu 07:10</p>
 </div>
 </body>
 </html>

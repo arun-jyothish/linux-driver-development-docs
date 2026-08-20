@@ -1,0 +1,186 @@
+:PROPERTIES:
+:ID:       4fe1ea81-ea79-4b83-8435-83dea4337125
+:END:
+#+title: DMA & Memory Mapping
+#+author: Arun Jyothish K
+#+filetags: :kernel:drivers:dma:mmap:memory:
+
+*DMA buffer mappings, cache coherency, and exposing device memory to userspace.*
+
+** Why DMA Needs Explicit APIs
+
+DMA lets a device read/write RAM without CPU involvement, but two problems the CPU normally hides become the driver's responsibility:
+- **Cache coherency** — CPU caches may hold stale data relative to what the device wrote (or vice versa) unless the platform has coherent DMA hardware.
+- **Physical addressing / IOMMU translation** — devices see bus addresses, not kernel virtual addresses; an IOMMU may remap them further.
+
+The DMA API (=<linux/dma-mapping.h>=) exists so drivers don't hand-roll cache flushing or address translation per-architecture.
+
+** Coherent (Consistent) Mappings
+
+Use for buffers the CPU and device both touch repeatedly and unpredictably (descriptor rings, control structures). Allocated once, no explicit sync calls needed on access:
+
+#+begin_src c
+struct my_dev {
+    void *ring_cpu;
+    dma_addr_t ring_dma;
+    size_t ring_size;
+};
+
+/* probe */
+mdev->ring_size = 4096;
+mdev->ring_cpu = dma_alloc_coherent(dev, mdev->ring_size,
+                                     &mdev->ring_dma, GFP_KERNEL);
+if (!mdev->ring_cpu)
+    return -ENOMEM;
+
+/* program the device with the bus address, not the kernel pointer */
+writel(mdev->ring_dma, mdev->regs + REG_RING_BASE);
+
+/* remove */
+dma_free_coherent(dev, mdev->ring_size, mdev->ring_cpu, mdev->ring_dma);
+#+end_src
+
+Coherent memory is typically uncached or write-combined on the CPU side — cheap for the device, more expensive for CPU-heavy access patterns. Don't use it for large data buffers that the CPU processes intensively.
+
+** Streaming Mappings
+
+Use for one-shot transfers of buffers the CPU already owns (network packets, block I/O pages) — cheaper setup, but requires explicit sync around the DMA operation:
+
+#+begin_src c
+dma_addr_t dma_addr;
+int ret;
+
+dma_addr = dma_map_single(dev, buf, len, DMA_TO_DEVICE);
+ret = dma_mapping_error(dev, dma_addr);   /* always check */
+if (ret)
+    return -EIO;
+
+writel(dma_addr, mdev->regs + REG_TX_ADDR);
+writel(len, mdev->regs + REG_TX_LEN);
+/* kick the device, wait for completion (IRQ or poll) ... */
+
+dma_unmap_single(dev, dma_addr, len, DMA_TO_DEVICE);
+/* buffer is CPU-owned again only after unmap */
+#+end_src
+
+Direction flags: =DMA_TO_DEVICE= (CPU wrote, device reads), =DMA_FROM_DEVICE= (device writes, CPU reads), =DMA_BIDIRECTIONAL=. Pick the narrowest one that applies — it controls which cache operations actually happen.
+
+*** Sync Without Unmapping
+
+If the CPU needs to peek at a streaming buffer mid-flight (rare, but happens with persistent DMA buffers reused across transfers):
+
+#+begin_src c
+dma_sync_single_for_cpu(dev, dma_addr, len, DMA_FROM_DEVICE);
+/* CPU may read buf now */
+dma_sync_single_for_device(dev, dma_addr, len, DMA_FROM_DEVICE);
+/* hand back to device before next transfer */
+#+end_src
+
+** Scatter-Gather
+
+Real I/O buffers are rarely one physically-contiguous chunk. =struct scatterlist= describes a list of physical segments mapped in one call — this is what block and network drivers actually use under the hood of =bio=/=skb= (see [[id:e1f2g3h4-i5j6-4789-99a1-b2c3d4e5f6a7][Block Drivers]] and [[id:f1g2h3i4-j5k6-4789-99a1-b2c3d4e5f6a7][Network Drivers]]):
+
+#+begin_src c
+struct scatterlist sg[MAX_SEGS];
+int nents;
+
+sg_init_table(sg, MAX_SEGS);
+/* fill via sg_set_page() per segment, or sg_alloc_table_from_pages() */
+
+nents = dma_map_sg(dev, sg, num_segs, DMA_TO_DEVICE);
+if (!nents)
+    return -EIO;
+
+/* nents may be < num_segs: the IOMMU/driver coalesced adjacent segments */
+for_each_sg(sg, s, nents, i)
+    program_descriptor(mdev, sg_dma_address(s), sg_dma_len(s));
+
+/* ... transfer, wait for completion ... */
+
+dma_unmap_sg(dev, sg, num_segs, DMA_TO_DEVICE);
+#+end_src
+
+** DMA Addressing Masks
+
+Declare what the device's DMA engine can actually address before any mapping call — required even for 64-bit-capable devices on some platforms:
+
+#+begin_src c
+ret = dma_set_mask_and_coherent(dev, DMA_BIT_MASK(32));
+if (ret)
+    return dev_err_probe(dev, ret, "no usable DMA addressing mode\n");
+#+end_src
+
+A device limited to 32-bit DMA behind a large-memory host may still get bounced through =swiotlb= — visible as unexplained throughput loss, worth checking via =dmesg | grep -i swiotlb= when diagnosing DMA driver performance.
+
+** Exposing Device Memory to Userspace: mmap()
+
+Character drivers can let userspace =mmap()= a coherent DMA buffer directly for zero-copy access (common in V4L2, framebuffer, and audio drivers):
+
+#+begin_src c
+static int my_mmap(struct file *filp, struct vm_area_struct *vma)
+{
+    struct my_dev *mdev = filp->private_data;
+    size_t size = vma->vm_end - vma->vm_start;
+
+    if (size > mdev->ring_size)
+        return -EINVAL;
+
+    return dma_mmap_coherent(mdev->dev, vma, mdev->ring_cpu,
+                              mdev->ring_dma, size);
+}
+#+end_src
+
+For MMIO register regions rather than DMA buffers, use =remap_pfn_range()= with =pgprot_noncached()=, or the =io_remap_pfn_range()= wrapper — this is how =/dev/mem=-style and framebuffer drivers expose hardware registers directly to userspace.
+
+** ioremap: The Other Direction
+
+=ioremap()= maps *device* physical memory (MMIO registers) into kernel virtual address space — the inverse problem of DMA, which maps *host* memory for device access. Almost always obtained via the devm-managed platform helper rather than raw =ioremap()=:
+
+#+begin_src c
+mdev->regs = devm_platform_ioremap_resource(pdev, 0);
+if (IS_ERR(mdev->regs))
+    return PTR_ERR(mdev->regs);
+
+writel(val, mdev->regs + REG_CONTROL);
+val = readl(mdev->regs + REG_STATUS);
+#+end_src
+
+Always use =readl/writel= (or =_relaxed=/=_be= variants) rather than dereferencing the pointer directly — plain loads/stores skip the memory barriers and byte-swapping MMIO access requires.
+
+** Transfer Flow
+
+#+begin_src text
+CPU                          Device
+ │                              │
+ │ dma_map_single()             │
+ │  - cache flush (ARCH-dep)    │
+ │  - returns bus address       │
+ │                              │
+ │ writel(dma_addr, REG_ADDR)   │
+ │ writel(len, REG_LEN)         │
+ │ writel(START, REG_CTRL) ─────┼──▶ engine reads/writes RAM directly
+ │                              │    (no CPU involvement)
+ │        ◀── IRQ: transfer complete
+ │                              │
+ │ dma_unmap_single()           │
+ │  - cache invalidate (if      │
+ │    DMA_FROM_DEVICE)          │
+ │  - buffer now CPU-owned      │
+#+end_src
+
+** Debugging
+
+#+begin_src bash
+# DMA-API debug (catches map/unmap leaks, double-unmaps, wrong direction)
+# enable at boot: dma_debug_init dma_api=on, or CONFIG_DMA_API_DEBUG=y
+cat /sys/kernel/debug/dma_api/*
+
+# swiotlb bounce-buffer usage (32-bit device on large-memory host)
+dmesg | grep -i swiotlb
+#+end_src
+
+** See Also
+- [[id:e1f2g3h4-i5j6-4789-99a1-b2c3d4e5f6a7][Block Drivers]] — bio/request layer built on scatter-gather DMA
+- [[id:f1g2h3i4-j5k6-4789-99a1-b2c3d4e5f6a7][Network Drivers]] — skbuff DMA mapping on TX/RX
+- [[id:g1h2i3j4-k5l6-4789-99a1-b2c3d4e5f6a7][Platform Drivers]] — =devm_platform_ioremap_resource()= and resource lifecycle
+- [[id:j1k2l3m4-n5o6-4789-99a1-b2c3d4e5f6a7][Performance Considerations]] — memory barriers and per-CPU data

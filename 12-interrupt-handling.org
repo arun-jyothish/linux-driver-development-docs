@@ -1,0 +1,161 @@
+:PROPERTIES:
+:ID:       bee17a98-9ba2-49bb-8169-6f1ff0f0132b
+:END:
+#+title: Interrupt Handling
+#+author: Arun Jyothish K
+#+filetags: :kernel:drivers:interrupts:irq:
+
+*Requesting, handling, and deferring hardware interrupts in Linux drivers.*
+
+** Why Interrupts Need Deferral
+
+An IRQ handler runs with interrupts disabled (or the specific line masked) on whichever CPU took the interrupt, at the highest scheduling priority in the kernel. It cannot sleep, cannot take mutexes, and must return quickly — long handlers cause latency spikes across the whole system and can starve other IRQs. Anything beyond acking the device and copying a small amount of data belongs in a bottom half (see [[id:j1k2l3m4-n5o6-4789-99a1-b2c3d4e5f6a7][Performance Considerations]] for tasklet/workqueue tradeoffs).
+
+** Requesting an IRQ
+
+#+begin_src c
+#include <linux/interrupt.h>
+
+static irqreturn_t my_irq_handler(int irq, void *dev_id)
+{
+    struct my_dev *mdev = dev_id;
+
+    if (!my_dev_irq_pending(mdev))
+        return IRQ_NONE;          /* shared line: not ours */
+
+    my_dev_ack_irq(mdev);
+    /* minimal work only: read status, stash data, wake a thread */
+
+    return IRQ_HANDLED;
+}
+
+static int my_probe(struct platform_device *pdev)
+{
+    struct my_dev *mdev;
+    int irq, ret;
+
+    irq = platform_get_irq(pdev, 0);
+    if (irq < 0)
+        return irq;
+
+    ret = devm_request_irq(&pdev->dev, irq, my_irq_handler,
+                            IRQF_SHARED, dev_name(&pdev->dev), mdev);
+    if (ret)
+        return dev_err_probe(&pdev->dev, ret, "failed to request IRQ\n");
+
+    return 0;
+}
+#+end_src
+
+=devm_request_irq= ties the IRQ's lifetime to the device — it is auto-freed on probe failure or unbind, so most drivers should prefer it over bare =request_irq()/free_irq()=.
+
+** IRQF Flags
+
+| Flag | Meaning |
+|------|---------|
+| =IRQF_SHARED= | Line may be shared; handler must check "is this mine?" and return =IRQ_NONE= if not |
+| =IRQF_TRIGGER_RISING/FALLING/HIGH/LOW= | Edge/level polarity, mainly for GPIO-backed IRQs |
+| =IRQF_ONESHOT= | Keep the hard IRQ masked until the threaded handler finishes (required when no primary handler is given) |
+| =IRQF_NO_THREAD= | Forbid forced-threading (realtime kernels); rare for driver code |
+| =IRQF_PROBE_SHARED= | Suppress the "IRQ probe collision" warning for known-shared lines |
+
+Return value contract: =IRQ_HANDLED= (consumed), =IRQ_NONE= (not mine, keep looking on a shared line), =IRQ_WAKE_THREAD= (primary handler done, wake the threaded half).
+
+** Threaded IRQs
+
+Most modern drivers skip the raw hard-IRQ handler and go straight to a threaded handler, which runs in process context (can sleep, can take mutexes — essential for I2C/SPI-backed devices where reading status requires a bus transaction):
+
+#+begin_src c
+static irqreturn_t my_irq_thread(int irq, void *dev_id)
+{
+    struct my_dev *mdev = dev_id;
+
+    /* safe to sleep here: i2c_smbus_read_byte(), mutex_lock(), etc. */
+    my_dev_process_event(mdev);
+
+    return IRQ_HANDLED;
+}
+
+devm_request_threaded_irq(&pdev->dev, irq,
+                           NULL,            /* no primary/hard handler */
+                           my_irq_thread,   /* runs in kthread context */
+                           IRQF_ONESHOT | IRQF_TRIGGER_FALLING,
+                           dev_name(&pdev->dev), mdev);
+#+end_src
+
+When a primary handler *is* given, it runs in hard-IRQ context first, does the minimal ack/read, and returns =IRQ_WAKE_THREAD= to schedule the threaded half:
+
+#+begin_src c
+static irqreturn_t primary(int irq, void *dev_id)
+{
+    if (!my_dev_irq_pending(dev_id))
+        return IRQ_NONE;
+    return IRQ_WAKE_THREAD;
+}
+
+static irqreturn_t threaded(int irq, void *dev_id)
+{
+    my_dev_handle_event(dev_id);   /* may sleep */
+    return IRQ_HANDLED;
+}
+#+end_src
+
+** IRQ Flow
+
+#+begin_src text
+Device asserts IRQ line
+        │
+        ▼
+CPU exception entry (interrupts masked on this CPU)
+        │
+        ▼
+Primary handler (hard-IRQ context, cannot sleep)
+   - IRQ_NONE     → not ours, next handler on shared line
+   - IRQ_HANDLED  → fully serviced here, done
+   - IRQ_WAKE_THREAD → wake kthread, mask line if IRQF_ONESHOT
+        │
+        ▼
+Threaded handler (kthread, process context, can sleep)
+   - bus transactions (I2C/SPI), mutex_lock(), workqueue submission
+   - IRQ_HANDLED → unmask line (if ONESHOT)
+#+end_src
+
+** GPIO-Backed IRQs
+
+#+begin_src c
+int irq = gpiod_to_irq(mdev->irq_gpio);
+if (irq < 0)
+    return irq;
+
+ret = devm_request_threaded_irq(dev, irq, NULL, button_irq_thread,
+                                 IRQF_TRIGGER_FALLING | IRQF_ONESHOT,
+                                 "button-irq", mdev);
+#+end_src
+
+Debounce in software (timer or =msleep()= in the threaded handler) unless the hardware/pinctrl provides it — GPIO lines bounce.
+
+** Affinity & SMP
+
+- =/proc/interrupts= — per-CPU interrupt counts, handler names, line sharing
+- =/proc/irq/<N>/smp_affinity= — bitmask of CPUs allowed to service this IRQ
+- =irq_set_affinity_hint()= — driver-suggested affinity (userspace irqbalance may still override)
+- Pin latency-sensitive IRQs (NIC RX queues, audio) away from CPU 0 / housekeeping cores on NUMA or RT systems
+
+** Debugging
+
+#+begin_src bash
+cat /proc/interrupts              # counts per CPU per line
+cat /proc/irq/44/smp_affinity     # current affinity mask
+echo 2 > /proc/irq/44/smp_affinity  # pin to CPU 1
+
+# Confirm an IRQ is actually firing
+watch -n1 'cat /proc/interrupts | grep my_device'
+#+end_src
+
+An IRQ count stuck at zero after probe usually means: wrong IRQ number from the device tree, missing pinctrl for the line, or a level-triggered line that never deasserts (handler doesn't actually ack the device, so the CPU floods on re-entry and the kernel disables the line — check =dmesg= for "irq nobody cared").
+
+** See Also
+- [[id:j1k2l3m4-n5o6-4789-99a1-b2c3d4e5f6a7][Performance Considerations]] — tasklets, workqueues, and what to run in each context
+- [[id:g1h2i3j4-k5l6-4789-99a1-b2c3d4e5f6a7][Platform Drivers]] — obtaining IRQ numbers via =platform_get_irq()=
+- [[id:41bfcbfa-8054-4ff6-86e9-fc663348d7ed][I2C & SPI Subsystem Drivers]] — threaded IRQs for bus-backed devices
+- [[id:i1j2k3l4-m5n6-4789-99a1-b2c3d4e5f6a7][Debugging Techniques]] — tracing and dynamic debug for IRQ paths

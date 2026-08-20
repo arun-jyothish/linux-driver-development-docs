@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2026-08-17 Mon 20:37 -->
+<!-- 2026-08-20 Thu 07:10 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>USB Drivers</title>
@@ -203,24 +203,24 @@
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents" role="doc-toc">
 <ul>
-<li><a href="#org38322fa">1. USB Driver Fundamentals</a></li>
-<li><a href="#orgc4c127a">2. Driver Registration</a></li>
-<li><a href="#orgf649986">3. URB (USB Request Block)</a></li>
-<li><a href="#org2728da3">4. USB Pipes</a></li>
-<li><a href="#org88efe37">5. Control Transfers (Setup Requests)</a></li>
-<li><a href="#org234c23d">6. Example: Simple USB Device Driver</a></li>
-<li><a href="#org437936e">7. Userspace Access (via libusb)</a></li>
-<li><a href="#orgaa5e8c9">8. Common Patterns</a></li>
-<li><a href="#org8cdce66">9. USB Enumeration Diagram</a></li>
-<li><a href="#org2eefb7b">10. See Also</a></li>
+<li><a href="#org207e150">1. USB Driver Fundamentals</a></li>
+<li><a href="#orga0d310b">2. Driver Registration</a></li>
+<li><a href="#orgf9df06f">3. URB (USB Request Block)</a></li>
+<li><a href="#orgf0ebd81">4. USB Pipes</a></li>
+<li><a href="#orgf888013">5. Control Transfers (Setup Requests)</a></li>
+<li><a href="#org939d0d6">6. Example: Simple USB Device Driver</a></li>
+<li><a href="#orgb70f66c">7. Userspace Access (via libusb)</a></li>
+<li><a href="#org30c3c68">8. Common Patterns</a></li>
+<li><a href="#orgfc47724">9. USB Enumeration Diagram</a></li>
+<li><a href="#org000efea">10. See Also</a></li>
 </ul>
 </div>
 </div>
 <p>
 <b>USB device drivers: URB (USB Request Block), endpoints, async transfers, HID. Includes simple USB device example.</b>
 </p>
-<div id="outline-container-org38322fa" class="outline-2">
-<h2 id="org38322fa"><span class="section-number-2">1.</span> USB Driver Fundamentals</h2>
+<div id="outline-container-org207e150" class="outline-2">
+<h2 id="org207e150"><span class="section-number-2">1.</span> USB Driver Fundamentals</h2>
 <div class="outline-text-2" id="text-1">
 <p>
 USB drivers communicate via:
@@ -236,8 +236,8 @@ Kernel abstracts USB devices via <code>struct usb_device</code> and drivers via 
 </p>
 </div>
 </div>
-<div id="outline-container-orgc4c127a" class="outline-2">
-<h2 id="orgc4c127a"><span class="section-number-2">2.</span> Driver Registration</h2>
+<div id="outline-container-orga0d310b" class="outline-2">
+<h2 id="orga0d310b"><span class="section-number-2">2.</span> Driver Registration</h2>
 <div class="outline-text-2" id="text-2">
 <div class="org-src-container">
 <pre class="src src-c"><code><span style="color: #FF1493;">#include</span> <span style="color: #AF87FF;">&lt;</span><span style="color: #CDC673;">linux/usb.h</span><span style="color: #AF87FF;">&gt;</span>
@@ -369,8 +369,8 @@ Kernel abstracts USB devices via <code>struct usb_device</code> and drivers via 
 </div>
 </div>
 </div>
-<div id="outline-container-orgf649986" class="outline-2">
-<h2 id="orgf649986"><span class="section-number-2">3.</span> URB (USB Request Block)</h2>
+<div id="outline-container-orgf9df06f" class="outline-2">
+<h2 id="orgf9df06f"><span class="section-number-2">3.</span> URB (USB Request Block)</h2>
 <div class="outline-text-2" id="text-3">
 <p>
 URBs are async transfer requests. Setup, submit, completion callback handles transfer:
@@ -451,8 +451,8 @@ URBs are async transfer requests. Setup, submit, completion callback handles tra
 </div>
 </div>
 </div>
-<div id="outline-container-org2728da3" class="outline-2">
-<h2 id="org2728da3"><span class="section-number-2">4.</span> USB Pipes</h2>
+<div id="outline-container-orgf0ebd81" class="outline-2">
+<h2 id="orgf0ebd81"><span class="section-number-2">4.</span> USB Pipes</h2>
 <div class="outline-text-2" id="text-4">
 <p>
 Pipes encode direction and endpoint type:
@@ -474,8 +474,8 @@ Pipes encode direction and endpoint type:
 </div>
 </div>
 </div>
-<div id="outline-container-org88efe37" class="outline-2">
-<h2 id="org88efe37"><span class="section-number-2">5.</span> Control Transfers (Setup Requests)</h2>
+<div id="outline-container-orgf888013" class="outline-2">
+<h2 id="orgf888013"><span class="section-number-2">5.</span> Control Transfers (Setup Requests)</h2>
 <div class="outline-text-2" id="text-5">
 <p>
 Setup packets for device commands:
@@ -510,8 +510,8 @@ Setup packets for device commands:
 </div>
 </div>
 </div>
-<div id="outline-container-org234c23d" class="outline-2">
-<h2 id="org234c23d"><span class="section-number-2">6.</span> Example: Simple USB Device Driver</h2>
+<div id="outline-container-org939d0d6" class="outline-2">
+<h2 id="org939d0d6"><span class="section-number-2">6.</span> Example: Simple USB Device Driver</h2>
 <div class="outline-text-2" id="text-6">
 <p>
 Minimal USB device with read/write endpoints:
@@ -624,8 +624,8 @@ MODULE_DESCRIPTION<span style="color: #AF87FF;">(</span><span style="color: #CDC
 </div>
 </div>
 </div>
-<div id="outline-container-org437936e" class="outline-2">
-<h2 id="org437936e"><span class="section-number-2">7.</span> Userspace Access (via libusb)</h2>
+<div id="outline-container-orgb70f66c" class="outline-2">
+<h2 id="orgb70f66c"><span class="section-number-2">7.</span> Userspace Access (via libusb)</h2>
 <div class="outline-text-2" id="text-7">
 <div class="org-src-container">
 <pre class="src src-c"><code><span style="color: #FF1493;">#include</span> <span style="color: #AF87FF;">&lt;</span><span style="color: #CDC673;">libusb-1.0/libusb.h</span><span style="color: #AF87FF;">&gt;</span>
@@ -666,8 +666,8 @@ MODULE_DESCRIPTION<span style="color: #AF87FF;">(</span><span style="color: #CDC
 </div>
 </div>
 </div>
-<div id="outline-container-orgaa5e8c9" class="outline-2">
-<h2 id="orgaa5e8c9"><span class="section-number-2">8.</span> Common Patterns</h2>
+<div id="outline-container-org30c3c68" class="outline-2">
+<h2 id="org30c3c68"><span class="section-number-2">8.</span> Common Patterns</h2>
 <div class="outline-text-2" id="text-8">
 <ul class="org-ul">
 <li>Always check URB status in completion callback</li>
@@ -678,24 +678,24 @@ MODULE_DESCRIPTION<span style="color: #AF87FF;">(</span><span style="color: #CDC
 </ul>
 </div>
 </div>
-<div id="outline-container-org8cdce66" class="outline-2">
-<h2 id="org8cdce66"><span class="section-number-2">9.</span> USB Enumeration Diagram</h2>
+<div id="outline-container-orgfc47724" class="outline-2">
+<h2 id="orgfc47724"><span class="section-number-2">9.</span> USB Enumeration Diagram</h2>
 <div class="outline-text-2" id="text-9">
 
-<div id="orgb24c5cf" class="figure">
+<div id="org6ad435b" class="figure">
 <p><img src="res/07-usb-enumeration.svg" alt="07-usb-enumeration.svg" class="org-svg" />
 </p>
 </div>
 
 
-<div id="org8c1696e" class="figure">
+<div id="orgb7af59e" class="figure">
 <p><img src="res/07-usb-enumeration.svg" alt="07-usb-enumeration.svg" class="org-svg" />
 </p>
 </div>
 </div>
 </div>
-<div id="outline-container-org2eefb7b" class="outline-2">
-<h2 id="org2eefb7b"><span class="section-number-2">10.</span> See Also</h2>
+<div id="outline-container-org000efea" class="outline-2">
+<h2 id="org000efea"><span class="section-number-2">10.</span> See Also</h2>
 <div class="outline-text-2" id="text-10">
 <ul class="org-ul">
 <li><a href="01-kernel-module-fundamentals.html#ID-f1a2b3c4-d5e6-47f8-99a1-b2c3d4e5f6a7">Kernel Module Fundamentals</a></li>
@@ -706,7 +706,7 @@ MODULE_DESCRIPTION<span style="color: #AF87FF;">(</span><span style="color: #CDC
 </div>
 <div id="postamble" class="status">
 <p class="author">Author: Arun Jyothish K</p>
-<p class="date">Created: 2026-08-17 Mon 20:37</p>
+<p class="date">Created: 2026-08-20 Thu 07:10</p>
 </div>
 </body>
 </html>

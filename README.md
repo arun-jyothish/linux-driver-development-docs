@@ -8,11 +8,14 @@ Complete, self-contained documentation covering:
 - Kernel module fundamentals (__init/__exit, lifecycle)
 - Device tree source (DTS) and bindings
 - Kernel build system (Kbuild) for drivers
-- 5 driver types: Character, Block, Network, Platform, USB
+- Linux boot sequence (bootloader → kernel → init → userspace)
+- 6 driver types: Character, Block, Network, Platform, USB, I2C/SPI
+- Interrupt handling (request_irq, threaded IRQs, top/bottom half)
+- DMA & memory mapping (coherent/streaming DMA, scatter-gather, ioremap, userspace mmap)
 - Practical runnable code examples for each driver type
 - Debugging techniques (printk, ftrace, kgdb)
 - Performance optimization (spinlocks, tasklets, RCU, workqueues)
-- 10 comprehensive PlantUML diagrams
+- 10 comprehensive PlantUML diagrams plus ASCII flow diagrams in newer chapters
 
 **Format:** Quick-recall technical reference for senior engineers
 
@@ -36,6 +39,10 @@ linux-driver-development-notes/
 ├── 08-usb-drivers.org
 ├── 09-debugging-techniques.org
 ├── 10-performance.org
+├── 11-linux-boot-sequence.org
+├── 12-interrupt-handling.org
+├── 13-dma-and-memory-mapping.org
+├── 14-i2c-spi-subsystem.org
 └── linux_driver_development_notes.org     Main hub document (org-roam)
 ```
 
@@ -107,6 +114,29 @@ linux-driver-development-notes/
   - Per-CPU data
   - Memory barriers
 
+### Hardware Interfacing & Boot
+- **11-linux-boot-sequence.org**
+  - Firmware → bootloader → kernel → init → userspace stages
+  - Boot parameters, initramfs, systemd-analyze
+
+- **12-interrupt-handling.org**
+  - request_irq/devm_request_irq, IRQF flags
+  - Threaded IRQs (primary handler + kthread handler)
+  - GPIO-backed IRQs, SMP affinity
+  - Debugging via /proc/interrupts
+
+- **13-dma-and-memory-mapping.org**
+  - Coherent vs streaming DMA mappings
+  - Scatter-gather (struct scatterlist)
+  - DMA addressing masks, swiotlb
+  - Userspace mmap (dma_mmap_coherent), ioremap for MMIO
+
+- **14-i2c-spi-subsystem.org**
+  - I2C client/adapter model, SMBus helpers vs i2c_transfer
+  - SPI master/device model, spi_sync/spi_async
+  - regmap: one register-access abstraction across I2C/SPI/MMIO
+  - Device tree bindings for bus-attached peripherals
+
 ## Included Diagrams (PlantUML)
 
 All diagrams in `res/` directory:
@@ -155,11 +185,11 @@ All diagrams in `res/` directory:
 
 ## Statistics
 
-- **Total Lines:** 2,943 lines of technical documentation
-- **Number of Files:** 11 org files + index + readme
-- **Code Examples:** 50+ complete, compile-ready code samples
-- **Diagrams:** 10 comprehensive PlantUML diagrams
-- **Size:** ~156 KB self-contained (including diagrams)
+- **Total Lines:** 4,672 lines of technical documentation
+- **Number of Files:** 14 chapter org files + hub doc + index + readme
+- **Code Examples:** 60+ complete, compile-ready code samples
+- **Diagrams:** 10 PlantUML diagrams + ASCII flow diagrams (chapters 11-14)
+- **Size:** ~200 KB self-contained (including diagrams)
 
 ## Author
 

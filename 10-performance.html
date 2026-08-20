@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2026-08-17 Mon 20:37 -->
+<!-- 2026-08-20 Thu 07:10 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Performance Considerations</title>
@@ -235,25 +235,25 @@
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents" role="doc-toc">
 <ul>
-<li><a href="#orgfcb4fb7">1. Memory Efficiency</a></li>
-<li><a href="#org735dd80">2. Synchronization: Spinlocks</a></li>
-<li><a href="#org35867b5">3. Tasklets: Deferred Soft IRQ</a></li>
-<li><a href="#org36a1645">4. Workqueues: Delayed Kernel Threads</a></li>
-<li><a href="#org503a3a5">5. RCU (Read-Copy-Update)</a></li>
-<li><a href="#org03588f1">6. Lockless Patterns</a></li>
-<li><a href="#orgfecd646">7. Per-CPU Data</a></li>
-<li><a href="#org5002ae3">8. Memory Barriers</a></li>
-<li><a href="#orgc3ab67b">9. Example: Optimized device driver with deferred work</a></li>
-<li><a href="#org05f33e6">10. Interrupt Context Hierarchy Diagram</a></li>
-<li><a href="#org26923d4">11. See Also</a></li>
+<li><a href="#orgc0b263c">1. Memory Efficiency</a></li>
+<li><a href="#org17bdb65">2. Synchronization: Spinlocks</a></li>
+<li><a href="#org4e8d2e0">3. Tasklets: Deferred Soft IRQ</a></li>
+<li><a href="#orge432908">4. Workqueues: Delayed Kernel Threads</a></li>
+<li><a href="#org5578c0f">5. RCU (Read-Copy-Update)</a></li>
+<li><a href="#orge1ac95a">6. Lockless Patterns</a></li>
+<li><a href="#org69052b6">7. Per-CPU Data</a></li>
+<li><a href="#org40010b3">8. Memory Barriers</a></li>
+<li><a href="#org80a6339">9. Example: Optimized device driver with deferred work</a></li>
+<li><a href="#orgb407364">10. Interrupt Context Hierarchy Diagram</a></li>
+<li><a href="#org2184145">11. See Also</a></li>
 </ul>
 </div>
 </div>
 <p>
 <b>Driver performance: memory layout, synchronization (spinlocks, tasklets, workqueues), RCU, lockless patterns.</b>
 </p>
-<div id="outline-container-orgfcb4fb7" class="outline-2">
-<h2 id="orgfcb4fb7"><span class="section-number-2">1.</span> Memory Efficiency</h2>
+<div id="outline-container-orgc0b263c" class="outline-2">
+<h2 id="orgc0b263c"><span class="section-number-2">1.</span> Memory Efficiency</h2>
 <div class="outline-text-2" id="text-1">
 <p>
 <code>__init</code> and <code>__exit</code> sections are freed after use:
@@ -300,8 +300,8 @@ void *buf = kmalloc(size, GFP_KERNEL);
 </p>
 </div>
 </div>
-<div id="outline-container-org735dd80" class="outline-2">
-<h2 id="org735dd80"><span class="section-number-2">2.</span> Synchronization: Spinlocks</h2>
+<div id="outline-container-org17bdb65" class="outline-2">
+<h2 id="org17bdb65"><span class="section-number-2">2.</span> Synchronization: Spinlocks</h2>
 <div class="outline-text-2" id="text-2">
 <p>
 Critical section protection (disables preemption, not suitable for long operations):
@@ -350,8 +350,8 @@ write_unlock(&amp;rw_lock);
 </p>
 </div>
 </div>
-<div id="outline-container-org35867b5" class="outline-2">
-<h2 id="org35867b5"><span class="section-number-2">3.</span> Tasklets: Deferred Soft IRQ</h2>
+<div id="outline-container-org4e8d2e0" class="outline-2">
+<h2 id="org4e8d2e0"><span class="section-number-2">3.</span> Tasklets: Deferred Soft IRQ</h2>
 <div class="outline-text-2" id="text-3">
 <p>
 Schedule work at soft-IRQ priority (runs after hardirq handlers):
@@ -420,8 +420,8 @@ tasklet_kill(&amp;dev-&gt;tasklet);
 </p>
 </div>
 </div>
-<div id="outline-container-org36a1645" class="outline-2">
-<h2 id="org36a1645"><span class="section-number-2">4.</span> Workqueues: Delayed Kernel Threads</h2>
+<div id="outline-container-orge432908" class="outline-2">
+<h2 id="orge432908"><span class="section-number-2">4.</span> Workqueues: Delayed Kernel Threads</h2>
 <div class="outline-text-2" id="text-4">
 <p>
 For longer deferred work (can sleep, block):
@@ -487,8 +487,8 @@ destroy_workqueue(dev-&gt;wq);
 </p>
 </div>
 </div>
-<div id="outline-container-org503a3a5" class="outline-2">
-<h2 id="org503a3a5"><span class="section-number-2">5.</span> RCU (Read-Copy-Update)</h2>
+<div id="outline-container-org5578c0f" class="outline-2">
+<h2 id="org5578c0f"><span class="section-number-2">5.</span> RCU (Read-Copy-Update)</h2>
 <div class="outline-text-2" id="text-5">
 <p>
 Ultra-low-overhead read locks for read-heavy data:
@@ -537,8 +537,8 @@ kfree_rcu(old_data, rcu);  /</i> auto-frees after RCU grace period
 </p>
 </div>
 </div>
-<div id="outline-container-org03588f1" class="outline-2">
-<h2 id="org03588f1"><span class="section-number-2">6.</span> Lockless Patterns</h2>
+<div id="outline-container-orge1ac95a" class="outline-2">
+<h2 id="orge1ac95a"><span class="section-number-2">6.</span> Lockless Patterns</h2>
 <div class="outline-text-2" id="text-6">
 <p>
 Atomic operations (no locks, hardware-supported):
@@ -570,8 +570,8 @@ atomic_cmpxchg(&amp;val, old, new);
 </p>
 </div>
 </div>
-<div id="outline-container-orgfecd646" class="outline-2">
-<h2 id="orgfecd646"><span class="section-number-2">7.</span> Per-CPU Data</h2>
+<div id="outline-container-org69052b6" class="outline-2">
+<h2 id="org69052b6"><span class="section-number-2">7.</span> Per-CPU Data</h2>
 <div class="outline-text-2" id="text-7">
 <p>
 Each CPU gets its own copy (no synchronization overhead):
@@ -598,8 +598,8 @@ for_each_possible_cpu(cpu) {
 </p>
 </div>
 </div>
-<div id="outline-container-org5002ae3" class="outline-2">
-<h2 id="org5002ae3"><span class="section-number-2">8.</span> Memory Barriers</h2>
+<div id="outline-container-org40010b3" class="outline-2">
+<h2 id="org40010b3"><span class="section-number-2">8.</span> Memory Barriers</h2>
 <div class="outline-text-2" id="text-8">
 <p>
 Ensure proper ordering of memory accesses:
@@ -629,8 +629,8 @@ value = smp_load_acquire(&amp;ptr);  // read with acquire semantics
 </p>
 </div>
 </div>
-<div id="outline-container-orgc3ab67b" class="outline-2">
-<h2 id="orgc3ab67b"><span class="section-number-2">9.</span> Example: Optimized device driver with deferred work</h2>
+<div id="outline-container-org80a6339" class="outline-2">
+<h2 id="org80a6339"><span class="section-number-2">9.</span> Example: Optimized device driver with deferred work</h2>
 <div class="outline-text-2" id="text-9">
 <p>
 #+begin_src c
@@ -728,35 +728,36 @@ perf report
 </p>
 </div>
 </div>
-<div id="outline-container-org05f33e6" class="outline-2">
-<h2 id="org05f33e6"><span class="section-number-2">10.</span> Interrupt Context Hierarchy Diagram</h2>
+<div id="outline-container-orgb407364" class="outline-2">
+<h2 id="orgb407364"><span class="section-number-2">10.</span> Interrupt Context Hierarchy Diagram</h2>
 <div class="outline-text-2" id="text-10">
 
-<div id="orga0a5a39" class="figure">
+<div id="org2ba3d7d" class="figure">
 <p><img src="res/08-interrupt-context.svg" alt="08-interrupt-context.svg" class="org-svg" />
 </p>
 </div>
 
 
-<div id="orgd287216" class="figure">
+<div id="org18850f7" class="figure">
 <p><img src="res/08-interrupt-context.svg" alt="08-interrupt-context.svg" class="org-svg" />
 </p>
 </div>
 </div>
 </div>
-<div id="outline-container-org26923d4" class="outline-2">
-<h2 id="org26923d4"><span class="section-number-2">11.</span> See Also</h2>
+<div id="outline-container-org2184145" class="outline-2">
+<h2 id="org2184145"><span class="section-number-2">11.</span> See Also</h2>
 <div class="outline-text-2" id="text-11">
 <ul class="org-ul">
 <li><a href="09-debugging-techniques.html#ID-i1j2k3l4-m5n6-4789-99a1-b2c3d4e5f6a7">Debugging Techniques</a></li>
 <li><a href="01-kernel-module-fundamentals.html#ID-f1a2b3c4-d5e6-47f8-99a1-b2c3d4e5f6a7">Kernel Module Fundamentals</a></li>
+<li><a href="12-interrupt-handling.html#ID-bee17a98-9ba2-49bb-8169-6f1ff0f0132b">Interrupt Handling</a> — what belongs in the hard IRQ vs the deferred work covered here</li>
 </ul>
 </div>
 </div>
 </div>
 <div id="postamble" class="status">
 <p class="author">Author: Arun Jyothish K</p>
-<p class="date">Created: 2026-08-17 Mon 20:37</p>
+<p class="date">Created: 2026-08-20 Thu 07:10</p>
 </div>
 </body>
 </html>
